@@ -7,7 +7,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: { //================================
    
-    
+    modal: "something"
+
+
+
+
 
   },
   getters: { //==============================
@@ -15,10 +19,17 @@ export default new Vuex.Store({
     
 
 
+
+
+
+
   },
   mutations: { //============================
 
   
+
+
+    
     
 
   },
