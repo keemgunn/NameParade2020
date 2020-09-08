@@ -26,5 +26,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // ---------- PORT SETTING
-const port = process.env.PORT || 5501;
+const port = process.env.PORT || 5500;
 app.listen(port, () => console.log(`=== Listening on port ${port} ... @app.js`));
