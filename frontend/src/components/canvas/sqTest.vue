@@ -78,14 +78,20 @@ export default {
       initLetterPos.push(segments);
     }
 
-    var lens = new this.scope.Path.Circle({
+
+
+    const horizon = 80;
+    var horizonCircle = new this.scope.Path.Circle({
       center: this.mousePoint,
-      radius: 50,
+      radius: horizon,
       strokeColor: 'red'
     });
-    console.log(lens);
-
-
+    const limit = 74;
+    var limitCircle = new this.scope.Path.Circle({
+      center: this.mousePoint,
+      radius: limit,
+      strokeColor: 'blue'
+    });
 
 
 
@@ -98,16 +104,18 @@ export default {
 
     this.scope.view.onMouseMove = (event) => {
       this.mousePoint = event.point;
-      lens.position = this.mousePoint;
+      horizonCircle.position = this.mousePoint;
+      limitCircle.position = this.mousePoint;
       this.mouseDelta = new this.scope.Point(
         (this.mousePoint.x - this.scope.view.center.x),
         (this.mousePoint.y - this.scope.view.center.y)
       )
+      // moveDots(this.scope, this.mousePoint, letters, initLetterPos, horizon, limit);
     }
   
     this.scope.view.onFrame = () => {
       
-      moveDots(this.scope, this.mousePoint, letters, initLetterPos);
+      moveDots(this.scope, this.mousePoint, letters, initLetterPos, horizon, limit);
 
     }
 
@@ -116,8 +124,7 @@ export default {
 
 
 
-    function moveDots(scope, mousePoint, letters, init){
-      const horizon = 50;
+    function moveDots(scope, mousePoint, letters, init, horizon, limit){
       let initDelta, newDelta, segDelta;
       for(var i=0; i < letters.length; i++){
         for(var j=0; j < letters[i].segments.length; j++){
@@ -129,18 +136,22 @@ export default {
           mousePoint.x - letters[i].segments[j].point.x, 
           mousePoint.y - letters[i].segments[j].point.y,
           ); 
-          newDelta.length = newDelta.length * 0.7
           segDelta = new scope.Point(
           letters[i].segments[j].point.x - init[i][j].x, 
           letters[i].segments[j].point.y - init[i][j].y,
           );
           if(initDelta.length < horizon){
-            newDelta.length = newDelta.length/2
-            letters[i].segments[j].point.x += (newDelta.x/30)
-            letters[i].segments[j].point.y += (newDelta.y/30)
+            if(newDelta.length < limit) {
+              letters[i].segments[j].point.x = init[i][j].x - (newDelta.x/8)
+              letters[i].segments[j].point.y = init[i][j].y - (newDelta.y/8)
+            }else{
+              newDelta.length = newDelta.length - limit;
+              letters[i].segments[j].point.x += (newDelta.x/30)
+              letters[i].segments[j].point.y += (newDelta.y/30)
+            }
           }else{
-            letters[i].segments[j].point.x -= (segDelta.x/8)
-            letters[i].segments[j].point.y -= (segDelta.y/8)
+            letters[i].segments[j].point.x -= (segDelta.x/30)
+            letters[i].segments[j].point.y -= (segDelta.y/30)
           }
         }
       }
