@@ -25,12 +25,14 @@ export default {
   name: "sqTest",
   props: [ ],
   data() { return {
-
+    scope: null,
   }},
   computed: {
 
   },
   methods: {
+
+
 
   },
   created() {
@@ -38,6 +40,7 @@ export default {
   },
   mounted() {
     this.scope.setup(document.getElementById('view'));
+    var mousePoint = this.scope.view.center;
     var words = this.scope.project.importSVG(document.getElementById('svg'));
       words.visible = true;
       words.fillColor = null;
@@ -47,13 +50,32 @@ export default {
     var textGroup = words.children.text;
     textGroup.position = this.scope.view.center;
 
+    console.log(textGroup.children);
 
+    var rect = new this.scope.Rectangle([0, 0], [100, 100]);
+    rect.center = mousePoint;
+    var path = new this.scope.Path.Rectangle(rect, 6);
+    path.strokeColor = 'red';
+    console.log(rect);
+    console.log(path);
 
+    this.scope.view.onMouseMove = (event) => {
+      mousePoint = event.point;
+      path.position = mousePoint;
+      showIntersections(this.scope, path, textGroup.children[0])
+    }
 
-
-    var a = new this.scope.Point(141, 100);
-    console.log(a);
-
+    function showIntersections(scope, path1, path2) {
+      var intersections = path1.getIntersections(path2);
+      console.log(intersections);
+      for (var i = 0; i < intersections.length; i++) {
+        new scope.Path.Circle({
+          center: intersections[i].point,
+          radius: 5,
+          fillColor: '#009dec'
+        }).removeOnMove();
+      }
+    }
     
 
   },
