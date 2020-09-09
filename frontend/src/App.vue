@@ -1,15 +1,24 @@
 <template>
   <div id="app">
 
+
+
+
+    <Contents />
+
+
+
+
   </div>
 </template>
 
 <script>
+import Contents from '@/components/Contents'
 
 export default {
   name: 'App',
   components: {
-
+    Contents,
   }
 }
 </script>
