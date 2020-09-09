@@ -54,52 +54,83 @@ export default {
     this.scope.setup(document.getElementById('view'));
     this.mousePoint = this.scope.view.center;
 
-
     // ------- IMPORT SVG
     var words = this.scope.project.importSVG(document.getElementById('svg'));
-      words.visible = true;
-      words.fillColor = null;
-      words.strokeColor = 'black';
       words.fitBounds(this.scope.view.bounds);
       words.scale(0.8);
       words.position = this.scope.view.center;
-    var letters = words.children[1].children[0].children;
+    var rawLetterArr = words.children[1].children[0].children;
 
-    // ------- DEFAULT LETTER POSITION ARRAY
-    let initLetterPos = []; let segments = [];
-    for(var i=0; i < letters.length; i++){
-      segments = [];
-      for(var j=0; j < letters[i].segments.length; j++){
-        segments.push({
-          x: letters[i].segments[j].point.x,
-          y: letters[i].segments[j].point.y,
-        })
+    // ------- MAKE LETTERS PATHS
+    let LETTERS = []; let initPos = [];
+    for(var i=0; i < rawLetterArr.length; i++){
+      let segments = [];
+      for(var j=0; j < rawLetterArr[i].segments.length; j++){
+        segments.push(rawLetterArr[i].segments[j])
       }
-      initLetterPos.push(segments);
+      var Clone = new this.scope.Path(segments);
+        Clone.closed = true;
+        Clone.fillColor = 'white'
+      initPos.push(segments);
+      LETTERS.push(Clone);
     }
 
+console.log(initPos); // letter[]segments[]point{x,y}
+console.log(rawLetterArr[0].segments[0].point);
+console.log(LETTERS[0].segments[0].point);
+    
 
-
-    const horizon = 80;
+    // ------- LENS PATH
+    const horizon = 85;
     var horizonCircle = new this.scope.Path.Circle({
       center: this.mousePoint,
       radius: horizon,
-      strokeColor: 'red'
+      strokeColor: '#ffffff'
     });
-    const limit = 74;
+    const limit = 75;
     var limitCircle = new this.scope.Path.Circle({
       center: this.mousePoint,
       radius: limit,
-      strokeColor: 'blue'
+      strokeColor: '#aaaaaa'
     });
+    console.log(horizonCircle);
+    console.log(limitCircle);
 
 
-
-
-    console.log(initLetterPos);
-    console.log(words);
-    console.log(letters);
-    console.log(letters[0].segments[0].point);
+    function moveDots(scope, mousePoint, LETTERS, init, horizon, limit){
+      let initDelta, newDelta, segDelta;
+      for(var i=0; i < LETTERS.length; i++){
+        for(var j=0; j < LETTERS[i].segments.length; j++){
+          initDelta = new scope.Point( // initial ~ mouse
+            mousePoint.x - init[i][j].point.x, 
+            mousePoint.y - init[i][j].point.y
+          );
+          // console.log(initDelta);
+          newDelta = new scope.Point( // moved ~ mouse
+            mousePoint.x - LETTERS[i].segments[j].point.x, 
+            mousePoint.y - LETTERS[i].segments[j].point.y,
+          ); 
+          segDelta = new scope.Point( // initial ~ moved
+            LETTERS[i].segments[j].point.x - init[i][j].point.x, 
+            LETTERS[i].segments[j].point.y - init[i][j].point.y,
+          );
+          if(initDelta.length < horizon){ 
+              //___ INSIDE THE LENS ____
+            if(newDelta.length < limit) { //___ inside the limit
+              LETTERS[i].segments[j].point.x = init[i][j].point.x - (newDelta.x/8)
+              LETTERS[i].segments[j].point.y = init[i][j].point.y - (newDelta.y/8)
+            }else{ //___ between limit ~ horizon
+              newDelta.length = newDelta.length - limit;
+              LETTERS[i].segments[j].point.x += (newDelta.x/30)
+              LETTERS[i].segments[j].point.y += (newDelta.y/30)
+            }
+          }else{
+            LETTERS[i].segments[j].point.x -= (segDelta.x/30)
+            LETTERS[i].segments[j].point.y -= (segDelta.y/30)
+          }
+        }
+      }
+    }
 
 
     this.scope.view.onMouseMove = (event) => {
@@ -110,59 +141,14 @@ export default {
         (this.mousePoint.x - this.scope.view.center.x),
         (this.mousePoint.y - this.scope.view.center.y)
       )
-      // moveDots(this.scope, this.mousePoint, letters, initLetterPos, horizon, limit);
     }
   
     this.scope.view.onFrame = () => {
-      
-      moveDots(this.scope, this.mousePoint, letters, initLetterPos, horizon, limit);
+      moveDots(this.scope, this.mousePoint, LETTERS, initPos, horizon, limit);
 
     }
 
 
-
-
-
-
-    function moveDots(scope, mousePoint, letters, init, horizon, limit){
-      let initDelta, newDelta, segDelta;
-      for(var i=0; i < letters.length; i++){
-        for(var j=0; j < letters[i].segments.length; j++){
-          initDelta = new scope.Point(
-          mousePoint.x - init[i][j].x, 
-          mousePoint.y - init[i][j].y
-          );
-          newDelta = new scope.Point(
-          mousePoint.x - letters[i].segments[j].point.x, 
-          mousePoint.y - letters[i].segments[j].point.y,
-          ); 
-          segDelta = new scope.Point(
-          letters[i].segments[j].point.x - init[i][j].x, 
-          letters[i].segments[j].point.y - init[i][j].y,
-          );
-          if(initDelta.length < horizon){
-            if(newDelta.length < limit) {
-              letters[i].segments[j].point.x = init[i][j].x - (newDelta.x/8)
-              letters[i].segments[j].point.y = init[i][j].y - (newDelta.y/8)
-            }else{
-              newDelta.length = newDelta.length - limit;
-              letters[i].segments[j].point.x += (newDelta.x/30)
-              letters[i].segments[j].point.y += (newDelta.y/30)
-            }
-          }else{
-            letters[i].segments[j].point.x -= (segDelta.x/30)
-            letters[i].segments[j].point.y -= (segDelta.y/30)
-          }
-        }
-      }
-    }
-
-    
-
-
-
-
-    
 
   },
   beforeUpdate() {
@@ -180,13 +166,14 @@ export default {
 #sq-test {
   position: absolute; top: 0; left: 0;
   width: 100vw; height: 100vh;
+  color: azure;
   // background-color: azure;
 }
 .canvas-style {
   z-index: -1;
   position: absolute; top: 0; left: 0;
   width: 100%; height: 100%;
-  background-color: cornsilk;
+  background-color: rgb(0, 73, 92);
 }
 
 #svg {
