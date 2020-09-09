@@ -56,6 +56,7 @@ export default {
 
     // ------- IMPORT SVG
     var words = this.scope.project.importSVG(document.getElementById('svg'));
+      words.visible = true;
       words.fitBounds(this.scope.view.bounds);
       words.scale(0.8);
       words.position = this.scope.view.center;
@@ -76,8 +77,8 @@ export default {
     }
 
 console.log(initPos); // letter[]segments[]point{x,y}
-console.log(rawLetterArr[0].segments[0].point);
-console.log(LETTERS[0].segments[0].point);
+console.log(rawLetterArr);
+console.log(LETTERS);
     
 
     // ------- LENS PATH
@@ -93,8 +94,6 @@ console.log(LETTERS[0].segments[0].point);
       radius: limit,
       strokeColor: '#aaaaaa'
     });
-    console.log(horizonCircle);
-    console.log(limitCircle);
 
 
     function moveDots(scope, mousePoint, LETTERS, init, horizon, limit){
@@ -117,16 +116,16 @@ console.log(LETTERS[0].segments[0].point);
           if(initDelta.length < horizon){ 
               //___ INSIDE THE LENS ____
             if(newDelta.length < limit) { //___ inside the limit
-              LETTERS[i].segments[j].point.x = init[i][j].point.x - (newDelta.x/8)
-              LETTERS[i].segments[j].point.y = init[i][j].point.y - (newDelta.y/8)
+              LETTERS[i].segments[j].point.x = init[i][j].point.x - (newDelta.x/30)
+              LETTERS[i].segments[j].point.y = init[i][j].point.y - (newDelta.y/30)
             }else{ //___ between limit ~ horizon
               newDelta.length = newDelta.length - limit;
-              LETTERS[i].segments[j].point.x += (newDelta.x/30)
-              LETTERS[i].segments[j].point.y += (newDelta.y/30)
+              LETTERS[i].segments[j].point.x += (newDelta.x/45)
+              LETTERS[i].segments[j].point.y += (newDelta.y/45)
             }
           }else{
-            LETTERS[i].segments[j].point.x -= (segDelta.x/30)
-            LETTERS[i].segments[j].point.y -= (segDelta.y/30)
+            LETTERS[i].segments[j].point.x -= (segDelta.x/45)
+            LETTERS[i].segments[j].point.y -= (segDelta.y/45)
           }
         }
       }
