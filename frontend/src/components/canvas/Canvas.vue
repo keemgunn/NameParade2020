@@ -3,7 +3,6 @@
   <canvas 
     id="view" 
     class="canvas-style"
-    @mouseenter="mouse"
   ></canvas>
 
 
@@ -19,57 +18,58 @@ const paper = require('paper');
 
 export default {
   name: "Canvas",
-  props: ['canvasID'],
+  props: [ ],
   data() { return {
     scope: null,
-    mousePoint: null,
     amount: 25,
-    colors: ['red', 'white', 'blue', 'white'],
-    children: null
+    colors: ['#13C695', 'white', '#4BFFBC', 'white'],
   }},
   computed: {
 
   },
   methods: {
-    mouse(){
-      // console.log('f: mouseMove');
-      // this.scope.activate();
 
-      let self = this;
-      this.scope.view.onMouseMove = (event) => {
-        self.mousePoint = event.point;
-      }
-      
-      
-    }
   },
   created() {
     this.scope = new paper.PaperScope();
   },
   mounted() {
     this.scope.setup(document.getElementById('view'));
-    this.mousePoint =  this.scope.view.center;
+    var mousePoint = this.scope.view.center;
+
     for (var i = 0; i < this.amount; i++) {
       var rect = new this.scope.Rectangle([0, 0], [25, 25]);
-      rect.center = this.mousePoint;
+      rect.center = mousePoint;
       var path = new this.scope.Path.Rectangle(rect, 6);
       path.fillColor = this.colors[i % 4];
-      var scale = (1 - i / this.amount) * 20;
+      var scale = (1 - i / this.amount) * 10;
       path.scale(scale);
     }
 
-    this.scope.view.onMouseMove = (e) => {
-      this.mousePoint = e.point;
+    this.scope.view.onMouseMove = (event) => {
+      mousePoint = event.point;
     }
     
-    this.children = this.scope.project.activeLayer.children;
+    let children = this.scope.project.activeLayer.children;
+    var pos, delta;
     this.scope.view.onFrame = (event) => {
-      for (var i = 0, l = this.children.length; i < l; i++) {
-        var item = this.children[i];
-        var delta = (this.mousePoint - item.position) / (i + 5);
+      for (var i = 0, l = children.length; i < l; i++) {
+        var item = children[i];
+
+        pos = item.position
+        delta = new this.scope.Point(
+          (mousePoint.x - pos.x)/(i+5), 
+          (mousePoint.y - pos.y)/(i+5)
+        );
+
         item.rotate(Math.sin((event.count + i) / 10) * 7);
-        if (delta.length > 0.1) {
-          item.position += delta;
+
+        // console.log(delta.length);
+        if (delta.length > 0.1){
+          item.position = new this.scope.Point(
+            (pos.x + delta.x), 
+            (pos.y + delta.y)
+          );
         }
       }
     }

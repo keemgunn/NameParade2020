@@ -2,7 +2,6 @@
 <div id="contents">
 
 <Canvas 
-  :canvas-id="'canvas-one'"
   ref="childCanvas"
 />
 
