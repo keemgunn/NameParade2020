@@ -4,7 +4,6 @@
 
 
 
-    <Contents />
 
 
 
@@ -13,7 +12,6 @@
 </template>
 
 <script>
-import Contents from '@/components/Contents'
 
 export default {
   name: 'App',
@@ -32,5 +30,8 @@ export default {
     text-align: center;
     margin-top: 60px;
   }
+  
+
+
   
 </style>

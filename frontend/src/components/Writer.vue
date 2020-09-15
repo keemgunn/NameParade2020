@@ -1,18 +1,6 @@
 <template>
-<div id="contents">
+<div id="">
 
-<Canvas 
-  v-if="0"
-  ref="childCanvas"
-/>
-
-<sqTest
-  v-if="1"
-/>
-
-<Blot
-  v-if="0"
-/>
 
 
 
@@ -22,14 +10,11 @@
 
 
 <script>
-import Canvas from './canvas/Canvas'
-import sqTest from './canvas/sqTest'
-import Blot from './canvas/Blot'
 
 
 export default {
-  name: "Contents",
-  components: { Canvas, sqTest, Blot},
+  name: "",
+  components: { },
   props: [
 
   ],
@@ -46,7 +31,7 @@ export default {
 
   },
   mounted() {
-
+    
   },
   beforeUpdate() {
     
