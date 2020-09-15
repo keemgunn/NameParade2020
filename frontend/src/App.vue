@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script>
+<script> 
 
 export default {
   name: 'App',
@@ -33,5 +33,5 @@ export default {
   
 
 
-  
+
 </style>
