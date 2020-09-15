@@ -1,5 +1,5 @@
 <template>
-<div id="blot">
+<div id="">
 
 
 
@@ -13,7 +13,7 @@
 
 
 export default {
-  name: "Blot",
+  name: "",
   components: { },
   props: [
 
@@ -45,11 +45,8 @@ export default {
 
 
 <style lang="scss" scoped> 
-#blot {
-  position: absolute; top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background-color: rgb(240, 255, 240);
-}
+
+
 
 
 
