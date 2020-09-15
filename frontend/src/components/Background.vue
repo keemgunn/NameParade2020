@@ -95,7 +95,7 @@ export default {
         circle.data.veloY *= -1 ;
       }
       if(COLORS[i] !== bbc){
-        if(bbc - COLORS[i] > 0){
+        if(bbc > COLORS[i]){
           COLORS[i] += 1;
         }else{
           COLORS[i] -= 1;

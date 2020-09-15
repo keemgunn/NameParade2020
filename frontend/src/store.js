@@ -9,7 +9,7 @@ import Vuex from 'vuex';
 const colorHarmonies = [
   [-30, 30, -40, +40, 0],
   [-35, 35, -45, +45, 0],
-  [-30, 30, -40, +40, 180],
+  // [-30, 30, -40, +40, 180],
   [0, 0, 180, 180, 180],
   [-20, +20, +180, +180, 0]
 ]
@@ -34,7 +34,7 @@ export default new Vuex.Store({
       vh: null,
     },
     
-    stdColor: 3,
+    colorScheme: [],
 
     pathStrokes: 0,
 
@@ -46,15 +46,7 @@ export default new Vuex.Store({
   getters: { //==============================
     
     BBC(state){
-      let harmonies = colorHarmonies[getRandomInt(0, colorHarmonies.length)];
-      return [
-        state.stdColor,
-        state.stdColor + harmonies[0],
-        state.stdColor + harmonies[1],
-        state.stdColor + harmonies[2],
-        state.stdColor + harmonies[3],
-        state.stdColor + harmonies[4]
-      ]
+      return state.colorScheme
     }
     
 
@@ -66,8 +58,28 @@ export default new Vuex.Store({
   },
   mutations: { //============================
 
-    newBBC(state){
-      state.stdColor = getRandomInt(0, 361)
+    setBBC(state, {comp, hue}){
+      console.log(comp);
+      console.log(hue);
+      let harmonies, stdColor;
+      if(comp<0){
+        harmonies = colorHarmonies[getRandomInt(0, colorHarmonies.length)];
+      }else{
+        harmonies = colorHarmonies[comp]
+      }
+      if(hue<0){
+        stdColor = getRandomInt(0, 361);
+      }else{
+        stdColor = hue
+      }
+      state.colorScheme = [
+        stdColor,
+        stdColor + harmonies[0],
+        stdColor + harmonies[1],
+        stdColor + harmonies[2],
+        stdColor + harmonies[3],
+        stdColor + harmonies[4]
+      ]
     }
   
 

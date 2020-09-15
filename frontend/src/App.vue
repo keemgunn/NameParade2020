@@ -13,19 +13,23 @@
 
 
     <div id="content">
-      <br><br>
-      vw: {{winSize.vw}} <br>
-      vh: {{winSize.vh}} <br>
-      {{watchWindowSize}} <br><br>
-      - msg said - <br> {{msg}}
+
+
+
+
+
+
 
       <div id="test">
-        <button @click="newBBC()">test A</button><br>
-        <button>test B</button><br>
+        vw: {{winSize.vw}} <br>
+        vh: {{winSize.vh}} <br>
+        {{watchWindowSize}} <br><br>
+        - msg said - <br> {{msg}}
+        <button @click="setBBC({comp:-1, hue:-1})">test A</button><br>
+        <button @click="setBBC({comp:1, hue:3})">test B</button><br>
         <button>test C</button><br>
         <button>test D</button><br>
       </div>
-      
     </div>
   </div>
 </template>
@@ -50,7 +54,7 @@ export default {
     ...mapState(['winSize'])
   },
   methods: {
-    ...mapMutations(['newBBC']),
+    ...mapMutations(['setBBC']),
     onResize() {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
@@ -68,6 +72,7 @@ export default {
   created() {
     this.winSize.vw = window.innerWidth;
     this.winSize.vh = window.innerHeight;
+    this.setBBC({comp:-1, hue:-1});
   },
   mounted() {
     // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
@@ -110,12 +115,8 @@ export default {
 
 
   #test {
-  position: absolute; top: 41%; left: 41%;
-  width: 100px; height: 100px;
-  background-color: black;
-  }#test:hover {
-    cursor: pointer;
-    background-color: darkviolet;
+  position: absolute; bottom: 0%; right: 0%;
+  width: 100px; height: fit-content;
   }
 
 
