@@ -1,9 +1,11 @@
 <template>
 <div id="background">
+  <br><br><br><br><br><br><br><br><br><br><br>
+  ctx: {{ctx}} <br>
 
+  <canvas> 
 
-
-
+  </canvas>
 </div>
 </template>
 
@@ -11,7 +13,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+const $canvas = document.querySelector('canvas');
 
 export default {
   name: "Background",
@@ -20,10 +22,13 @@ export default {
 
   ],
   data() { return {
+    ctx: null,
+    
+    particles: [],
 
   }},
   computed: {
-    ...mapGetters([])
+    ...mapGetters(['BBC'])
   },
   methods: {
 
@@ -32,7 +37,10 @@ export default {
 
   },
   mounted() {
-    
+    this.ctx = $canvas.getContext('2d')
+    window.requestAnimationFrame($canvas.animate.bind($canvas));
+
+
   },
   beforeUpdate() {
     
@@ -52,7 +60,11 @@ export default {
   width: 100vw; height: 100vh;
   overflow: hidden;
 }
-
+canvas {
+  position: fixed; top: 0; left: 0; 
+  padding: 0; margin: 0;
+  width: 100%; height: 100%;
+}
 
 
 
