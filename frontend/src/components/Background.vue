@@ -96,9 +96,9 @@ export default {
       }
       if(COLORS[i] !== bbc){
         if(bbc > COLORS[i]){
-          COLORS[i] += 0.25;
+          COLORS[i] += 0.5;
         }else{
-          COLORS[i] -= 0.25;
+          COLORS[i] -= 0.5;
         }
         if(levels.now < levels.start){
           levels.now += 0.1;

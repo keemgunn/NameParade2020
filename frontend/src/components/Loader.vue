@@ -1,6 +1,6 @@
 <template>
-<div id="loader">
-
+<div class="loader">
+<h1>{{VIEWTYPE}}</h1>
 
 
 
@@ -10,7 +10,7 @@
 
 
 <script>
-
+import { mapGetters } from 'vuex';
 
 export default {
   name: "Loader",
@@ -22,10 +22,10 @@ export default {
 
   }},
   computed: {
-
+    ...mapGetters(['VIEWTYPE'])
   },
   methods: {
-
+    
   },
   created() {
 
@@ -45,7 +45,12 @@ export default {
 
 
 <style lang="scss" scoped> 
-
+.loader{
+  position: absolute; top: 0; left: 4%;
+  width: 92%;
+  height: 200px;
+  background-color: fuchsia;
+}
 
 
 

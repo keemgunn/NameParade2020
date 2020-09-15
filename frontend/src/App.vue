@@ -2,21 +2,18 @@
   <div id="app">
 
     
-    <Background 
-    />
+    <Background/>
 
-
+    <Loader/>
     
    
 
     
 
-
     <div id="content">
-
-
-
-
+    <div class="content" :class="byType">
+      <br><br><br><br><br><br>
+      {{byType}}
 
 
 
@@ -30,19 +27,23 @@
         <button>test C</button><br>
         <button>test D</button><br>
       </div>
-    </div>
+
+    </div></div>
+
   </div>
 </template>
 
 <script> 
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 import Background from './components/Background';
+import Loader from './components/Loader';
 
 
 export default {
   name: 'App',
   components: {
-    Background
+    Background,
+    Loader
   },
   data() {
     return {
@@ -51,7 +52,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['winSize'])
+    ...mapState(['winSize']),
+    ...mapGetters(['byType'])
   },
   methods: {
     ...mapMutations(['setBBC']),
@@ -106,12 +108,33 @@ export default {
     color: aliceblue;
     background-color: black;
   }
-  #content {
-    z-index: 0;
-    position: absolute; top: 0; left: 0;
-    margin: 0; padding: 0;
-    width: 100vw; height: 100vh;
+
+  #content{
+    .content {
+      z-index: 0;
+      position: absolute; top: 0; left: 0;
+      margin: 0; padding: 0;
+      width: 100vw; height: 85vh;
+      // background-color: darkslategrey;
+    }
+    ._small {
+      // background-color: rgb(235, 147, 16);
+    }
+    ._narrow {
+      // background-color: rgb(211, 55, 76);
+    }
+    ._tablet {
+      // background-color: rgb(20, 167, 235);
+    }
+    ._wide {
+      // background-color: rgb(58, 19, 233);
+    }
+
+
   }
+
+
+
 
 
   #test {

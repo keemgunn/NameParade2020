@@ -1,15 +1,12 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 // import axios from 'axios';
-
 // const resourceHost = 'http://localhost:3000'
-
-
 
 const colorHarmonies = [
   [-30, 30, -40, +40, 0],
   [-35, 35, -45, +45, 0],
-  // [-30, 30, -40, +40, 180],
+  [-30, 30, -40, +40, 180],
   [0, 0, 180, 180, 180],
   [-20, +20, +180, +180, 0]
 ]
@@ -17,9 +14,8 @@ const colorHarmonies = [
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; //최댓값은 제외, 최솟값은 포함
-}
-
+  return Math.floor(Math.random() * (max - min)) + min; 
+} //최댓값은 제외, 최솟값은 포함
 
 
 Vue.use(Vuex)
@@ -27,7 +23,9 @@ export default new Vuex.Store({
   state: { //================================
     test: false,
     // test: true,
-    modal: "something",
+
+    viewtype: null,
+    modal: "loading",
 
     winSize: {
       vw: null,
@@ -36,7 +34,6 @@ export default new Vuex.Store({
     
     colorScheme: [],
 
-    pathStrokes: 0,
 
 
 
@@ -47,6 +44,33 @@ export default new Vuex.Store({
     
     BBC(state){
       return state.colorScheme
+    },
+    VIEWTYPE(state){
+      if(state.winSize.vw < 510){
+        if(state.winSize.vw/(0.8 * state.winSize.vh) > 0.68){
+          state.viewtype = 'small';
+          return 'small'
+        }else{
+          state.viewtype = 'narrow';
+          return 'narrow'
+        }
+      }else{
+        if(state.winSize.vw/state.winSize.vh > 0.8){
+          state.viewtype = 'wide';
+          return 'wide'
+        }else{
+          state.viewtype = 'tablet';
+          return 'tablet'
+        }
+      }
+    },
+    byType(state){
+      return {
+        _small: (state.viewtype === 'small'),
+        _narrow: (state.viewtype === 'narrow'),
+        _tablet: (state.viewtype === 'tablet'),
+        _wide: (state.viewtype === 'wide'),
+      }
     }
     
 
@@ -59,8 +83,6 @@ export default new Vuex.Store({
   mutations: { //============================
 
     setBBC(state, {comp, hue}){
-      console.log(comp);
-      console.log(hue);
       let harmonies, stdColor;
       if(comp<0){
         harmonies = colorHarmonies[getRandomInt(0, colorHarmonies.length)];
