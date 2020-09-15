@@ -14,8 +14,12 @@ export default {
   data() { return {
     scope: null,
     COLORS: [],
-    size: 0.66,
-    amount: 6,
+    levels:{
+      now: 0, 
+      start: 42, 
+      end: 38,
+    },
+    size: 0.66, amount: 6,
     velocity: 1.6
   }},
   computed: {
@@ -55,8 +59,8 @@ export default {
 
     let circles = [];
     for(var i=0; i < this.amount; i++){
-      let color = 'hsl('+ this.COLORS[i] + 'deg, 100%, 42%)'
-      let colora = 'hsl('+ this.COLORS[i] + 'deg, 100%, 38%, 0)'
+      let color = 'hsl('+ this.COLORS[i] + 'deg, 100%, 0%)'
+      let colora = 'hsl('+ this.COLORS[i] + 'deg, 100%, 0%, 0)'
       var circle = new this.scope.Path.Circle({
         center: new this.scope.Point(
           Math.random() * (this.winSize.vw),
@@ -81,7 +85,7 @@ export default {
       circles[i] = circle;
     }
 
-    function moveCircles(winSize, scope, circle, COLORS, bbc, i){
+    function moveCircles(winSize, scope, circle, COLORS, bbc, i, levels){
       circle.position.x += circle.data.veloX
       circle.position.y += circle.data.veloY
       if((circle.position.x<0)||(circle.position.x>winSize.vw)){
@@ -96,16 +100,31 @@ export default {
         }else{
           COLORS[i] -= 1;
         }
-        circle.fillColor.gradient.stops = [
-        'hsl('+ COLORS[i] + 'deg, 100%, 46%)', 
-        'hsl('+ COLORS[i] + 'deg, 100%, 50%, 0)'
-        ]
+        if(levels.now < levels.start){
+          levels.now += 0.1;
+          if(levels.now < levels.end + 0.1){
+            circle.fillColor.gradient.stops = [
+              'hsl('+COLORS[i]+'deg, 100%, '+levels.now+'%)', 
+              'hsl('+COLORS[i]+'deg, 100%, '+levels.now+'%, 0)'
+            ]
+          }else{
+            circle.fillColor.gradient.stops = [
+              'hsl('+ COLORS[i] + 'deg, 100%, '+levels.now+'%)', 
+              'hsl('+ COLORS[i] + 'deg, 100%, '+levels.end+'%, 0)'
+            ]
+          }
+        }else{
+          circle.fillColor.gradient.stops = [
+          'hsl('+ COLORS[i] + 'deg, 100%, '+levels.start+'%)', 
+          'hsl('+ COLORS[i] + 'deg, 100%, '+levels.end+'%, 0)'
+          ]
+        }
       }
     }
 
     this.scope.view.onFrame = () => {
       for(var i=0; i < this.amount; i++){
-        moveCircles(this.winSize, this.scope, circles[i], this.COLORS, this.BBC[i], i);
+        moveCircles(this.winSize, this.scope, circles[i], this.COLORS, this.BBC[i], i, this.levels);
       }
     }
   },
