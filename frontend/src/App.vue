@@ -3,24 +3,37 @@
 
     
     <Background 
-    
     />
+
+
+    
+   
+
+    
 
 
     <div id="content">
       <br><br>
-      vw: {{vw}} <br>
-      vh: {{vh}} <br>
-      {{txt}} <br><br>
+      vw: {{winSize.vw}} <br>
+      vh: {{winSize.vh}} <br>
+      {{watchWindowSize}} <br><br>
       - msg said - <br> {{msg}}
 
+      <div id="test">
+        <button @click="newBBC()">test A</button><br>
+        <button>test B</button><br>
+        <button>test C</button><br>
+        <button>test D</button><br>
+      </div>
       
     </div>
   </div>
 </template>
 
 <script> 
-import Background from './components/Background'
+import { mapState, mapMutations } from 'vuex';
+import Background from './components/Background';
+
 
 export default {
   name: 'App',
@@ -29,43 +42,43 @@ export default {
   },
   data() {
     return {
-      vh: window.innerHeight,
-      vw: window.innerWidth,
-      txt: '',
+      watchWindowSize: '',
       msg: ''
     }
   },
+  computed: {
+    ...mapState(['winSize'])
+  },
+  methods: {
+    ...mapMutations(['newBBC']),
+    onResize() {
+      this.winSize.vw = window.innerWidth
+      this.winSize.vh = window.innerHeight
+    },
+
+  },
   watch: {
     vh(newHeight, oldHeight) {
-     this.txt = `it changed to ${newHeight} from ${oldHeight}`;
+     this.watchWindowSize = `it changed to ${newHeight} from ${oldHeight}`;
     },
     vw(newWidth, oldWidth) {
-     this.txt = `it changed to ${newWidth} from ${oldWidth}`;
+     this.watchWindowSize = `it changed to ${newWidth} from ${oldWidth}`;
     }
   },
-
+  created() {
+    this.winSize.vw = window.innerWidth;
+    this.winSize.vh = window.innerHeight;
+  },
   mounted() {
+    // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    document.documentElement.addEventListener('touchstart', this.preventPinch, false);
 
   },
   beforeDestroy() { 
     window.removeEventListener('resize', this.onResize); 
   },
-  methods: {  
-    onResize() {
-      this.vh = window.innerHeight
-      this.vw = window.innerWidth
-    },
-    preventPinch(event) {
-      this.msg = event.touches.length
-      if (event.touches.length > 1) { 
-        event.preventDefault(); 
-      }
-    }
-  }
 }
 </script>
 
@@ -94,7 +107,16 @@ export default {
     margin: 0; padding: 0;
     width: 100vw; height: 100vh;
   }
-  
+
+
+  #test {
+  position: absolute; top: 41%; left: 41%;
+  width: 100px; height: 100px;
+  background-color: black;
+  }#test:hover {
+    cursor: pointer;
+    background-color: darkviolet;
+  }
 
 
 
