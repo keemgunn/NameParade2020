@@ -14,7 +14,7 @@ export default {
   data() { return {
     scope: null,
     COLORS: [],
-    size: 0.9,
+    size: 0.66,
     amount: 6,
     velocity: 1.6
   }},
@@ -55,8 +55,8 @@ export default {
 
     let circles = [];
     for(var i=0; i < this.amount; i++){
-      let color = 'hsl('+ this.COLORS[i] + 'deg, 100%, 50%)'
-      let colora = 'hsl('+ this.COLORS[i] + 'deg, 100%, 50%, 0)'
+      let color = 'hsl('+ this.COLORS[i] + 'deg, 100%, 42%)'
+      let colora = 'hsl('+ this.COLORS[i] + 'deg, 100%, 38%, 0)'
       var circle = new this.scope.Path.Circle({
         center: new this.scope.Point(
           Math.random() * (this.winSize.vw),
@@ -97,7 +97,7 @@ export default {
           COLORS[i] -= 1;
         }
         circle.fillColor.gradient.stops = [
-        'hsl('+ COLORS[i] + 'deg, 100%, 50%)', 
+        'hsl('+ COLORS[i] + 'deg, 100%, 46%)', 
         'hsl('+ COLORS[i] + 'deg, 100%, 50%, 0)'
         ]
       }
