@@ -20,7 +20,7 @@ export default {
       end: 38,
     },
     size: 0.66, amount: 6,
-    velocity: 1.6
+    velocity: 0.4
   }},
   computed: {
     ...mapState(['winSize', 'stdColor']),
@@ -96,9 +96,9 @@ export default {
       }
       if(COLORS[i] !== bbc){
         if(bbc > COLORS[i]){
-          COLORS[i] += 1;
+          COLORS[i] += 0.25;
         }else{
-          COLORS[i] -= 1;
+          COLORS[i] -= 0.25;
         }
         if(levels.now < levels.start){
           levels.now += 0.1;
