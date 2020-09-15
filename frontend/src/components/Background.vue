@@ -1,5 +1,5 @@
 <template>
-<div id="">
+<div id="background">
 
 
 
@@ -10,10 +10,11 @@
 
 
 <script>
+import { mapGetters } from 'vuex'
 
 
 export default {
-  name: "",
+  name: "Background",
   components: { },
   props: [
 
@@ -22,7 +23,7 @@ export default {
 
   }},
   computed: {
-
+    ...mapGetters([])
   },
   methods: {
 
@@ -45,7 +46,12 @@ export default {
 
 
 <style lang="scss" scoped> 
-
+#background {
+  position: fixed; top: 0; left: 0; 
+  padding: 0; margin: 0;
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+}
 
 
 
