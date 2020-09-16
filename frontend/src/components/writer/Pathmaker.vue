@@ -25,6 +25,7 @@ export default {
   ],
   data() { return {
     scope: null,
+    okToWrite: false,
     simplifyVal: 10,
     relocationInfo: {
       small: { x: 0.1, y: 0.5 },
@@ -70,7 +71,15 @@ export default {
     var dataPath;
     var visiblePath;
 
+    this.scope.view.onMouseEnter = () => {
+      this.okToWrite = true;
+    }
+    this.scope.view.onMouseLeave = () => {
+      this.okToWrite = false;
+    }
+
     this.scope.view.onMouseDown = (event) => {
+      this.okToWrite = true;
       var locatedPoint = new this.scope.Point(
         event.point.x + this.writer.relocation.x, 
         event.point.y + this.writer.relocation.y
@@ -87,12 +96,14 @@ export default {
     }
 
     this.scope.view.onMouseDrag = (event) => {
-      var locatedPoint = new this.scope.Point(
-        event.point.x + this.writer.relocation.x, 
-        event.point.y + this.writer.relocation.y
-      )
-      visiblePath.add(locatedPoint);
-      dataPath.add(event.point);
+      if(this.okToWrite){
+        var locatedPoint = new this.scope.Point(
+          event.point.x + this.writer.relocation.x, 
+          event.point.y + this.writer.relocation.y
+        )
+        visiblePath.add(locatedPoint);
+        dataPath.add(event.point);
+      }
     }
 
     this.scope.view.onMouseUp = () => {
@@ -120,6 +131,7 @@ export default {
 
 <style lang="scss" scoped> 
 .maker{
+  z-index: -10;
   position: fixed;
   border: solid 2px white;
   background-color: rgba(0, 0, 0, 0.527);
