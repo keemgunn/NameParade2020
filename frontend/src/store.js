@@ -22,7 +22,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: { //================================
     test: true,
-    // test: true,
+    // test: false,
+    testModal: true,
+    // testModal: false,
 
     viewtype: null,
     modal: "loading",
@@ -55,6 +57,13 @@ export default new Vuex.Store({
 
   },
   getters: { //==============================
+
+    VW(state){
+      return state.winSize.vw
+    },
+    VH(state){
+      return state.winSize.vh
+    },
     
     BBC(state){
       return state.colorScheme

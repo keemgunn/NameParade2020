@@ -11,7 +11,7 @@
 
       <Pathmaker/>
 
-      <test v-if="test"/>
+      <test v-if="testModal"/>
     </div>
   </div>
 </template>
@@ -37,7 +37,7 @@ export default {
     Pathmaker
   },
   computed: {
-    ...mapState(['test', 'winSize', 'loading']),
+    ...mapState(['test', 'testModal', 'winSize', 'loading']),
     ...mapGetters(['byType', 'LOADING_PROGRESS'])
   },
   methods: {
