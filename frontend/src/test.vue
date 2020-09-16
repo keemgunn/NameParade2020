@@ -11,6 +11,8 @@
   justLoaded: {{loading.justLoaded}} <br>
   loading: {{LOADING_PROGRESS * 100}}% <br>
   BBC:<br>{{BBC}}<br>
+  writer.scopeSize:{{writer.scopeSize}}
+  writer.pixelRatio:{{writer.pixelRatio}}
   
 
 

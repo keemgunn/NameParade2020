@@ -9,7 +9,7 @@
 
 
 
-
+      <Pathmaker/>
 
       <test v-if="test"/>
     </div>
@@ -23,6 +23,8 @@ import Background from './components/Background';
 import Loader from './components/Loader';
 import TitleSign from './components/TitleSign'
 
+import Pathmaker from './components/writer/Pathmaker'
+
 
 export default {
   name: 'App',
@@ -30,7 +32,9 @@ export default {
     test,
     Background,
     Loader,
-    TitleSign
+    TitleSign,
+
+    Pathmaker
   },
   computed: {
     ...mapState(['test', 'winSize', 'loading']),

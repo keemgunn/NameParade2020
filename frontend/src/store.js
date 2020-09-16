@@ -43,6 +43,9 @@ export default new Vuex.Store({
     colorScheme: [],
 
     writer:{
+      scopeSize: {width:0, height:0},
+      relocation: {x:0, y:0},
+      pixelRatio: 0,
       paths:[],
       info: {
         name: null
