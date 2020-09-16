@@ -1,5 +1,6 @@
 <template>
 <div id="background">
+  {{VIEWTYPE}}
   <canvas id="BG"></canvas>
 </div>
 </template>
@@ -23,8 +24,8 @@ export default {
     velocity: 0.4
   }},
   computed: {
-    ...mapState(['winSize', 'stdColor']),
-    ...mapGetters(['BBC']),
+    ...mapState(['winSize']),
+    ...mapGetters(['BBC', 'VIEWTYPE']),
     radius: function() {
       if(this.winSize.vw > this.winSize.vh){
         return {
@@ -137,7 +138,9 @@ export default {
   position: fixed; top: 0; left: 0; 
   padding: 0; margin: 0;
   width: 100vw; height: 100vh;
-  overflow: hidden;
+  // background-color: black;
+  // background-color: fuchsia;
+  color: transparent;
 }
 #BG {
   pointer-events: none;

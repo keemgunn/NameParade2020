@@ -34,7 +34,10 @@ export default new Vuex.Store({
     
     colorScheme: [],
 
-
+    loading: {
+      filesLoaded: 100,
+      filesToLoad: 100
+    }
 
 
 
@@ -45,9 +48,10 @@ export default new Vuex.Store({
     BBC(state){
       return state.colorScheme
     },
+
     VIEWTYPE(state){
-      if(state.winSize.vw < 510){
-        if(state.winSize.vw/(0.8 * state.winSize.vh) > 0.68){
+      if(state.winSize.vw < 550){
+        if(state.winSize.vw/state.winSize.vh > 0.58){
           state.viewtype = 'small';
           return 'small'
         }else{
@@ -55,7 +59,7 @@ export default new Vuex.Store({
           return 'narrow'
         }
       }else{
-        if(state.winSize.vw/state.winSize.vh > 0.8){
+        if(state.winSize.vw/state.winSize.vh > 1){
           state.viewtype = 'wide';
           return 'wide'
         }else{
@@ -71,9 +75,11 @@ export default new Vuex.Store({
         _tablet: (state.viewtype === 'tablet'),
         _wide: (state.viewtype === 'wide'),
       }
-    }
+    },
     
-
+    LOADING_PROGRESS(state){
+      return (state.loading.filesLoaded / state.loading.filesToLoad)
+    }
 
 
 
@@ -102,7 +108,28 @@ export default new Vuex.Store({
         stdColor + harmonies[3],
         stdColor + harmonies[4]
       ]
-    }
+    },
+
+
+
+
+
+
+
+
+    
+
+    INITIATE(){
+
+    },
+
+    CHECK_FILES(){
+
+    },
+
+    LOAD_FILES(){
+
+    },
   
 
 

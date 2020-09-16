@@ -1,20 +1,10 @@
 <template>
-  <div id="app">
-
-    
+  <div class="app" :class="{'ALL-LOADED':(LOADING_PROGRESS === 1)}">
     <Background/>
-
-    <Loader/>
-    
-   
-
-    
 
     <div id="content">
     <div class="content" :class="byType">
-      <br><br><br><br><br><br>
-      {{byType}}
-
+      <Loader/>
 
 
       <div id="test">
@@ -53,7 +43,7 @@ export default {
   },
   computed: {
     ...mapState(['winSize']),
-    ...mapGetters(['byType'])
+    ...mapGetters(['byType', 'LOADING_PROGRESS'])
   },
   methods: {
     ...mapMutations(['setBBC']),
@@ -61,7 +51,9 @@ export default {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
     },
-
+    progressDone(){
+      this.$store.state.loading.filesLoaded = 100;
+    }
   },
   watch: {
     vh(newHeight, oldHeight) {
@@ -78,6 +70,7 @@ export default {
   },
   mounted() {
     // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
+    this.onResize();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
@@ -91,45 +84,50 @@ export default {
 
 
 <style lang="scss">
-  body {
-    position: fixed; top: 0; left: 0; 
-    padding: 0; margin: 0;
-    overflow: hidden;
-    background-color: black;
-  }
-  #app {
+  .app {
     z-index: 0;
     position: absolute; top: 0; left: 0;
     margin: 0; padding: 0;
-    width: 100vw; height: 100vh;
+    width: 100vw; height: 80vh;
+    overflow: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: aliceblue;
-    background-color: black;
+  }.ALL-LOADED {
+    transition: 300ms;
+    height: 100vh;
+    overflow-x: hidden; overflow-y: auto;
+    background-color: aqua;
   }
+
+
 
   #content{
     .content {
       z-index: 0;
       position: absolute; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      
       margin: 0; padding: 0;
-      width: 100vw; height: 85vh;
       // background-color: darkslategrey;
     }
     ._small {
-      // background-color: rgb(235, 147, 16);
+      width: 100vw; height: 300vh;
+      // background-color: rgba(235, 147, 16, 0.61);
     }
     ._narrow {
-      // background-color: rgb(211, 55, 76);
+      width: 100vw; height: 300vh;
+      // background-color: rgba(211, 55, 76, 0.61);
     }
     ._tablet {
-      // background-color: rgb(20, 167, 235);
+      width: 100vw; height: 300vh;
+      // background-color: rgba(20, 167, 235, 0.562);
     }
     ._wide {
-      // background-color: rgb(58, 19, 233);
+      width: 100vw; height: 100vh;
+      // background-color: rgba(58, 19, 233, 0.616);
     }
-
 
   }
 
@@ -138,7 +136,7 @@ export default {
 
 
   #test {
-  position: absolute; bottom: 0%; right: 0%;
+  position: absolute; top: 0%; left: 0%;
   width: 100px; height: fit-content;
   }
 
