@@ -32,14 +32,19 @@ export default new Vuex.Store({
       vh: null,
     },
     
+    loading: {
+      filesLoaded: 100,
+      filesToLoad: 100
+    },
+
     colorScheme: [],
 
-    loading: {
-      filesLoaded: 73,
-      filesToLoad: 100
+    writer:{
+      paths:[],
+      info: {
+        name: null
+      }
     }
-
-
 
 
   },

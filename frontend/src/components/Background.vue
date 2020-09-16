@@ -1,6 +1,7 @@
 <template>
 <div id="background">
   {{VIEWTYPE}}
+  <div id="bg-loading" :style="bgLoading"></div>
   <canvas id="BG"></canvas>
 </div>
 </template>
@@ -24,8 +25,27 @@ export default {
     velocity: 0.4
   }},
   computed: {
-    ...mapState(['winSize']),
-    ...mapGetters(['BBC', 'VIEWTYPE']),
+    ...mapState(['winSize', 'writer']),
+    ...mapGetters(['BBC', 'VIEWTYPE', 'LOADING_PROGRESS']),
+    bgLoading: function(){
+      let full = 100;
+      if(this.LOADING_PROGRESS >= 1){
+        if(this.writer.paths.length){
+          return {
+            'background-color': 'black',
+            'opacity': '100%'
+          }
+        }else{
+          return {
+            'opacity': '100%'
+          }
+        }
+      }else{
+        return {
+          'opacity': (this.LOADING_PROGRESS * full) + '%'
+        }
+      }
+    },
     radius: function() {
       if(this.winSize.vw > this.winSize.vh){
         return {
@@ -139,14 +159,22 @@ export default {
   padding: 0; margin: 0;
   width: 100vw; height: 100vh;
   // background-color: black;
-  // background-color: fuchsia;
+  background-color: rgb(214, 217, 226);
   color: transparent;
 }
 #BG {
-  pointer-events: none;
   z-index: -10;
+  pointer-events: none;
   position: absolute; top: 0; left: 0; 
   padding: 0; margin: 0;
-  width: 100%; height: 100%
+  width: 100%; height: 100%;
+}
+#bg-loading {
+  z-index: -20;
+  pointer-events: none;
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  transition: '500ms';
+  background-color: #1130D1;
 }
 </style>
