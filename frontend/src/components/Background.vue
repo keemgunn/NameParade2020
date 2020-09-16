@@ -1,5 +1,7 @@
 <template>
 <div id="background">
+  {{VIEWTYPE}}
+  <div id="bg-loading" :style="bgLoading"></div>
   <canvas id="BG"></canvas>
 </div>
 </template>
@@ -14,13 +16,36 @@ export default {
   data() { return {
     scope: null,
     COLORS: [],
-    size: 0.66,
-    amount: 6,
-    velocity: 1.6
+    levels:{
+      now: 0, 
+      start: 42, 
+      end: 38,
+    },
+    size: 0.66, amount: 6,
+    velocity: 0.4
   }},
   computed: {
-    ...mapState(['winSize', 'stdColor']),
-    ...mapGetters(['BBC']),
+    ...mapState(['winSize', 'writer']),
+    ...mapGetters(['BBC', 'VIEWTYPE', 'LOADING_PROGRESS']),
+    bgLoading: function(){
+      let full = 100;
+      if(this.LOADING_PROGRESS >= 1){
+        if(this.writer.paths.length){
+          return {
+            'background-color': 'black',
+            'opacity': '100%'
+          }
+        }else{
+          return {
+            'opacity': '100%'
+          }
+        }
+      }else{
+        return {
+          'opacity': (this.LOADING_PROGRESS * full) + '%'
+        }
+      }
+    },
     radius: function() {
       if(this.winSize.vw > this.winSize.vh){
         return {
@@ -55,8 +80,8 @@ export default {
 
     let circles = [];
     for(var i=0; i < this.amount; i++){
-      let color = 'hsl('+ this.COLORS[i] + 'deg, 100%, 42%)'
-      let colora = 'hsl('+ this.COLORS[i] + 'deg, 100%, 38%, 0)'
+      let color = 'hsl('+ this.COLORS[i] + 'deg, 100%, 0%)'
+      let colora = 'hsl('+ this.COLORS[i] + 'deg, 100%, 0%, 0)'
       var circle = new this.scope.Path.Circle({
         center: new this.scope.Point(
           Math.random() * (this.winSize.vw),
@@ -81,7 +106,7 @@ export default {
       circles[i] = circle;
     }
 
-    function moveCircles(winSize, scope, circle, COLORS, bbc, i){
+    function moveCircles(winSize, scope, circle, COLORS, bbc, i, levels){
       circle.position.x += circle.data.veloX
       circle.position.y += circle.data.veloY
       if((circle.position.x<0)||(circle.position.x>winSize.vw)){
@@ -91,21 +116,36 @@ export default {
         circle.data.veloY *= -1 ;
       }
       if(COLORS[i] !== bbc){
-        if(bbc - COLORS[i] > 0){
-          COLORS[i] += 1;
+        if(bbc > COLORS[i]){
+          COLORS[i] += 0.5;
         }else{
-          COLORS[i] -= 1;
+          COLORS[i] -= 0.5;
         }
-        circle.fillColor.gradient.stops = [
-        'hsl('+ COLORS[i] + 'deg, 100%, 46%)', 
-        'hsl('+ COLORS[i] + 'deg, 100%, 50%, 0)'
-        ]
+        if(levels.now < levels.start){
+          levels.now += 0.1;
+          if(levels.now < levels.end + 0.1){
+            circle.fillColor.gradient.stops = [
+              'hsl('+COLORS[i]+'deg, 100%, '+levels.now+'%)', 
+              'hsl('+COLORS[i]+'deg, 100%, '+levels.now+'%, 0)'
+            ]
+          }else{
+            circle.fillColor.gradient.stops = [
+              'hsl('+ COLORS[i] + 'deg, 100%, '+levels.now+'%)', 
+              'hsl('+ COLORS[i] + 'deg, 100%, '+levels.end+'%, 0)'
+            ]
+          }
+        }else{
+          circle.fillColor.gradient.stops = [
+          'hsl('+ COLORS[i] + 'deg, 100%, '+levels.start+'%)', 
+          'hsl('+ COLORS[i] + 'deg, 100%, '+levels.end+'%, 0)'
+          ]
+        }
       }
     }
 
     this.scope.view.onFrame = () => {
       for(var i=0; i < this.amount; i++){
-        moveCircles(this.winSize, this.scope, circles[i], this.COLORS, this.BBC[i], i);
+        moveCircles(this.winSize, this.scope, circles[i], this.COLORS, this.BBC[i], i, this.levels);
       }
     }
   },
@@ -118,13 +158,23 @@ export default {
   position: fixed; top: 0; left: 0; 
   padding: 0; margin: 0;
   width: 100vw; height: 100vh;
-  overflow: hidden;
+  // background-color: black;
+  background-color: rgb(214, 217, 226);
+  color: transparent;
 }
 #BG {
-  pointer-events: none;
   z-index: -10;
+  pointer-events: none;
   position: absolute; top: 0; left: 0; 
   padding: 0; margin: 0;
-  width: 100%; height: 100%
+  width: 100%; height: 100%;
+}
+#bg-loading {
+  z-index: -20;
+  pointer-events: none;
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  transition: '500ms';
+  background-color: #1130D1;
 }
 </style>
