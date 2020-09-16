@@ -35,7 +35,7 @@ export default new Vuex.Store({
     colorScheme: [],
 
     loading: {
-      filesLoaded: 100,
+      filesLoaded: 73,
       filesToLoad: 100
     }
 

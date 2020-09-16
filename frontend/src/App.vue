@@ -14,7 +14,7 @@
         - msg said - <br> {{msg}}
         <button @click="setBBC({comp:-1, hue:-1})">test A</button><br>
         <button @click="setBBC({comp:1, hue:3})">test B</button><br>
-        <button>test C</button><br>
+        <button @click="progressDone()">test C</button><br>
         <button>test D</button><br>
       </div>
 
@@ -52,7 +52,7 @@ export default {
       this.winSize.vh = window.innerHeight
     },
     progressDone(){
-      this.$store.state.loading.filesLoaded = 100;
+      this.$store.state.loading.filesLoaded += 1;
     }
   },
   watch: {
