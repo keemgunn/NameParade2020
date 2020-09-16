@@ -3,6 +3,12 @@
     <Background/>
     <div id="content">
       <Loader/>
+      <TitleSign/>
+      
+
+
+
+
 
 
       <div id="test">
@@ -15,11 +21,6 @@
         <button @click="progressDone()">test C</button><br>
         <button>test D</button><br>
       </div>
-
-
-
-
-
     </div>
   </div>
 </template>
@@ -28,13 +29,15 @@
 import { mapState, mapGetters, mapMutations } from 'vuex';
 import Background from './components/Background';
 import Loader from './components/Loader';
+import TitleSign from './components/TitleSign'
 
 
 export default {
   name: 'App',
   components: {
     Background,
-    Loader
+    Loader,
+    TitleSign
   },
   data() {
     return {
