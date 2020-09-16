@@ -21,7 +21,7 @@ function getRandomInt(min, max) {
 Vue.use(Vuex)
 export default new Vuex.Store({
   state: { //================================
-    test: false,
+    test: true,
     // test: true,
 
     viewtype: null,
@@ -33,8 +33,11 @@ export default new Vuex.Store({
     },
     
     loading: {
-      filesLoaded: 100,
-      filesToLoad: 100
+      justLoaded: 0,
+      filesLoaded: 0,
+      fakeOffset: 0,
+        filesToLoad: 0,
+        faker: 0
     },
 
     colorScheme: [],
@@ -83,7 +86,11 @@ export default new Vuex.Store({
     },
     
     LOADING_PROGRESS(state){
-      return (state.loading.filesLoaded / state.loading.filesToLoad)
+      if(state.test){
+        return (100) / 100
+      }else{
+        return ((state.loading.filesLoaded + state.loading.fakeOffset) / (state.loading.filesToLoad + state.loading.faker))
+      }
     }
 
 

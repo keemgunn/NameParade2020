@@ -11,22 +11,14 @@
 
 
 
-      <div id="test">
-        vw: {{winSize.vw}} <br>
-        vh: {{winSize.vh}} <br>
-        loadedAmount: {{loadedAmount}}
-        - msg said - <br> {{msg}}
-        <button @click="setBBC({comp:-1, hue:-1})">test A</button><br>
-        <button @click="setBBC({comp:1, hue:3})">test B</button><br>
-        <button @click="progressDone()">test C</button><br>
-        <button>test D</button><br>
-      </div>
+      <test v-if="test"/>
     </div>
   </div>
 </template>
 
 <script> 
 import { mapState, mapGetters, mapMutations } from 'vuex';
+import test from './test'
 import Background from './components/Background';
 import Loader from './components/Loader';
 import TitleSign from './components/TitleSign'
@@ -35,18 +27,13 @@ import TitleSign from './components/TitleSign'
 export default {
   name: 'App',
   components: {
+    test,
     Background,
     Loader,
     TitleSign
   },
-  data() {
-    return {
-      loadedAmount: '',
-      msg: ''
-    }
-  },
   computed: {
-    ...mapState(['winSize']),
+    ...mapState(['test', 'winSize', 'loading']),
     ...mapGetters(['byType', 'LOADING_PROGRESS'])
   },
   methods: {
@@ -55,21 +42,17 @@ export default {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
     },
-    progressDone(){
-      this.$store.state.loading.filesLoaded += 1;
-    }
   },
   watch: {
     LOADING_PROGRESS(new0, old0) {
-      this.loadedAmount = new0 - old0;
+      this.loading.justLoaded = new0 - old0;
       if(new0 >= 1){
         document.querySelector('body').style.overflow = 'auto';
       }
     },
   },
   created() {
-    this.winSize.vw = window.innerWidth;
-    this.winSize.vh = window.innerHeight;
+    this.onResize();
     this.setBBC({comp:-1, hue:-1});
   },
   mounted() {
@@ -120,9 +103,5 @@ export default {
     width: 100%; height: 100%;
   }
 
-  #test {
-  position: absolute; top: 0%; left: 0%;
-  width: 100px; height: fit-content;
-  }
-  
+
 </style>
