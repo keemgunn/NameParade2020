@@ -92,6 +92,11 @@ export default {
       return source + 'px'
     },
     render(){
+      if(this.RENDERED.length){ // DELETE WHEN EXISTS
+        for(var i=0; i < this.RENDERED.length; i++){
+          this.RENDERED[i].remove();
+        }
+      }
       this.PATHS = this.writer.paths;
       this.stroke({
         pathIndex: this.renderProgress.path, 
