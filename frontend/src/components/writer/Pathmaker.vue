@@ -134,7 +134,7 @@ export default {
         }else{
           this.renderProgress.path += 1;
           this.renderProgress.seg = 0;
-          setTimeout(this.stroke, this.renderSpeed, {
+          setTimeout(this.stroke, this.renderSpeed*20, {
             pathIndex: this.renderProgress.path, 
             segIndex: this.renderProgress.seg
           })
