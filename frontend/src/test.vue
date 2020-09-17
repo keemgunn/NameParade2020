@@ -13,6 +13,7 @@
   BBC:<br>{{BBC}}<br>
   writer.scopeSize:{{writer.scopeSize}}
   writer.pixelRatio:{{writer.pixelRatio}}
+  writer.relocation:{{writer.relocation}}
   
 
 
