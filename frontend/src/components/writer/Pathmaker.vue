@@ -7,6 +7,14 @@
   :style="canvasLocation"
   ></canvas>
 
+  <div id="testModal">
+    <button @click="renderPath()">renderPath</button> <br>
+    <button>test01</button> <br>
+    <button>test02</button> <br>
+    <button>test03</button> <br>
+    <button>test04</button>
+  </div>
+
 </div>
 </template>
 
@@ -33,7 +41,9 @@ export default {
       tablet: { x:0.1, y:0.5, w:0.8, h:0.2 },
       wide: { x:0.1, y:0.5, w:0.8, h:0.2 },
     },
-    canvasLocation: {}
+    canvasLocation: {},
+    simulatedArr: [],
+    simulatedPath: [],
 
   }},
   computed: {
@@ -74,6 +84,37 @@ export default {
     },
     _px(source){
       return source + 'px'
+    },
+    renderPath(){
+      console.log(this.writer.paths);
+      for(var i=0; i < this.writer.paths.length; i++){
+        console.log('i',i);
+        let segPoint;
+        for(var j=0; j < this.writer.paths[i].length; j++){
+          console.log('j',j);
+          segPoint = new this.scope.Point(
+            this.writer.paths[i][j].x, 
+            this.writer.paths[i][j].y
+          );
+          if(j===0){ 
+            // FIRST ONE ---
+            this.simulatedPath = new this.scope.Path({
+              segments: [ segPoint ], // array
+              strokeColor: 'red',
+              strokeWidth: 7,
+              strokeCap: 'round'
+            }) 
+          }else if( j === (this.writer.paths[i].length-1) ){ 
+            // LAST ONE ---
+            this.simulatedPath.add(segPoint);
+            this.simulatedPath.simplify(this.simplifyVal);
+            this.simulatedArr.push(this.simulatedPath);
+          }
+          else{
+            this.simulatedPath.add(segPoint);
+          }
+        }
+      }
     }
   },
   created() {
@@ -92,7 +133,7 @@ export default {
     console.log(this.scope.view);
     console.log(document.getElementById('maker').style);
 
-    var dataPath;
+    var segPoints = [];
     var visiblePath;
 
     this.scope.view.onMouseEnter = () => {
@@ -104,19 +145,19 @@ export default {
 
     this.scope.view.onMouseDown = (event) => {
       this.okToWrite = true;
+      segPoints = [];
       var locatedPoint = new this.scope.Point(
         event.point.x + this.X, 
         event.point.y + this.Y
       )
       visiblePath = new this.scope.Path({
-        segments: [locatedPoint],
+        segments: [ locatedPoint ], // array
         strokeColor: 'white',
         strokeWidth: 5,
         strokeCap: 'round'
       })
-      dataPath = new this.scope.Path({
-        segments: [event.point],
-      });
+      var pointCore = {x: event.point.x, y: event.point.y}
+      segPoints.push(pointCore);
     }
 
     this.scope.view.onMouseDrag = (event) => {
@@ -126,13 +167,26 @@ export default {
           event.point.y + this.Y
         )
         visiblePath.add(locatedPoint);
-        dataPath.add(event.point);
+        var pointCore = {x: event.point.x, y: event.point.y};
+        segPoints.push(pointCore);
       }
     }
 
     this.scope.view.onMouseUp = () => {
       visiblePath.simplify(this.simplifyVal);
-      dataPath.simplify(this.simplifyVal);
+      this.writer.paths.push(segPoints);
+
+        // it saves segPoints without SIMPLIFICATION
+        // SO ITS SEGMENTS ARE MUCH MORE THAN VISIBLEPATH's
+      console.log('visible');
+      console.log(visiblePath);
+      console.log('segPoints');
+      console.log(segPoints);
+      console.log('paths.length');
+      console.log(this.writer.paths.length);
+
+
+
     }
 
 
@@ -161,6 +215,21 @@ export default {
   background-color: rgba(0, 0, 0, 0.527);
 }
 
+
+
+#testModal {
+  position: fixed;
+  padding: 3px;
+  left: 140px;
+  top: 30px;
+  border: solid 2px white;
+  opacity: 0.8;
+  button {
+    margin: 2px;
+  }button:hover{
+    cursor: pointer;
+  }
+}
 
 
 

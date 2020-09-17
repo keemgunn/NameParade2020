@@ -22,9 +22,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: { //================================
     test: true,
-    // test: false,
     testModal: true,
-    // testModal: false,
 
     viewtype: null,
     modal: "loading",
