@@ -8,7 +8,7 @@
   ></canvas>
 
   <div id="testModal">
-    <button @click="renderPath()">renderPath</button> <br>
+    <button @click="render()">render</button> <br>
     <button>test01</button> <br>
     <button>test02</button> <br>
     <button>test03</button> <br>
@@ -41,9 +41,15 @@ export default {
       tablet: { x:0.1, y:0.5, w:0.8, h:0.2 },
       wide: { x:0.1, y:0.5, w:0.8, h:0.2 },
     },
-    canvasLocation: {},
-    simulatedArr: [],
-    simulatedPath: [],
+    canvasLocation: {}, // style object
+
+
+    PATHS: [],
+    renderProgress: {path:0, seg:0},
+    renderSpeed: 10,
+
+    RENDERED: [],
+    renPath: [],
 
   }},
   computed: {
@@ -60,7 +66,7 @@ export default {
     },
     H: function(){
       return this.writer.scopeSize.height
-    }
+    },
   },
   methods: {
     relocation(){
@@ -85,37 +91,61 @@ export default {
     _px(source){
       return source + 'px'
     },
-    renderPath(){
-      console.log(this.writer.paths);
-      for(var i=0; i < this.writer.paths.length; i++){
-        console.log('i',i);
-        let segPoint;
-        for(var j=0; j < this.writer.paths[i].length; j++){
-          console.log('j',j);
-          segPoint = new this.scope.Point(
-            this.writer.paths[i][j].x, 
-            this.writer.paths[i][j].y
-          );
-          if(j===0){ 
-            // FIRST ONE ---
-            this.simulatedPath = new this.scope.Path({
-              segments: [ segPoint ], // array
-              strokeColor: 'red',
-              strokeWidth: 7,
-              strokeCap: 'round'
-            }) 
-          }else if( j === (this.writer.paths[i].length-1) ){ 
-            // LAST ONE ---
-            this.simulatedPath.add(segPoint);
-            this.simulatedPath.simplify(this.simplifyVal);
-            this.simulatedArr.push(this.simulatedPath);
-          }
-          else{
-            this.simulatedPath.add(segPoint);
-          }
+    render(){
+      this.PATHS = this.writer.paths;
+      this.stroke({
+        pathIndex: this.renderProgress.path, 
+        segIndex: this.renderProgress.seg
+      });
+    },
+    stroke({pathIndex, segIndex}){
+
+      let segPoint = new this.scope.Point(this.PATHS[pathIndex][segIndex].x, this.PATHS[pathIndex][segIndex].y);
+
+      if(segIndex===0){ 
+        // FIRST SEG ---
+        this.renPath = new this.scope.Path({
+          segments: [ segPoint ], // array
+          strokeColor: 'red',
+          strokeWidth: 7,
+          strokeCap: 'round'
+        });
+        this.renderProgress.seg += 1;
+        setTimeout(this.stroke, this.renderSpeed, {
+          pathIndex: this.renderProgress.path, 
+          segIndex: this.renderProgress.seg
+        });
+      }
+      else if(segIndex === this.PATHS[pathIndex].length-1){ 
+        // LAST SEG ---
+        this.renPath.add(segPoint);
+        this.renPath.simplify(this.simplifyVal);
+        this.RENDERED.push(this.renPath);
+        if(pathIndex === this.PATHS.length-1){
+          // LAST PATH / LAST SEG ---
+          console.log('-- RENDER DONE --');
+          this.renderProgress.path = 0;
+          this.renderProgress.seg = 0;
+        }else{
+          this.renderProgress.path += 1;
+          this.renderProgress.seg = 0;
+          setTimeout(this.stroke, this.renderSpeed, {
+            pathIndex: this.renderProgress.path, 
+            segIndex: this.renderProgress.seg
+          })
         }
       }
-    }
+      else{
+        this.renPath.add(segPoint);
+        this.renderProgress.seg += 1;
+        setTimeout(this.stroke, this.renderSpeed, {
+          pathIndex: this.renderProgress.path, 
+          segIndex: this.renderProgress.seg
+        })
+      }
+    },
+
+
   },
   created() {
     this.scope = new paper.PaperScope();
