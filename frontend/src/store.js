@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-// import axios from 'axios';
+import axios from 'axios';
+import randomstring from 'randomstring';
+
 // const resourceHost = 'http://localhost:3000'
 
 const colorHarmonies = [
@@ -10,61 +12,97 @@ const colorHarmonies = [
   [0, 0, 180, 180, 180],
   [-20, +20, +180, +180, 0]
 ]
-
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min; 
 } //최댓값은 제외, 최솟값은 포함
 
+let userId = randomstring.generate({
+  length: 10,
+  charset: 'alphanumeric'
+});
+
+const test = {
+  client: {
+    // loading: true,
+    // MODAL: true,
+      modal:0,
+    
+
+  },
+  foo: 'bar',
+  modal: true,
+}
 
 Vue.use(Vuex)
 export default new Vuex.Store({
   state: { //================================
-    test: true,
-    // test: false,
-    testModal: true,
-    // testModal: false,
-
-    viewtype: null,
-    modal: "loading",
-
+    test: test,
+    
     winSize: {
       vw: null,
       vh: null,
     },
-    
+    viewtype: null,
+    modal: 0,
+      // 0:loading, 1:writer, 2:parade, 3:story
+
+    loadedArr: [],
     loading: {
-      justLoaded: 0,
-      filesLoaded: 0,
-      fakeOffset: 0,
-        filesToLoad: 0,
-        faker: 0
+      processing: 0, // 1:loading, 2:done
+      loadSpeed: 30, // (ms)
+        fakeOffset: 0,
+        faker: 200 + 200,
+      filesInServer: 0
     },
 
     colorScheme: [],
 
     writer:{
-      scopeSize: {width:0, height:0},
-      relocation: {x:0, y:0},
-      pixelRatio: 0,
+      scale: 0,
       paths:[],
       info: {
-        name: null
+        userId: userId,
+        name: userId,
+        ip: null,
+        uag: null,
+        inTime: null,
+        writeTime: null,
+        outTime: null
       }
-    }
+    },
+    SIGNS: [],
 
 
   },
   getters: { //==============================
 
-    VW(state){
-      return state.winSize.vw
+    MODAL(state){
+      if(state.test.client.MODAL){
+        return state.test.client.modal
+      }else{
+        return state.modal
+      }
     },
-    VH(state){
-      return state.winSize.vh
+
+    FILES_IN_SERVER(state){
+      return state.loading.filesInServer
     },
-    
+    FILES_LOADED(state){
+      return state.SIGNS.length
+    },
+    LOADING_PROGRESS(state){
+      let result;
+      if(state.loading.processing < 2){
+        result = (state.SIGNS.length + state.loading.fakeOffset) / (state.loading.filesInServer + state.loading.faker);
+          if(state.test.client.loading){ result = (100)/100 }
+      }else{
+        result = (100)/100
+      }return result
+    },
+
+
     BBC(state){
       return state.colorScheme
     },
@@ -97,13 +135,7 @@ export default new Vuex.Store({
       }
     },
     
-    LOADING_PROGRESS(state){
-      if(state.test){
-        return (100) / 100
-      }else{
-        return ((state.loading.filesLoaded + state.loading.fakeOffset) / (state.loading.filesToLoad + state.loading.faker))
-      }
-    }
+
 
 
 
@@ -112,6 +144,76 @@ export default new Vuex.Store({
   },
   mutations: { //============================
 
+    //__________________________ INITIATING METHODS
+    async PUT_INITDATA(state, recieved){
+      console.log('$$$ request ...$mutation/PUT_INITDATA');
+      state.loading.fakeOffset += 30;
+      state.writer.info.ip = recieved.ip;
+      state.writer.info.uag = recieved.uag;
+      console.log(state.writer.info);
+      const {data} = await axios.get('/load/file-count');
+      state.loading.filesInServer = data.jsonCount; // -- trigger FILES_IN_SERVER
+    },
+
+    //__________________________ SIGN DATA METHODS
+    async START_SIGNLOAD(state){
+      console.log('if initial loading ...m:START_SIGNLOAD');
+      state.loading.fakeOffset += 40;
+      const {data} = await axios.get('/load/initial');
+      state.loadedArr = data;
+      setTimeout(this.pushToSIGNS, state.loading.loadSpeed);
+    },
+    
+    pushToSIGNS(state){
+      if(state.loading.processing < 2){
+        const count = state.SIGNS.length;
+        state.SIGNS.push(state.loadedArr[count]);
+        if(state.SIGNS.length === state.loading.filesInServer){
+          state.loadedArr = [];
+          this.offsetLoadFaker();
+        }else{
+          setTimeout(this.pushToSIGNS, state.loading.loadSpeed);
+        }
+      }else{
+        for(var i=0; i<state.loadedArr.length; i++){
+          state.SIGNS.push(state.loadedArr[i]);
+        }
+        state.loadedArr = [];
+      }
+    },
+    
+    offsetLoadFaker(state){
+      if(state.loading.fakeOffset < state.loading.faker){
+        state.loading.fakeOffset += 1;
+        setTimeout(this.offsetLoadFaker, state.loading.loadSpeed);
+      }
+      else{
+        state.loading.processing = 2;
+        state.modal = 1;
+      }
+    },
+    
+    async UPDATE_SIGNS(state, amount){
+      const {data} = await axios.post('/load/update', {amount});
+      state.loadedArr = data;
+      this.pushToSIGNS();
+    },
+
+    async SEND_PATHS(state){
+      if(state.writer.paths.length){
+        state.writer.info.writeTime = Date.now();
+        const {data} = await axios.post('/push/paths', {writer: state.writer});
+        if(data.status === 200){
+          state.modal = 2;
+        }
+      }else{
+        console.log('draw signs first!');
+      }
+    },
+
+
+
+    //__________________________ UI METHODS
     setBBC(state, {comp, hue}){
       let harmonies, stdColor;
       if(comp<0){
@@ -137,15 +239,7 @@ export default new Vuex.Store({
 
 
 
-
-
-
-
     
-
-    INITIATE(){
-
-    },
 
     CHECK_FILES(){
 
@@ -155,6 +249,11 @@ export default new Vuex.Store({
 
     },
   
+    SEND_PATH(){
+
+    }
+
+
 
 
     
@@ -162,9 +261,15 @@ export default new Vuex.Store({
 
   },
   actions: { //==============================
-    
-   
-    
+    async INITIATE({commit, state}){
+      console.log("==== INITIATING REQUEST ====");
+      const {data} = await axios.post('/init/enter', {userId});
+      state.writer.info.inTime = Date.now();
+      commit('PUT_INITDATA', {ip: data.ip, uag: data.uag});
+    },
 
+
+
+    
   }
 })

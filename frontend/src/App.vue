@@ -11,13 +11,13 @@
 
       <Pathmaker/>
 
-      <test v-if="testModal"/>
+      <test v-if="test.modal"/>
     </div>
   </div>
 </template>
 
 <script> 
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import test from './test'
 import Background from './components/Background';
 import Loader from './components/Loader';
@@ -37,27 +37,46 @@ export default {
     Pathmaker
   },
   computed: {
-    ...mapState(['test', 'testModal', 'winSize', 'loading']),
-    ...mapGetters(['byType', 'LOADING_PROGRESS'])
+    ...mapState(['test', 'winSize', 'loading']),
+    ...mapGetters(['byType','FILES_IN_SERVER', 'FILES_TO_LOAD', 'FILES_LOADED', 'LOADING_PROGRESS'])
   },
   methods: {
-    ...mapMutations(['setBBC']),
+    ...mapMutations(['START_SIGNLOAD', 'setBBC', 'UPDATE_SIGNS']),
+    ...mapActions(['INITIATE']),
     onResize() {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
     },
   },
   watch: {
-    LOADING_PROGRESS(new0, old0) {
-      this.loading.justLoaded = new0 - old0;
-      if(new0 >= 1){
+    LOADING_PROGRESS(nu, old) {
+      this.loading.justLoaded = nu - old;
+      if(nu >= 1){
         document.querySelector('body').style.overflow = 'auto';
       }
     },
+    FILES_IN_SERVER(nu){ //--trigger
+      if(this.loading.processing === 0){
+        console.log('--- initiating SIGNLOAD process ---');
+        console.log('filesInServer:', nu);
+        this.loading.processing = 1;
+        this.START_SIGNLOAD();
+      }else if(this.loading.processing === 1){
+        console.log('loading is already processsing');
+
+      }else{ // === 2
+        console.log('file index update');
+
+
+      }
+
+
+    }
   },
   created() {
     this.onResize();
     this.setBBC({comp:-1, hue:-1});
+    this.INITIATE();
   },
   mounted() {
     // document.documentElement.addEventListener('touchstart', this.preventPinch, false);

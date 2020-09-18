@@ -32,6 +32,7 @@ export default {
       if(this.LOADING_PROGRESS >= 1){
         if(this.writer.paths.length){
           return {
+            'transition': '800ms',
             'background-color': 'black',
             'opacity': '100%'
           }
@@ -42,6 +43,7 @@ export default {
         }
       }else{
         return {
+          'transition': '50ms',
           'opacity': (this.LOADING_PROGRESS * full) + '%'
         }
       }
@@ -71,6 +73,7 @@ export default {
   created() {
     this.COLORS = this.BBC;
     this.scope = new paper.PaperScope();
+    this.$store.state.loading.fakeOffset += 20;
   },
   mounted() {
     this.scope.setup(document.getElementById('BG'));
@@ -148,6 +151,7 @@ export default {
         moveCircles(this.winSize, this.scope, circles[i], this.COLORS, this.BBC[i], i, this.levels);
       }
     }
+    this.$store.state.loading.fakeOffset += 30;
   },
 }
 </script>
