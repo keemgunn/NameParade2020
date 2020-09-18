@@ -12,7 +12,7 @@
     <button>test01</button> <br>
     <button>test02</button> <br>
     <button>test03</button> <br>
-    <button>test04</button>
+    <button @click="SEND()">SEND</button>
   </div>
 
 </div>
@@ -22,7 +22,7 @@
 
 <script>
 const paper = require('paper');
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 
 
 export default {
@@ -41,14 +41,15 @@ export default {
       tablet: { x:0.1, y:0.5, w:0.8, h:0.2 },
       wide: { x:0.1, y:0.5, w:0.8, h:0.2 },
     },
+    visiblePath: [],
     canvasLocation: {}, // style object
     scopeSize: {width:0, height:0},
     relocation: {x:0, y:0},
 
+    // _____ RENDERING _____
     PATHS: [],
     renderProgress: {path:0, seg:0},
-    renderSpeed: 12,
-
+    renderSpeed: 9,
     RENDERED: [],
     renPath: [],
 
@@ -70,6 +71,7 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(['SEND_PATHS']),
     RELOCATE(){
       this.writer.scale = this.getSize('x', 'vw');
       this.relocation.x = this.getSize('x', 'vw');
@@ -93,6 +95,16 @@ export default {
     _px(source){
       return source + 'px'
     },
+
+    SEND(){
+      this.SEND_PATHS();
+      for(var i=0; i < this.visiblePath.length; i++){
+        this.visiblePath[i].remove();
+      }
+      this.writer.paths = [];
+    },
+
+
     render(){
       if(this.RENDERED.length){ // DELETE WHEN EXISTS
         for(var i=0; i < this.RENDERED.length; i++){
@@ -170,8 +182,8 @@ export default {
     console.log(this.scope.view);
     console.log(document.getElementById('maker').style);
 
+    var visible;
     var segPoints = [];
-    var visiblePath;
 
     this.scope.view.onMouseEnter = () => {
       this.okToWrite = true;
@@ -187,7 +199,7 @@ export default {
         event.point.x + this.X, 
         event.point.y + this.Y
       )
-      visiblePath = new this.scope.Path({
+      visible = new this.scope.Path({
         segments: [ locatedPoint ], // array
         strokeColor: 'white',
         strokeWidth: 5,
@@ -203,27 +215,20 @@ export default {
           event.point.x + this.X, 
           event.point.y + this.Y
         )
-        visiblePath.add(locatedPoint);
+        visible.add(locatedPoint);
         var pointCore = {x: event.point.x, y: event.point.y};
         segPoints.push(pointCore);
       }
     }
 
     this.scope.view.onMouseUp = () => {
-      visiblePath.simplify(this.simplifyVal);
+      visible.simplify(this.simplifyVal);
+      this.visiblePath.push(visible);
+      visible = [];
       this.writer.paths.push(segPoints);
-
+      segPoints = [];
         // it saves segPoints without SIMPLIFICATION
         // SO ITS SEGMENTS ARE MUCH MORE THAN VISIBLEPATH's
-      console.log('visible');
-      console.log(visiblePath);
-      console.log('segPoints');
-      console.log(segPoints);
-      console.log('paths.length');
-      console.log(this.writer.paths.length);
-
-
-
     }
 
 

@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 
 
-const configPath = path.join(__dirname, '../data/config');
+const configPath = path.join(__dirname, '../data/config.json');
 let config = readSync(configPath);
 
 const signsPath = path.join(__dirname, '../data/signs/');

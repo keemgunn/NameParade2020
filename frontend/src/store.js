@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
+import randomstring from 'randomstring';
+
 // const resourceHost = 'http://localhost:3000'
 
 const colorHarmonies = [
@@ -10,24 +12,23 @@ const colorHarmonies = [
   [0, 0, 180, 180, 180],
   [-20, +20, +180, +180, 0]
 ]
-
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min; 
 } //최댓값은 제외, 최솟값은 포함
 
+let userId = randomstring.generate({
+  length: 10,
+  charset: 'alphanumeric'
+});
+
 const test = {
   client: {
-    loading: true,
-    MODAL: true,
+    // loading: true,
+    // MODAL: true,
       modal:0,
     
-
-  },
-  server: {
-    userId: true,
-    signFiles: true,
 
   },
   foo: 'bar',
@@ -62,7 +63,8 @@ export default new Vuex.Store({
       scale: 0,
       paths:[],
       info: {
-        name: null,
+        userId: userId,
+        name: userId,
         ip: null,
         uag: null,
         inTime: null,
@@ -201,7 +203,9 @@ export default new Vuex.Store({
       if(state.writer.paths.length){
         state.writer.info.writeTime = Date.now();
         const {data} = await axios.post('/push/paths', {writer: state.writer});
-        console.log(data);
+        if(data.status === 200){
+          state.modal = 2;
+        }
       }else{
         console.log('draw signs first!');
       }
@@ -259,7 +263,6 @@ export default new Vuex.Store({
   actions: { //==============================
     async INITIATE({commit, state}){
       console.log("==== INITIATING REQUEST ====");
-      let userId = 'writer';
       const {data} = await axios.post('/init/enter', {userId});
       state.writer.info.inTime = Date.now();
       commit('PUT_INITDATA', {ip: data.ip, uag: data.uag});
