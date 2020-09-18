@@ -34,7 +34,7 @@ export default {
   data() { return {
     scope: null,
     okToWrite: false,
-    simplifyVal: 5,
+    simplifyVal: 1.2,
     relocationInfo: {
       small: { x:0.1, y:0.5, w:0.8, h:0.2 },
       narrow: { x:0.1, y:0.5, w:0.8, h:0.2 },
@@ -49,7 +49,7 @@ export default {
     // _____ RENDERING _____
     PATHS: [],
     renderProgress: {path:0, seg:0},
-    renderSpeed: 9,
+    renderSpeed: 18,
     RENDERED: [],
     renPath: [],
 
@@ -156,6 +156,7 @@ export default {
       }
       else{
         this.renPath.add(segPoint);
+        this.renPath.smooth('continuous');
         this.renderProgress.seg += 1;
         setTimeout(this.stroke, this.renderSpeed, {
           pathIndex: this.renderProgress.path, 
@@ -216,6 +217,7 @@ export default {
           event.point.y + this.Y
         )
         visible.add(locatedPoint);
+        visible.smooth('continuous');
         var pointCore = {x: event.point.x, y: event.point.y};
         segPoints.push(pointCore);
       }
