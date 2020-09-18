@@ -41,8 +41,8 @@ export default {
     ...mapGetters(['byType','FILES_IN_SERVER', 'LOADING_PROGRESS'])
   },
   methods: {
-    ...mapMutations(['setBBC', 'START_SIGNLOAD', 'pushToSIGNS', 'UPDATE_SIGNS']),
-    ...mapActions(['INITIATE']),
+    ...mapMutations(['setBBC', 'pushToSIGNS', 'UPDATE_SIGNS']),
+    ...mapActions(['INITIATE', 'startSignLoad']),
     onResize() {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
@@ -57,10 +57,10 @@ export default {
     },
     FILES_IN_SERVER(nu, old){
       if(this.loading.processing === 0){
-        console.log('--- initiating SIGNLOAD process ---');
+        console.log('--- start loading signs ---');
         console.log('filesInServer:', nu);
         this.loading.processing = 1;
-        this.START_SIGNLOAD();
+        this.startSignLoad();
       }else if(this.loading.processing === 1){
         console.log('loading is already processsing');
       }else{ // === 2
@@ -68,13 +68,6 @@ export default {
         console.log('from:', old, ' / to:', nu);
       }
     },
-    loadedArr(nu, old){
-      if(nu){
-        this.pushToSIGNS();
-      }else{
-        console.log('load-Signs done:', old);
-      }
-    }
   },
   created() {
     this.onResize();

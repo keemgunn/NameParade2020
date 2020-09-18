@@ -51,7 +51,6 @@ export default new Vuex.Store({
     loadedArr: [],
     loading: {
       processing: 0, // 1:loading, 2:done
-      loadSpeed: 30, // (ms)
         fakeOffset: 0,
         faker: 200 + 200,
       filesInServer: 0
@@ -96,9 +95,11 @@ export default new Vuex.Store({
       let result;
       if(state.loading.processing < 2){
         result = (state.SIGNS.length + state.loading.fakeOffset) / (state.loading.filesInServer + state.loading.faker);
-          if(state.test.client.loading){ result = (100)/100 }
+          if(state.test.client.loading){ 
+            result = ( 100 )/100 
+          }
       }else{
-        result = (100)/100
+        result = ( 100 )/100
       }return result
     },
 
@@ -147,7 +148,7 @@ export default new Vuex.Store({
     //__________________________ INITIATING METHODS
     async PUT_INITDATA(state, recieved){
       console.log('$$$ request ...$m/PUT_INITDATA');
-      state.loading.fakeOffset += 30;
+        state.loading.fakeOffset += 30;
       state.writer.info.ip = recieved.ip;
       state.writer.info.uag = recieved.uag;
       console.log(state.writer.info);
@@ -156,48 +157,7 @@ export default new Vuex.Store({
         // -- trigger @App/ FILES_IN_SERVER
     },
 
-    //__________________________ SIGN DATA METHODS
-    async START_SIGNLOAD(state){
-      console.log('initiating_SIGNLOAD ...m/START_SIGNLOAD');
-      state.loading.fakeOffset += 40;
-      const {data} = await axios.get('/load/initial');
-      console.log(data);
-      state.loadedArr = data.arg;
-        // -- trigger @App/ loadedArr
-    },
-    
-    pushToSIGNS(state){
-      console.log('request ...$m/pushToSIGNS');
-      if(state.loading.processing < 2){
-        const count = state.SIGNS.length;
-        state.SIGNS.push(state.loadedArr[count]);
-        if(state.SIGNS.length === state.loading.filesInServer){
-          state.loadedArr = [];
-          this.offsetLoadFaker();
-        }else{
-          setTimeout(() => {this.pushToSIGNS}, state.loading.loadSpeed);
-            
-        }
-      }else{
-        for(var i=0; i<state.loadedArr.length; i++){
-          state.SIGNS.push(state.loadedArr[i]);
-        }
-        state.loadedArr = [];
-      }
-    },
-    
-    offsetLoadFaker(state){
-      console.log('request ...$m/offsetLoadFaker');
-      if(state.loading.fakeOffset < state.loading.faker){
-        state.loading.fakeOffset += 1;
-        setTimeout(this.offsetLoadFaker, state.loading.loadSpeed);
-      }
-      else{
-        state.loading.processing = 2;
-        state.modal = 1;
-      }
-    },
-    
+
     async UPDATE_SIGNS(state, amount){
       const {data} = await axios.post('/load/update', {amount});
       state.loadedArr = data;
@@ -272,6 +232,14 @@ export default new Vuex.Store({
       state.writer.info.inTime = Date.now();
       commit('PUT_INITDATA', {ip: data.ip, uag: data.uag});
     },
+
+    async startSignLoad({state}){
+      console.log('initiating_SIGNLOAD ...$a/startSingLoad');
+        state.loading.fakeOffset += 40;
+      const {data} = await axios.get('/load/initial');
+      console.log(data);
+      state.loadedArr = data.arg;
+    }
 
 
 

@@ -58,10 +58,10 @@ export default {
 
   ],
   data() { return {
-
+    loadSpeed: 30 // (ms)
   }},
   computed: {
-    ...mapState(['viewtype']),
+    ...mapState(['viewtype', 'modal', 'loading', 'loadedArr', 'SIGNS']),
     ...mapGetters(['byType', 'LOADING_PROGRESS']),
     loadBar: function() {
       if(this.viewtype !== 'tablet'){ 
@@ -92,7 +92,38 @@ export default {
     }
   },
   methods: {
-    
+    pushToSIGNS(){
+      console.log('pusing to SIGNS...');
+      const count = this.SIGNS.length;
+      this.SIGNS.push(this.loadedArr[count]);
+      if(this.SIGNS.length === this.loading.filesInServer){
+        this.loadedArr = [];
+        this.offsetLoadFaker();
+      }else{
+        setTimeout(this.pushToSIGNS, this.loadSpeed);
+      }
+    },
+    offsetLoadFaker(){
+      console.log('offset load faker...');
+      if(this.loading.fakeOffset < this.loading.faker){
+        this.loading.fakeOffset += 1;
+        setTimeout(this.offsetLoadFaker, this.loadSpeed);
+      }
+      else{
+        this.loading.processing = 2;
+        this.modal = 1;
+      }
+    }
+  },
+  watch: {
+    loadedArr(nu, old){
+      if(nu){
+        console.log('-- loading start --');
+        this.pushToSIGNS();
+      }else{
+        console.log('-- loading done: ', old, 'files');
+      }
+    }
   },
   created() {
 
