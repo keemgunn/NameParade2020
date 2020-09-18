@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     ...mapState(['test', 'winSize', 'loading']),
-    ...mapGetters(['byType','FILES_IN_SERVER', 'FILES_TO_LOAD', 'FILES_LOADED', 'LOADING_PROGRESS'])
+    ...mapGetters(['byType','FILES_IN_SERVER', 'FILES_LOADED', 'LOADING_PROGRESS'])
   },
   methods: {
     ...mapMutations(['START_SIGNLOAD', 'setBBC', 'UPDATE_SIGNS']),
@@ -55,7 +55,7 @@ export default {
         document.querySelector('body').style.overflow = 'auto';
       }
     },
-    FILES_IN_SERVER(nu){ //--trigger
+    FILES_IN_SERVER(nu, old){ //--trigger
       if(this.loading.processing === 0){
         console.log('--- initiating SIGNLOAD process ---');
         console.log('filesInServer:', nu);
@@ -66,7 +66,7 @@ export default {
 
       }else{ // === 2
         console.log('file index update');
-
+        console.log('from:', old, ' / to:', nu);
 
       }
 

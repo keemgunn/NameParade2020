@@ -19,7 +19,7 @@ function getRandomInt(min, max) {
 } //최댓값은 제외, 최솟값은 포함
 
 let userId = randomstring.generate({
-  length: 10,
+  length: 12,
   charset: 'alphanumeric'
 });
 
@@ -146,7 +146,7 @@ export default new Vuex.Store({
 
     //__________________________ INITIATING METHODS
     async PUT_INITDATA(state, recieved){
-      console.log('$$$ request ...$mutation/PUT_INITDATA');
+      console.log('$$$ request ...$m/PUT_INITDATA');
       state.loading.fakeOffset += 30;
       state.writer.info.ip = recieved.ip;
       state.writer.info.uag = recieved.uag;
@@ -157,9 +157,10 @@ export default new Vuex.Store({
 
     //__________________________ SIGN DATA METHODS
     async START_SIGNLOAD(state){
-      console.log('if initial loading ...m:START_SIGNLOAD');
+      console.log('initiating_SIGNLOAD ...m/START_SIGNLOAD');
       state.loading.fakeOffset += 40;
       const {data} = await axios.get('/load/initial');
+      console.log(data);
       state.loadedArr = data;
       setTimeout(this.pushToSIGNS, state.loading.loadSpeed);
     },

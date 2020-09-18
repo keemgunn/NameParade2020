@@ -5,12 +5,14 @@ const router = express.Router();
 const dm = require('../api/dataManager');
 
 router.get('/file-count', (req, res) => {
-  res.json({jsonCount: dm.signsCount});
+  console.log('$request ... /load/file-count');
+  res.json({jsonCount: dm.config.signs});
 })
 
 router.get('/initial', (req, res) => {
-  let signs = dm.getAllSigns();
-  res.json(signs);
+  console.log('$request ... /load/initial');
+
+  dm.getAllSigns(res);
 })
 
 
