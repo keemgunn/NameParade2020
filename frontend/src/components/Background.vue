@@ -32,6 +32,7 @@ export default {
       if(this.LOADING_PROGRESS >= 1){
         if(this.writer.paths.length){
           return {
+            'transition': '800ms',
             'background-color': 'black',
             'opacity': '100%'
           }
@@ -42,6 +43,7 @@ export default {
         }
       }else{
         return {
+          'transition': '50ms',
           'opacity': (this.LOADING_PROGRESS * full) + '%'
         }
       }

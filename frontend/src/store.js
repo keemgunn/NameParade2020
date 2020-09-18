@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-// import axios from 'axios';
+import axios from 'axios';
 // const resourceHost = 'http://localhost:3000'
 
 const colorHarmonies = [
@@ -48,7 +48,9 @@ export default new Vuex.Store({
       pixelRatio: 0,
       paths:[],
       info: {
-        name: null
+        name: null,
+        ip: null,
+        uag: null
       }
     }
 
@@ -63,6 +65,18 @@ export default new Vuex.Store({
       return state.winSize.vh
     },
     
+    FILES_TO_LOAD(state){
+      return state.loading.filesToLoad
+    },
+    LOADING_PROGRESS(state){
+      if(state.test){
+        return (100) / 100
+      }else{
+        return ((state.loading.filesLoaded + state.loading.fakeOffset) / (state.loading.filesToLoad + state.loading.faker))
+      }
+    },
+
+
     BBC(state){
       return state.colorScheme
     },
@@ -95,13 +109,7 @@ export default new Vuex.Store({
       }
     },
     
-    LOADING_PROGRESS(state){
-      if(state.test){
-        return (100) / 100
-      }else{
-        return ((state.loading.filesLoaded + state.loading.fakeOffset) / (state.loading.filesToLoad + state.loading.faker))
-      }
-    }
+
 
 
 
@@ -109,6 +117,15 @@ export default new Vuex.Store({
 
   },
   mutations: { //============================
+
+    async PUT_INITDATA(state, recieved){
+      console.log('$$$ request ...$mutation/PUT_INITDATA');
+      state.writer.info.ip = recieved.ip;
+      state.writer.info.uag = recieved.uag;
+      console.log(state.writer.info);
+      const {data} = await axios.get('/init/request-data-info');
+      state.loading.filesToLoad = data.jsonCount;
+    },
 
     setBBC(state, {comp, hue}){
       let harmonies, stdColor;
@@ -135,15 +152,7 @@ export default new Vuex.Store({
 
 
 
-
-
-
-
     
-
-    INITIATE(){
-
-    },
 
     CHECK_FILES(){
 
@@ -153,6 +162,11 @@ export default new Vuex.Store({
 
     },
   
+    SEND_PATH(){
+
+    }
+
+
 
 
     
@@ -160,7 +174,11 @@ export default new Vuex.Store({
 
   },
   actions: { //==============================
-    
+    async INITIATE({commit}){
+      console.log("==== INITIATING REQUEST ====");
+      const {data} = await axios.post('/init/enter', {userId: 'writer'});
+      commit('PUT_INITDATA', {ip: data.ip, uag: data.uag});
+    },
    
     
 

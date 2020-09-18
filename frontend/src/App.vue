@@ -17,7 +17,7 @@
 </template>
 
 <script> 
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import test from './test'
 import Background from './components/Background';
 import Loader from './components/Loader';
@@ -38,10 +38,11 @@ export default {
   },
   computed: {
     ...mapState(['test', 'testModal', 'winSize', 'loading']),
-    ...mapGetters(['byType', 'LOADING_PROGRESS'])
+    ...mapGetters(['byType','FILES_TO_LOAD', 'LOADING_PROGRESS'])
   },
   methods: {
     ...mapMutations(['setBBC']),
+    ...mapActions(['INITIATE']),
     onResize() {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
@@ -54,10 +55,18 @@ export default {
         document.querySelector('body').style.overflow = 'auto';
       }
     },
+    FILES_TO_LOAD(nu, old){
+      console.log('data from server/init/request-data-info:', nu-old);
+      if(nu){
+        console.log('--- I GOT FILES TO LOAD ---');
+        console.log(nu);
+      }
+    }
   },
   created() {
     this.onResize();
     this.setBBC({comp:-1, hue:-1});
+    this.INITIATE();
   },
   mounted() {
     // document.documentElement.addEventListener('touchstart', this.preventPinch, false);

@@ -4,7 +4,7 @@ const path = require('path');
 
 
 // ---------------- ROUTES
-
+const init = require('./routes/init');
 
 
 
@@ -22,6 +22,7 @@ app.use(express.text({
 
 // ---------------- SERVE
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/init', init);
 
 
 

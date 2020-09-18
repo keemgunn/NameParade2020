@@ -43,10 +43,9 @@ export default {
     },
     canvasLocation: {}, // style object
 
-
     PATHS: [],
     renderProgress: {path:0, seg:0},
-    renderSpeed: 10,
+    renderSpeed: 12,
 
     RENDERED: [],
     renPath: [],
