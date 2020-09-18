@@ -2,11 +2,10 @@ const express = require('express');
 const path = require('path');
 
 
-
 // ---------------- ROUTES
 const init = require('./routes/init');
 const loader = require('./routes/loader');
-
+const pusher = require('./routes/pusher');
 
 
 // ---------------- APP SETTING
@@ -20,11 +19,11 @@ app.use(express.text({
 }));
 
 
-
 // ---------------- SERVE
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/init', init);
 app.use('/load', loader);
+app.use('/push', pusher);
 
 
 // ---------- PORT SETTING

@@ -1,3 +1,4 @@
 {
-  "foo": "bar"
+  "connectionRequests": 0,
+  "signs": 1
 }

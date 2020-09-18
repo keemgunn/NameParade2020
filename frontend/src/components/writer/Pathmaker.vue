@@ -42,6 +42,8 @@ export default {
       wide: { x:0.1, y:0.5, w:0.8, h:0.2 },
     },
     canvasLocation: {}, // style object
+    scopeSize: {width:0, height:0},
+    relocation: {x:0, y:0},
 
     PATHS: [],
     renderProgress: {path:0, seg:0},
@@ -55,24 +57,25 @@ export default {
     ...mapState(['winSize', 'writer']),
     ...mapGetters(['byType', 'VIEWTYPE']),
     X: function(){
-      return this.writer.relocation.x
+      return this.relocation.x
     },
     Y: function(){
-      return this.writer.relocation.y
+      return this.relocation.y
     },
     W: function(){
-      return this.writer.scopeSize.width
+      return this.scopeSize.width
     },
     H: function(){
-      return this.writer.scopeSize.height
+      return this.scopeSize.height
     },
   },
   methods: {
-    relocation(){
-      this.writer.relocation.x = this.getSize('x', 'vw');
-      this.writer.relocation.y = this.getSize('y', 'vh');
-      this.writer.scopeSize.width = this.getSize('w', 'vw');
-      this.writer.scopeSize.height = this.getSize('h', 'vh');
+    RELOCATE(){
+      this.writer.scale = this.getSize('x', 'vw');
+      this.relocation.x = this.getSize('x', 'vw');
+      this.relocation.y = this.getSize('y', 'vh');
+      this.scopeSize.width = this.getSize('w', 'vw');
+      this.scopeSize.height = this.getSize('h', 'vh');
       this.canvasLocation = {
         'left': this._px(this.X),
         'top': this._px(this.Y),
@@ -148,21 +151,21 @@ export default {
         })
       }
     },
+    
 
 
   },
   created() {
     this.scope = new paper.PaperScope();
-    this.relocation();
+    this.RELOCATE();
   },
   mounted() {
     this.$nextTick(() => {
-      window.addEventListener('resize', this.relocation);
+      window.addEventListener('resize', this.RELOCATE);
     });
     this.scope.setup(document.getElementById('maker'));
     this.scope.view._pixelRatio = 1;
-    this.writer.pixelRatio = this.scope.view.pixelRatio;
-    this.relocation();
+    this.RELOCATE();
 
     console.log(this.scope.view);
     console.log(document.getElementById('maker').style);

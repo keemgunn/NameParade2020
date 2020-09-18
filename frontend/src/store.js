@@ -26,7 +26,9 @@ const test = {
 
   },
   server: {
-    userId: 'test'
+    userId: true,
+    signFiles: true,
+
   },
   foo: 'bar',
   modal: true,
@@ -57,14 +59,15 @@ export default new Vuex.Store({
     colorScheme: [],
 
     writer:{
-      scopeSize: {width:0, height:0},
-      relocation: {x:0, y:0},
-      pixelRatio: 0,
+      scale: 0,
       paths:[],
       info: {
         name: null,
         ip: null,
-        uag: null
+        uag: null,
+        inTime: null,
+        writeTime: null,
+        outTime: null
       }
     },
     SIGNS: [],
@@ -139,8 +142,7 @@ export default new Vuex.Store({
   },
   mutations: { //============================
 
-    // ------ INITIAL DATA ------
-
+    //__________________________ INITIATING METHODS
     async PUT_INITDATA(state, recieved){
       console.log('$$$ request ...$mutation/PUT_INITDATA');
       state.loading.fakeOffset += 30;
@@ -151,6 +153,7 @@ export default new Vuex.Store({
       state.loading.filesInServer = data.jsonCount; // -- trigger FILES_IN_SERVER
     },
 
+    //__________________________ SIGN DATA METHODS
     async START_SIGNLOAD(state){
       console.log('if initial loading ...m:START_SIGNLOAD');
       state.loading.fakeOffset += 40;
@@ -158,7 +161,7 @@ export default new Vuex.Store({
       state.loadedArr = data;
       setTimeout(this.pushToSIGNS, state.loading.loadSpeed);
     },
-
+    
     pushToSIGNS(state){
       if(state.loading.processing < 2){
         const count = state.SIGNS.length;
@@ -187,14 +190,26 @@ export default new Vuex.Store({
         state.modal = 1;
       }
     },
-
+    
     async UPDATE_SIGNS(state, amount){
       const {data} = await axios.post('/load/update', {amount});
       state.loadedArr = data;
       this.pushToSIGNS();
     },
 
+    async SEND_PATHS(state){
+      if(state.writer.paths.length){
+        state.writer.info.writeTime = Date.now();
+        const {data} = await axios.post('/push/paths', {writer: state.writer});
+        console.log(data);
+      }else{
+        console.log('draw signs first!');
+      }
+    },
 
+
+
+    //__________________________ UI METHODS
     setBBC(state, {comp, hue}){
       let harmonies, stdColor;
       if(comp<0){
@@ -242,17 +257,16 @@ export default new Vuex.Store({
 
   },
   actions: { //==============================
-    async INITIATE(state, {commit}){
+    async INITIATE({commit, state}){
       console.log("==== INITIATING REQUEST ====");
       let userId = 'writer';
-      if(state.test.server.userId){
-        userId = state.test.server.userId
-      }
       const {data} = await axios.post('/init/enter', {userId});
+      state.writer.info.inTime = Date.now();
       commit('PUT_INITDATA', {ip: data.ip, uag: data.uag});
     },
-   
-    
 
+
+
+    
   }
 })

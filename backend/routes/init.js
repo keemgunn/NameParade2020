@@ -1,15 +1,15 @@
-const path = require('path');
 const express = require('express');
 const router = express.Router();
 const requestIp = require('request-ip');
+const dm = require('../api/dataManager');
 
-let test = false;
 
 router.use(requestIp.mw())
 router.post('/enter', (req, res) => {
   if(req.body.userId === 'writer'){
     console.log('=== CONNECTION FROM WRITER');
-
+    dm.config.connectionRequests += 1;
+    dm.syncConfig();
     const ip = req.clientIp;
     const uag = req['headers']['user-agent'];
     res.json({ip, uag});
@@ -18,14 +18,6 @@ router.post('/enter', (req, res) => {
     console.log('=== CONNECTION FROM MASTER');
 
     res.json({foo:'bar'})
-  }
-  else if(req.body.userId === 'test'){
-    test = true;
-    console.log('=== CONNECTION FROM TEST');
-
-    const ip = req.clientIp;
-    const uag = req['headers']['user-agent'];
-    res.json({ip, uag});
   }
   else{
     console.log('something wrong .../init/enter');

@@ -4,19 +4,12 @@ const router = express.Router();
 
 const dm = require('../api/dataManager');
 
-
 router.get('/file-count', (req, res) => {
-  res.json({jsonCount: 2})
+  res.json({jsonCount: dm.signsCount});
 })
 
 router.get('/initial', (req, res) => {
-  let signs = [ // Array of signArray
-    [ // signArray = Array of Paths
-      {foo1:'bar1', foo2:'bar2'},{foo3:'bar3', foo4:'bar4'}
-    ],[
-      {foo1:'bar1', foo2:'bar2'},{foo3:'bar3', foo4:'bar4'}
-    ]
-  ]
+  let signs = dm.getAllSigns();
   res.json(signs);
 })
 
