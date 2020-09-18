@@ -152,7 +152,8 @@ export default new Vuex.Store({
       state.writer.info.uag = recieved.uag;
       console.log(state.writer.info);
       const {data} = await axios.get('/load/file-count');
-      state.loading.filesInServer = data.jsonCount; // -- trigger FILES_IN_SERVER
+      state.loading.filesInServer = data.jsonCount; 
+        // -- trigger @App/ FILES_IN_SERVER
     },
 
     //__________________________ SIGN DATA METHODS
@@ -161,11 +162,12 @@ export default new Vuex.Store({
       state.loading.fakeOffset += 40;
       const {data} = await axios.get('/load/initial');
       console.log(data);
-      state.loadedArr = data;
-      setTimeout(this.pushToSIGNS, state.loading.loadSpeed);
+      state.loadedArr = data.arg;
+        // -- trigger @App/ loadedArr
     },
     
     pushToSIGNS(state){
+      console.log('request ...$m/pushToSIGNS');
       if(state.loading.processing < 2){
         const count = state.SIGNS.length;
         state.SIGNS.push(state.loadedArr[count]);
@@ -173,7 +175,8 @@ export default new Vuex.Store({
           state.loadedArr = [];
           this.offsetLoadFaker();
         }else{
-          setTimeout(this.pushToSIGNS, state.loading.loadSpeed);
+          setTimeout(() => {this.pushToSIGNS}, state.loading.loadSpeed);
+            
         }
       }else{
         for(var i=0; i<state.loadedArr.length; i++){
@@ -184,6 +187,7 @@ export default new Vuex.Store({
     },
     
     offsetLoadFaker(state){
+      console.log('request ...$m/offsetLoadFaker');
       if(state.loading.fakeOffset < state.loading.faker){
         state.loading.fakeOffset += 1;
         setTimeout(this.offsetLoadFaker, state.loading.loadSpeed);

@@ -37,11 +37,11 @@ export default {
     Pathmaker
   },
   computed: {
-    ...mapState(['test', 'winSize', 'loading']),
-    ...mapGetters(['byType','FILES_IN_SERVER', 'FILES_LOADED', 'LOADING_PROGRESS'])
+    ...mapState(['test', 'winSize', 'loading', 'loadedArr']),
+    ...mapGetters(['byType','FILES_IN_SERVER', 'LOADING_PROGRESS'])
   },
   methods: {
-    ...mapMutations(['START_SIGNLOAD', 'setBBC', 'UPDATE_SIGNS']),
+    ...mapMutations(['setBBC', 'START_SIGNLOAD', 'pushToSIGNS', 'UPDATE_SIGNS']),
     ...mapActions(['INITIATE']),
     onResize() {
       this.winSize.vw = window.innerWidth
@@ -55,7 +55,7 @@ export default {
         document.querySelector('body').style.overflow = 'auto';
       }
     },
-    FILES_IN_SERVER(nu, old){ //--trigger
+    FILES_IN_SERVER(nu, old){
       if(this.loading.processing === 0){
         console.log('--- initiating SIGNLOAD process ---');
         console.log('filesInServer:', nu);
@@ -63,14 +63,17 @@ export default {
         this.START_SIGNLOAD();
       }else if(this.loading.processing === 1){
         console.log('loading is already processsing');
-
       }else{ // === 2
         console.log('file index update');
         console.log('from:', old, ' / to:', nu);
-
       }
-
-
+    },
+    loadedArr(nu, old){
+      if(nu){
+        this.pushToSIGNS();
+      }else{
+        console.log('load-Signs done:', old);
+      }
     }
   },
   created() {

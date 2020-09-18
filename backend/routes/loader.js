@@ -11,7 +11,6 @@ router.get('/file-count', (req, res) => {
 
 router.get('/initial', (req, res) => {
   console.log('$request ... /load/initial');
-
   dm.getAllSigns(res);
 })
 
