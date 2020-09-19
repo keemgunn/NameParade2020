@@ -8,7 +8,7 @@
 
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 const paper = require('paper');
 
 export default {
@@ -25,12 +25,12 @@ export default {
     velocity: 0.4
   }},
   computed: {
-    ...mapState(['winSize', 'writer']),
-    ...mapGetters(['BBC', 'VIEWTYPE', 'LOADING_PROGRESS']),
+    ...mapState(['winSize', 'colorScheme']),
+    ...mapGetters(['VIEWTYPE', 'LOADING_PROGRESS', 'NEW_PATHS']),
     bgLoading: function(){
       let full = 100;
       if(this.LOADING_PROGRESS >= 1){
-        if(this.writer.paths.length){
+        if(this.NEW_PATHS){
           return {
             'transition': '800ms',
             'background-color': 'black',
@@ -63,53 +63,14 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setBBC']),
     onResize() {
       this.scope.view.size.width = window.innerWidth;
       this.scope.view.size.height = window.innerHeight;
       this.scope.view.viewSize.width = window.innerWidth;
       this.scope.view.viewSize.height = window.innerHeight;
     },
-  },
-  created() {
-    this.COLORS = this.BBC;
-    this.scope = new paper.PaperScope();
-    this.$store.state.loading.fakeOffset += 20;
-  },
-  mounted() {
-    this.scope.setup(document.getElementById('BG'));
-    this.$nextTick(() => {
-      window.addEventListener('resize', this.onResize);
-    })
-
-    let circles = [];
-    for(var i=0; i < this.amount; i++){
-      let color = 'hsl('+ this.COLORS[i] + 'deg, 100%, 0%)'
-      let colora = 'hsl('+ this.COLORS[i] + 'deg, 100%, 0%, 0)'
-      var circle = new this.scope.Path.Circle({
-        center: new this.scope.Point(
-          Math.random() * (this.winSize.vw),
-          Math.random() * (this.winSize.vh)
-        ),
-        radius: Math.random() * (this.radius.max - this.radius.min) + this.radius.min,
-        data: {
-          veloX: Math.random() * this.velocity,
-          veloY: Math.random() * this.velocity,
-          sizeVar: Math.random()
-        }
-      });
-      circle.fillColor = {
-        gradient: {
-          stops: [color, colora],
-          radial: true
-        },
-        origin: circle.position,
-        destination: circle.bounds.rightCenter
-      };
-      circle.blendMode = 'saturation'
-      circles[i] = circle;
-    }
-
-    function moveCircles(winSize, scope, circle, COLORS, bbc, i, levels){
+    moveCircles(winSize, circle, COLORS, bbc, i, levels){
       circle.position.x += circle.data.veloX
       circle.position.y += circle.data.veloY
       if((circle.position.x<0)||(circle.position.x>winSize.vw)){
@@ -145,13 +106,63 @@ export default {
         }
       }
     }
+  },
+  watch: {
+    NEW_PATHS(nu, old){ // 0 or something
+      if(nu){
+        this.setBBC({comp:-1, hue:-1});
+      }
+      if(old){
+        console.log(old);
+      }
+    }
+  },
+  created() {
+    this.COLORS = this.colorScheme;
+    this.scope = new paper.PaperScope();
+    this.$store.state.loading.fakeOffset += 20;
+  },
+  mounted() {
+    this.scope.setup(document.getElementById('BG'));
+    this.$nextTick(() => {
+      window.addEventListener('resize', this.onResize);
+    })
+
+    let circles = [];
+    for(var i=0; i < this.amount; i++){
+      let color = 'hsl('+ this.colorScheme[i] + 'deg, 100%, 0%)'
+      let colora = 'hsl('+ this.colorScheme[i] + 'deg, 100%, 0%, 0)'
+      var circle = new this.scope.Path.Circle({
+        center: new this.scope.Point(
+          Math.random() * (this.winSize.vw),
+          Math.random() * (this.winSize.vh)
+        ),
+        radius: Math.random() * (this.radius.max - this.radius.min) + this.radius.min,
+        data: {
+          veloX: Math.random() * this.velocity,
+          veloY: Math.random() * this.velocity,
+          sizeVar: Math.random()
+        }
+      });
+      circle.fillColor = {
+        gradient: {
+          stops: [color, colora],
+          radial: true
+        },
+        origin: circle.position,
+        destination: circle.bounds.rightCenter
+      };
+      circle.blendMode = 'saturation'
+      circles[i] = circle;
+    }
+
 
     this.scope.view.onFrame = () => {
       for(var i=0; i < this.amount; i++){
-        moveCircles(this.winSize, this.scope, circles[i], this.COLORS, this.BBC[i], i, this.levels);
+        this.moveCircles(this.winSize, circles[i], this.COLORS, this.colorScheme[i], i, this.levels);
       }
     }
-    this.$store.state.loading.fakeOffset += 30;
+    this.$store.state.loading.fakeOffset += 20;
   },
 }
 </script>

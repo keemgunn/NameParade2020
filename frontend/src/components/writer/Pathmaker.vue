@@ -7,7 +7,7 @@
   :style="canvasLocation"
   ></canvas>
 
-  <div id="testModal">
+  <div id="testModal" v-if="tModal">
     <button @click="render()">render</button> <br>
     <button>test01</button> <br>
     <button>test02</button> <br>
@@ -32,6 +32,7 @@ export default {
     
   ],
   data() { return {
+    tModal: false,
     scope: null,
     okToWrite: false,
     simplifyVal: 1.2,
@@ -170,9 +171,9 @@ export default {
   },
   created() {
     this.scope = new paper.PaperScope();
-    this.RELOCATE();
   },
   mounted() {
+    this.RELOCATE();
     this.$nextTick(() => {
       window.addEventListener('resize', this.RELOCATE);
     });
@@ -239,13 +240,7 @@ export default {
 
 
 
-  },
-  beforeUpdate() {
-    
-  },
-  beforeCreate() {
-    
-  },
+  }
 }
 </script>
 
@@ -260,7 +255,6 @@ export default {
 }
 
 
-
 #testModal {
   position: fixed;
   padding: 3px;
@@ -273,6 +267,11 @@ export default {
   }button:hover{
     cursor: pointer;
   }
+
+
+  transition-timing-function: cubic-bezier(0,.82,.38,.92);
+
+
 }
 
 

@@ -1,5 +1,5 @@
 <template>
-<div id="loader">
+<div class="loader-wrapper" :style="byMODAL">
 
 <div class="loader" :class="byType">
 
@@ -58,11 +58,11 @@ export default {
 
   ],
   data() { return {
-    loadSpeed: 30 // (ms)
+    loadSpeed: 60 // (ms)
   }},
   computed: {
-    ...mapState(['viewtype', 'modal', 'loading', 'loadedArr', 'SIGNS']),
-    ...mapGetters(['byType', 'LOADING_PROGRESS']),
+    ...mapState(['viewtype', 'loading', 'loadedArr', 'SIGNS']),
+    ...mapGetters(['byType','MODAL', 'LOADING_PROGRESS']),
     loadBar: function() {
       if(this.viewtype !== 'tablet'){ 
         let full = 92 / 2;
@@ -72,7 +72,7 @@ export default {
           }
         }else{
           return {
-            'transition': '800ms',
+            'transition': '300ms',
             'width': (this.LOADING_PROGRESS * full) + '%'
           }
         }
@@ -84,8 +84,59 @@ export default {
           }
         }else{
           return {
-            'transition': '800ms',
+            'transition': '300ms',
             'width': (this.LOADING_PROGRESS * full) + '%'
+          }
+        }
+      }
+    },
+    byMODAL: function(){
+      if(this.MODAL > 0){
+        if(this.viewtype === 'small'){
+          return {
+            'transition': '1000ms',
+            'background-color': '#DD980F80',
+            'height': '12vh'
+          }
+        }else if(this.viewtype === 'narrow'){
+          return {
+            'transition': '1000ms',
+            'height': '12vh',
+            'transition-timing-function': 'cubic-bezier(0,.75,.59,1.03)',
+            'background-color': '#B6106580',
+          }
+        }else if(this.viewtype === 'tablet'){
+          return {
+            'transition': '1000ms',
+            'background-color': '#0bd8ef80',
+          }
+        }else{
+          return {
+            'transition': '1000ms',
+            'background-color': '#13A73780',
+          }
+        }
+      }else{
+        if(this.viewtype === 'small'){
+          return {
+            'transition': '1000ms',
+            'background-color': '#DD980F80',
+          }
+        }else if(this.viewtype === 'narrow'){
+          return {
+            'transition': '1000ms',
+            'background-color': '#B6106580',
+            'height': '100vh'
+          }
+        }else if(this.viewtype === 'tablet'){
+          return {
+            'transition': '1000ms',
+            'background-color': '#0bd8ef80',
+          }
+        }else{
+          return {
+            'transition': '1000ms',
+            'background-color': '#13A73780',
           }
         }
       }
@@ -93,7 +144,6 @@ export default {
   },
   methods: {
     pushToSIGNS(){
-      console.log('pusing to SIGNS...');
       const count = this.SIGNS.length;
       this.SIGNS.push(this.loadedArr[count]);
       if(this.SIGNS.length === this.loading.filesInServer){
@@ -104,15 +154,18 @@ export default {
       }
     },
     offsetLoadFaker(){
-      console.log('offset load faker...');
-      if(this.loading.fakeOffset < this.loading.faker){
+      if(this.loading.fakeOffset < this.loading.faker - 1){
         this.loading.fakeOffset += 1;
         setTimeout(this.offsetLoadFaker, this.loadSpeed);
       }
       else{
-        this.loading.processing = 2;
-        this.modal = 1;
+        setTimeout(this.LOAD_DONE, 400);
       }
+    },
+    LOAD_DONE(){
+      this.loading.processing = 2
+      this.loading.fakeOffset += 1;
+      this.modal = 1;
     }
   },
   watch: {
@@ -143,132 +196,141 @@ export default {
 
 
 <style lang="scss" scoped> 
-.loader{
-  position: fixed; top: 0; left: 0;
-}
-.load-bar{
-  position: absolute; bottom: 0px; left: 2%;
-  height: 3px;
-  background-color: white;
+.loader-wrapper{
+  position: relative; top: 0; left: 0;
+  width: 100vw; height: 100vh;
+
+  .loader{
+    position: absolute; top: 0; left: 0;
+  }
+  .load-bar{
+    position: absolute; bottom: 0px; left: 2%;
+    height: 3px;
+    background-color: white;
+  }
+
+  ._small { // ==============================
+    position: sticky;
+    top: 42%; left: 0%;
+    width: 100%; height: 9.3vw;
+    background-color: rgba(127, 255, 212, 0.5);
+    .title-box{
+      position: absolute; top: 0%; left: 0%;
+      width: 200%; height: 100%;
+    }.title-box_LOADED{
+      left: -100%;
+      transition: 2000ms;
+      transition-timing-function: cubic-bezier(.59,0,.37,1.01);
+      .load-bar_LOADED{
+        transition-delay: 400ms;
+        left: 52%;
+        width: 20%;
+      }
+    }
+    .title{
+      position: absolute;
+      width: 46%; height: fit-content;
+      fill: white;
+    }._A{
+      top: 0%; left: 2%;
+    }._B{
+      top: 0%; left: 52%;
+    }
+  }
+
+  ._narrow { // ==============================
+    position: sticky;
+    top: 42%; left: 0%;
+    width: 100%; height: 9.3vw;
+    background-color: rgba(127, 255, 212, 0.5);
+    .title-box{
+      position: absolute; top: 0%; left: 0%;
+      width: 200%; height: 100%;
+    }.title-box_LOADED{
+      left: -100%;
+      transition: 2000ms;
+      transition-timing-function: cubic-bezier(.59,0,.37,1.01);
+      .load-bar_LOADED{
+        transition-delay: 400ms;
+        left: 52%;
+        width: 20%;
+      }
+    }
+    .title{
+      position: absolute;
+      width: 46%; height: fit-content;
+      fill: white;
+    }._A{
+      top: 0%; left: 2%;
+    }._B{
+      top: 0%; left: 52%;
+    }
+  }
+
+  ._tablet { // ==============================
+    position: absolute;
+    top: 30px; left: 0%;
+    width: 100%; height: 55px;
+    .title-box{
+        position: absolute; top: 0%; right: 3%;
+        width: 540px; height: 116px;
+      ._upper {
+        position: absolute; bottom: 54%; left: 2%;
+      }
+      ._lower {
+        position: absolute; bottom: 2%; left: -200%;
+      }
+    }.title-box_LOADED{
+      ._upper {
+        position: absolute; bottom: 54%; left: 130%;
+      }
+      ._lower {
+        position: absolute; bottom: 2%; left: 2%;
+      }
+      .load-bar_LOADED{
+        transition-delay: 400ms;
+        width: 44%;
+      }
+    }
+    .title{
+      position: absolute;
+      width: 540px; height: fit-content;
+      fill: white;
+    }._A{
+      top: 0%; left: 2%;
+    }._C{
+      top: 53%; left: 2%;
+    }
+  }
+
+  ._wide { // ==============================
+    display: flex;
+    position: fixed; top: 8%; left: 0%;
+    width: 100%; height: 3.8vw;
+    justify-content: center;
+    align-items: center;
+    .title-box{
+      position: relative; top: 0; right: 0;
+      width: 90%; height: 100%;
+    }.title-box_LOADED{
+      .load-bar_LOADED{
+        transition-delay: 400ms;
+        left: 49%;
+        width: 23%;
+      }
+    }
+    .title{
+      position: absolute;
+      width: 46%; height: fit-content;
+      fill: white;
+    }._A{
+      top: 0%; left: 2%;
+    }._B{
+      top: 0%; left: 52%;
+    }
+  }
 }
 
-._small { // ==============================
-  position: fixed;
-  top: 38%; left: 0%;
-  width: 100%; height: 9.3vw;
-  .title-box{
-    position: absolute; top: 0%; left: 0%;
-    width: 200%; height: 100%;
-  }.title-box_LOADED{
-    left: -100%;
-    transition: 2000ms;
-    transition-timing-function: cubic-bezier(.59,0,.37,1.01);
-    .load-bar_LOADED{
-      transition-delay: 400ms;
-      left: 52%;
-      width: 20%;
-    }
-  }
-  .title{
-    position: absolute;
-    width: 46%; height: fit-content;
-    fill: white;
-  }._A{
-    top: 0%; left: 2%;
-  }._B{
-    top: 0%; left: 52%;
-  }
-}
 
-._narrow { // ==============================
-  position: fixed;
-  top: 38%; left: 0%;
-  width: 100%; height: 9.3vw;
-  .title-box{
-    position: absolute; top: 0%; left: 0%;
-    width: 200%; height: 100%;
-  }.title-box_LOADED{
-    left: -100%;
-    transition: 2000ms;
-    transition-timing-function: cubic-bezier(.59,0,.37,1.01);
-    .load-bar_LOADED{
-      transition-delay: 400ms;
-      left: 52%;
-      width: 20%;
-    }
-  }
-  .title{
-    position: absolute;
-    width: 46%; height: fit-content;
-    fill: white;
-  }._A{
-    top: 0%; left: 2%;
-  }._B{
-    top: 0%; left: 52%;
-  }
-}
-
-._tablet { // ==============================
-  position: fixed;
-  top: 30px; left: 0%;
-  width: 100%; height: 55px;
-   .title-box{
-      position: absolute; top: 0%; right: 3%;
-      width: 540px; height: 116px;
-    ._upper {
-      position: absolute; bottom: 54%; left: 2%;
-    }
-    ._lower {
-      position: absolute; bottom: 2%; left: -200%;
-    }
-  }.title-box_LOADED{
-    ._upper {
-      position: absolute; bottom: 54%; left: 130%;
-    }
-    ._lower {
-      position: absolute; bottom: 2%; left: 2%;
-    }
-    .load-bar_LOADED{
-      transition-delay: 400ms;
-      width: 44%;
-    }
-  }
-  .title{
-    position: absolute;
-    width: 540px; height: fit-content;
-    fill: white;
-  }._A{
-    top: 0%; left: 2%;
-  }._C{
-    top: 53%; left: 2%;
-  }
-}
-
-._wide { // ==============================
-  display: flex;
-  position: fixed; top: 8%; left: 0%;
-  width: 100%; height: 3.8vw;
-  justify-content: center;
-  align-items: center;
-   .title-box{
-    position: relative; top: 0; right: 0;
-    width: 80%; height: 100%;
-  }.title-box_LOADED{
-    .load-bar_LOADED{
-      transition-delay: 400ms;
-      left: 49%;
-      width: 23%;
-    }
-  }
-  .title{
-    position: absolute;
-    width: 46%; height: fit-content;
-    fill: white;
-  }._A{
-    top: 0%; left: 2%;
-  }._B{
-    top: 0%; left: 52%;
-  }
-}
 
 </style>

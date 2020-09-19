@@ -1,13 +1,10 @@
 <template>
-  <div class="app" :class="{'ALL-LOADED':(LOADING_PROGRESS >= 1)}">
+  <div class="app">
     <Background/>
     <div id="content">
       <Loader/>
       <TitleSign/>
       
-
-
-
 
       <Pathmaker/>
 
@@ -38,7 +35,7 @@ export default {
   },
   computed: {
     ...mapState(['test', 'winSize', 'loading', 'loadedArr']),
-    ...mapGetters(['byType','FILES_IN_SERVER', 'LOADING_PROGRESS'])
+    ...mapGetters(['byType', 'MODAL', 'FILES_IN_SERVER', 'LOADING_PROGRESS'])
   },
   methods: {
     ...mapMutations(['setBBC', 'pushToSIGNS', 'UPDATE_SIGNS']),
@@ -47,11 +44,37 @@ export default {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
     },
+    follows(MODAL){
+      if(MODAL === 0){
+        return {
+          'transition': '300ms',
+          'overflow': 'hidden'
+        }
+      }else if(MODAL === 1){
+        return {
+          'transition': '300ms',
+          'overflow-x': 'hidden', 
+          'overflow-y': 'auto'
+        }
+      }else if(MODAL === 2){
+        return {
+          'transition': '300ms',
+          'overflow-x': 'hidden', 
+          'overflow-y': 'auto'
+        }
+      }else if(MODAL === 3){
+        return {
+          'transition': '300ms',
+          'overflow-x': 'hidden', 
+          'overflow-y': 'auto'
+        }
+      }
+    }
   },
   watch: {
-    LOADING_PROGRESS(nu, old) {
-      this.loading.justLoaded = nu - old;
-      if(nu >= 1){
+    MODAL(nu, old) {
+      console.log('modal change :', old, nu);
+      if(nu > 1){
         document.querySelector('body').style.overflow = 'auto';
       }
     },
@@ -80,7 +103,7 @@ export default {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    if(this.LOADING_PROGRESS >= 1){
+    if(this.MODAL > 1){
       document.querySelector( 'body' ).style.overflow = 'auto';
     }
   },
@@ -94,7 +117,6 @@ export default {
 <style lang="scss">
   $appHeight: 300vh;
 
-
   body {
     overflow: hidden;
     background-color: black;
@@ -105,14 +127,10 @@ export default {
     position: absolute; top: 0; left: 0;
     margin: 0; padding: 0;
     width: 100vw; height: $appHeight;
-    // overflow: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: aliceblue;
-  }.ALL-LOADED {
-    transition: 300ms;
-    overflow-x: hidden; overflow-y: auto;
   }
 
   #content{

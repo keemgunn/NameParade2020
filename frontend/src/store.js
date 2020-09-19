@@ -25,34 +25,37 @@ let userId = randomstring.generate({
 
 const test = {
   client: {
-    // loading: true,
-    // MODAL: true,
-      modal:0,
+    loading: true, loadingAmount: 100,
+    MODAL: true, modal:1,
+    modalStates: {
+      0: 'loading-init',
+      1: 'loading-done',
+      2: 'writer-des',
+      3: 'writer-pm',
+      4: 'parade-'
+    }
     
 
   },
   foo: 'bar',
-  modal: true,
+  // modal: true,
 }
 
 Vue.use(Vuex)
 export default new Vuex.Store({
   state: { //================================
     test: test,
-    
     winSize: {
       vw: null,
       vh: null,
-    },
-    viewtype: null,
-    modal: 0,
-      // 0:loading, 1:writer, 2:parade, 3:story
+    }, viewtype: null,
+    modal: 'loading-init',
 
     loadedArr: [],
     loading: {
       processing: 0, // 1:loading, 2:done
         fakeOffset: 0,
-        faker: 200 + 200,
+        faker: 100 + 150,
       filesInServer: 0
     },
 
@@ -88,21 +91,22 @@ export default new Vuex.Store({
     FILES_IN_SERVER(state){
       return state.loading.filesInServer
     },
-    FILES_LOADED(state){
-      return state.SIGNS.length
-    },
+
     LOADING_PROGRESS(state){
       let result;
       if(state.loading.processing < 2){
         result = (state.SIGNS.length + state.loading.fakeOffset) / (state.loading.filesInServer + state.loading.faker);
           if(state.test.client.loading){ 
-            result = ( 100 )/100 
+            result = ( state.test.client.loadingAmount )/100 
           }
       }else{
         result = ( 100 )/100
       }return result
     },
 
+    NEW_PATHS(state){
+      return state.writer.paths.length
+    },
 
     BBC(state){
       return state.colorScheme
@@ -228,6 +232,7 @@ export default new Vuex.Store({
   actions: { //==============================
     async INITIATE({commit, state}){
       console.log("==== INITIATING REQUEST ====");
+        state.loading.fakeOffset += 50;
       const {data} = await axios.post('/init/enter', {userId});
       state.writer.info.inTime = Date.now();
       commit('PUT_INITDATA', {ip: data.ip, uag: data.uag});
