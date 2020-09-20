@@ -25,17 +25,19 @@ let userId = randomstring.generate({
 
 const test = {
   client: {
-    loading: true, loadingAmount: 100,
-    MODAL: true, modal:1,
-    modalStates: {
+    // loading: true, 
+    // testSequence: true, 
+
+    loadingAmount: 100,
+
+    sequenceNow: ( 2 ),
+    seqStates: {
       0: 'loading-init',
       1: 'loading-done',
       2: 'writer-des',
       3: 'writer-pm',
       4: 'parade-'
     }
-    
-
   },
   foo: 'bar',
   // modal: true,
@@ -49,11 +51,10 @@ export default new Vuex.Store({
       vw: null,
       vh: null,
     }, viewtype: null,
-    modal: 'loading-init',
+    sequence: 0,
 
     loadedArr: [],
     loading: {
-      processing: 0, // 1:loading, 2:done
         fakeOffset: 0,
         faker: 100 + 150,
       filesInServer: 0
@@ -74,43 +75,11 @@ export default new Vuex.Store({
         outTime: null
       }
     },
-    SIGNS: [],
+    signs: [],
 
 
   },
   getters: { //==============================
-
-    MODAL(state){
-      if(state.test.client.MODAL){
-        return state.test.client.modal
-      }else{
-        return state.modal
-      }
-    },
-
-    FILES_IN_SERVER(state){
-      return state.loading.filesInServer
-    },
-
-    LOADING_PROGRESS(state){
-      let result;
-      if(state.loading.processing < 2){
-        result = (state.SIGNS.length + state.loading.fakeOffset) / (state.loading.filesInServer + state.loading.faker);
-          if(state.test.client.loading){ 
-            result = ( state.test.client.loadingAmount )/100 
-          }
-      }else{
-        result = ( 100 )/100
-      }return result
-    },
-
-    NEW_PATHS(state){
-      return state.writer.paths.length
-    },
-
-    BBC(state){
-      return state.colorScheme
-    },
 
     VIEWTYPE(state){
       if(state.winSize.vw < 550){
@@ -139,6 +108,48 @@ export default new Vuex.Store({
         _wide: (state.viewtype === 'wide'),
       }
     },
+
+    SEQ(state){
+      if(state.test.client.testSequence){
+        return state.test.client.sequenceNow
+      }else{
+        return state.sequence
+      }
+    },
+
+    FILES_IN_SERVER(state){
+      return state.loading.filesInServer
+    },
+
+    LOADING_PROGRESS(state, getters){
+      let result;
+      if(getters.SEQ === 0){
+        result = (state.signs.length + state.loading.fakeOffset) / (state.loading.filesInServer + state.loading.faker);
+        if(result >= 1){
+          result = 1;
+        }
+        if(state.test.client.loading){ 
+          result = (state.test.client.loadingAmount)/100 
+        }
+      }else{
+        result = 1;
+      }
+      return result
+    },
+
+    SIGNS(state){
+      return state.signs
+    },
+
+    NEW_PATHS(state){
+      return state.writer.paths.length
+    },
+
+    BBC(state){
+      return state.colorScheme
+    },
+
+
     
 
 
@@ -149,7 +160,6 @@ export default new Vuex.Store({
   },
   mutations: { //============================
 
-    //__________________________ INITIATING METHODS
     async PUT_INITDATA(state, recieved){
       console.log('$$$ request ...$m/PUT_INITDATA');
         state.loading.fakeOffset += 30;
@@ -161,11 +171,18 @@ export default new Vuex.Store({
         // -- trigger @App/ FILES_IN_SERVER
     },
 
+    moveTo(state, sequence){
+      state.sequence = sequence;
+    },
 
-    async UPDATE_SIGNS(state, amount){
-      const {data} = await axios.post('/load/update', {amount});
-      state.loadedArr = data;
-      this.pushToSIGNS();
+    fakeOff(state, amount){
+      console.log('fakeOff:',amount);
+      state.loading.fakeOffset += amount;
+    },
+
+    pushToSigns(state, arr){
+      console.log('$$$ request ...$m/pushToSigns');
+      state.signs.push(arr);
     },
 
     async SEND_PATHS(state){
@@ -232,17 +249,17 @@ export default new Vuex.Store({
   actions: { //==============================
     async INITIATE({commit, state}){
       console.log("==== INITIATING REQUEST ====");
-        state.loading.fakeOffset += 50;
+      commit('fakeOff', 20);
       const {data} = await axios.post('/init/enter', {userId});
       state.writer.info.inTime = Date.now();
       commit('PUT_INITDATA', {ip: data.ip, uag: data.uag});
     },
 
-    async startSignLoad({state}){
-      console.log('initiating_SIGNLOAD ...$a/startSingLoad');
-        state.loading.fakeOffset += 40;
+    async startSignLoad({commit, state}){
+      console.log('initiating_SIGNLOAD ...$a/startSignLoad');
+      commit('fakeOff', 20);
       const {data} = await axios.get('/load/initial');
-      console.log(data);
+      console.log('initial data recieved: ',data);
       state.loadedArr = data.arg;
     }
 

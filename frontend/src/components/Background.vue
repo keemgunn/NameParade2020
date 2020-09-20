@@ -25,11 +25,18 @@ export default {
     velocity: 0.4
   }},
   computed: {
-    ...mapState(['winSize', 'colorScheme']),
-    ...mapGetters(['VIEWTYPE', 'LOADING_PROGRESS', 'NEW_PATHS']),
+    ...mapState([
+        'winSize',
+        'colorScheme'
+      ]),
+    ...mapGetters([
+        'VIEWTYPE', 
+        'LOADING_PROGRESS', 
+        'NEW_PATHS'
+      ]),
     bgLoading: function(){
       let full = 100;
-      if(this.LOADING_PROGRESS >= 1){
+      if(this.LOADING_PROGRESS === 1){
         if(this.NEW_PATHS){
           return {
             'transition': '800ms',
@@ -38,12 +45,13 @@ export default {
           }
         }else{
           return {
+            'transition': '400ms',
             'opacity': '100%'
           }
         }
       }else{
         return {
-          'transition': '50ms',
+          'transition': '300ms',
           'opacity': (this.LOADING_PROGRESS * full) + '%'
         }
       }
