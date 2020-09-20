@@ -82,7 +82,7 @@ export default {
       if(this.LOADING_PROGRESS < 1){
         let full;
         if(this.VIEWTYPE === 'small'){
-          full = 100 / 2; 
+          full = 98 / 2; 
           return { 
             'transition': '300ms', 
             'width': (this.LOADING_PROGRESS * full) + '%' 
