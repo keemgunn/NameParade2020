@@ -6,7 +6,7 @@
       <TitleSign/>
       
 
-      <Pathmaker/>
+      <Pathmaker v-if="0"/>
 
       <test v-if="test.modal"/>
     </div>
@@ -34,59 +34,43 @@ export default {
     Pathmaker
   },
   computed: {
-    ...mapState(['test', 'winSize', 'loading', 'loadedArr']),
-    ...mapGetters(['byType', 'MODAL', 'FILES_IN_SERVER', 'LOADING_PROGRESS'])
+    ...mapState([
+        'test', 
+        'winSize', 
+      ]),
+    ...mapGetters([
+        'byType', 
+        'SEQ', 
+        'FILES_IN_SERVER',
+      ])
   },
   methods: {
-    ...mapMutations(['setBBC', 'pushToSIGNS', 'UPDATE_SIGNS']),
-    ...mapActions(['INITIATE', 'startSignLoad']),
+    ...mapMutations([
+        'moveTo', 
+        'setBBC', 
+      ]),
+    ...mapActions([
+        'INITIATE', 
+        'startSignLoad'
+      ]),
     onResize() {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
     },
-    follows(MODAL){
-      if(MODAL === 0){
-        return {
-          'transition': '300ms',
-          'overflow': 'hidden'
-        }
-      }else if(MODAL === 1){
-        return {
-          'transition': '300ms',
-          'overflow-x': 'hidden', 
-          'overflow-y': 'auto'
-        }
-      }else if(MODAL === 2){
-        return {
-          'transition': '300ms',
-          'overflow-x': 'hidden', 
-          'overflow-y': 'auto'
-        }
-      }else if(MODAL === 3){
-        return {
-          'transition': '300ms',
-          'overflow-x': 'hidden', 
-          'overflow-y': 'auto'
-        }
-      }
-    }
   },
   watch: {
-    MODAL(nu, old) {
-      console.log('modal change :', old, nu);
+    SEQ(nu, old) {
+      console.log('-- sequence changed :', old,'->',nu);
       if(nu > 1){
         document.querySelector('body').style.overflow = 'auto';
       }
     },
     FILES_IN_SERVER(nu, old){
-      if(this.loading.processing === 0){
+      if(this.SEQ === 0){
         console.log('--- start loading signs ---');
         console.log('filesInServer:', nu);
-        this.loading.processing = 1;
         this.startSignLoad();
-      }else if(this.loading.processing === 1){
-        console.log('loading is already processsing');
-      }else{ // === 2
+      }else{ // > 0
         console.log('file index update');
         console.log('from:', old, ' / to:', nu);
       }
@@ -98,14 +82,14 @@ export default {
     this.INITIATE();
   },
   mounted() {
-    // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
     this.onResize();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    if(this.MODAL > 1){
+    if(this.SEQ > 1){
       document.querySelector( 'body' ).style.overflow = 'auto';
     }
+    // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
   },
   beforeDestroy() { 
     window.removeEventListener('resize', this.onResize); 
