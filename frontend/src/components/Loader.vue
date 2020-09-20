@@ -61,11 +61,14 @@ export default {
   name: "Loader",
   data() { return {
     loadSpeed: 60,
+    fakeAmount: 3,
     pushIndex: 0,
+    nextSeq: 3000,
   }},
   computed: {
     ...mapState([ 
         'loadedArr',
+        'loading'
       ]),
     ...mapGetters([ 
         'VIEWTYPE', 
@@ -97,7 +100,7 @@ export default {
             'width': (this.LOADING_PROGRESS * full) + '%' 
           }
         }else{
-          full = 99 / 2; 
+          full = 100 / 2; 
           return { // this.VIEWTYPE === 'wide'
             'transition': '300ms', 
             'width': (this.LOADING_PROGRESS * full) + '%' 
@@ -110,7 +113,7 @@ export default {
             'transition': '2000ms', 
             'animation': 'load-done 300ms forward',
             'left': '50.5%',
-            'width': '21.4%',
+            'width': '21.7%',
             }
         }else if(this.VIEWTYPE === 'narrow'){
           return { 
@@ -118,7 +121,7 @@ export default {
             'transition': '2000ms', 
             'animation': 'load-done 300ms forward',
             'left': '50.5%',
-            'width': '21.4%',
+            'width': '21.7%',
             }
         }else if(this.VIEWTYPE === 'tablet'){
           return { 
@@ -209,7 +212,6 @@ export default {
       this.push(this.pushIndex);
     },
     push(i){
-      console.log('pushing:', i);
       this.pushToSigns(this.loadedArr[i]);
       if(this.SIGNS.length < this.FILES_IN_SERVER){
         this.pushIndex += 1;
@@ -217,21 +219,24 @@ export default {
       }else{
         console.log('-- signs all pushed --');
         this.loadedArr = [];
-        this.faking();
+        this.faking(0);
       }
     },
-    faking(){
-      this.fakeOff(38);
-      if(this.LOADING_PROGRESS < 1){
-        setTimeout(this.faking, this.loadSpeed*15);
+    faking(i){
+      if(this.loading.fakeOffset < this.loading.faker - this.fakeAmount){
+        this.fakeOff(this.fakeAmount);
+        setTimeout(this.faking, this.loadSpeed, 0);
+      }else if(i === 0){
+        setTimeout(this.faking, 800, 1);
       }
-      else{
+      if(i){
+        this.fakeOff(this.fakeAmount);
         this.closeLoading();
       }
     },
     closeLoading(){ 
       console.log('-- LOAD DONE --');
-      this.moveTo(1);
+      setTimeout(this.moveTo, this.nextSeq, 1);
     }
   },
   watch: {
@@ -264,7 +269,7 @@ export default {
 .loader-wrapper{
   position: relative; top: 0; left: 0;
   width: 100vw; height: 100vh;
-  transition: 2000ms;
+  transition: 800ms;
   // background-color: rgba(230, 12, 55, 0.315);
   .loader{
     position: absolute; bottom: 0px; left: 0;

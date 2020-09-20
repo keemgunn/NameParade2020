@@ -25,12 +25,12 @@ let userId = randomstring.generate({
 
 const test = {
   client: {
-    // loading: true, 
-    // testSequence: true, 
+    loading: true, 
+    testSequence: true, 
 
-    loadingAmount: 100,
+    loadingAmount: 70,
 
-    sequenceNow: ( 2 ),
+    sequenceNow: ( 1 ),
     seqStates: {
       0: 'loading-init',
       1: 'loading-done',
@@ -176,12 +176,10 @@ export default new Vuex.Store({
     },
 
     fakeOff(state, amount){
-      console.log('fakeOff:',amount);
       state.loading.fakeOffset += amount;
     },
 
     pushToSigns(state, arr){
-      console.log('$$$ request ...$m/pushToSigns');
       state.signs.push(arr);
     },
 
