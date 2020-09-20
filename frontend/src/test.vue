@@ -2,7 +2,7 @@
 <div id="test">
 
 
-
+  <h1>TEST</h1>
 
   vw: {{winSize.vw}} <br>
   vh: {{winSize.vh}} <br>
@@ -11,6 +11,9 @@
   justLoaded: {{loading.justLoaded}} <br>
   loading: {{LOADING_PROGRESS * 100}}% <br>
   BBC:<br>{{BBC}}<br>
+  writer.scopeSize:{{writer.scopeSize}}
+  writer.pixelRatio:{{writer.pixelRatio}}
+  writer.relocation:{{writer.relocation}}
   
 
 
@@ -96,6 +99,6 @@ export default {
     font-family: sans-serif;
     font-size: 13px;
     background-color: rgba(0, 0, 0, 0.753);
-    opacity: 0.7;
+    opacity: 0.8;
   }
 </style>

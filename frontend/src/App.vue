@@ -1,27 +1,26 @@
 <template>
-  <div class="app" :class="{'ALL-LOADED':(LOADING_PROGRESS >= 1)}">
+  <div class="app">
     <Background/>
     <div id="content">
       <Loader/>
       <TitleSign/>
       
 
+      <Pathmaker v-if="0"/>
 
-
-
-
-
-      <test v-if="test"/>
+      <test v-if="test.modal"/>
     </div>
   </div>
 </template>
 
 <script> 
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import test from './test'
 import Background from './components/Background';
 import Loader from './components/Loader';
 import TitleSign from './components/TitleSign'
+
+import Pathmaker from './components/writer/Pathmaker'
 
 
 export default {
@@ -30,40 +29,67 @@ export default {
     test,
     Background,
     Loader,
-    TitleSign
+    TitleSign,
+
+    Pathmaker
   },
   computed: {
-    ...mapState(['test', 'winSize', 'loading']),
-    ...mapGetters(['byType', 'LOADING_PROGRESS'])
+    ...mapState([
+        'test', 
+        'winSize', 
+      ]),
+    ...mapGetters([
+        'byType', 
+        'SEQ', 
+        'FILES_IN_SERVER',
+      ])
   },
   methods: {
-    ...mapMutations(['setBBC']),
+    ...mapMutations([
+        'moveTo', 
+        'setBBC', 
+      ]),
+    ...mapActions([
+        'INITIATE', 
+        'startSignLoad'
+      ]),
     onResize() {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
     },
   },
   watch: {
-    LOADING_PROGRESS(new0, old0) {
-      this.loading.justLoaded = new0 - old0;
-      if(new0 >= 1){
+    SEQ(nu, old) {
+      console.log('-- sequence changed :', old,'->',nu);
+      if(nu > 1){
         document.querySelector('body').style.overflow = 'auto';
+      }
+    },
+    FILES_IN_SERVER(nu, old){
+      if(this.SEQ === 0){
+        console.log('--- start loading signs ---');
+        console.log('filesInServer:', nu);
+        this.startSignLoad();
+      }else{ // > 0
+        console.log('file index update');
+        console.log('from:', old, ' / to:', nu);
       }
     },
   },
   created() {
     this.onResize();
     this.setBBC({comp:-1, hue:-1});
+    this.INITIATE();
   },
   mounted() {
-    // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
     this.onResize();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    if(this.LOADING_PROGRESS >= 1){
+    if(this.SEQ > 1){
       document.querySelector( 'body' ).style.overflow = 'auto';
     }
+    // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
   },
   beforeDestroy() { 
     window.removeEventListener('resize', this.onResize); 
@@ -75,7 +101,6 @@ export default {
 <style lang="scss">
   $appHeight: 300vh;
 
-
   body {
     overflow: hidden;
     background-color: black;
@@ -86,14 +111,10 @@ export default {
     position: absolute; top: 0; left: 0;
     margin: 0; padding: 0;
     width: 100vw; height: $appHeight;
-    // overflow: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: aliceblue;
-  }.ALL-LOADED {
-    transition: 300ms;
-    overflow-x: hidden; overflow-y: auto;
   }
 
   #content{
