@@ -76,8 +76,9 @@ function getAllSigns(res) {
     result
   );
 }function readForEachSync(monitor, path, resArr) {
-  let data = fs.readFileSync(path)
-  resArr.push(data);
+  let rawdata = fs.readFileSync(path);
+  let parsed = JSON.parse(rawdata);
+  resArr.push(parsed);
   monitor.emit('read-done');
 }
 
@@ -90,6 +91,7 @@ function getAllSigns(res) {
 function ResponseMonitor(monitor, res) {
   const queryID = randomstring.generate(4);
   monitor.on(queryID, (arg) => {
+    console.log(arg);
     res.json({arg});
     console.log('responsed... queryID: ', queryID);
   });

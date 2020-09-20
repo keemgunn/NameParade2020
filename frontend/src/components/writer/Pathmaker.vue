@@ -7,7 +7,7 @@
   :style="canvasLocation"
   ></canvas>
 
-  <div id="testModal" v-if="tModal">
+  <div id="testModal" v-if="1">
     <button @click="render()">render</button> <br>
     <button>test01</button> <br>
     <button>test02</button> <br>
@@ -32,10 +32,9 @@ export default {
     
   ],
   data() { return {
-    tModal: false,
     scope: null,
     okToWrite: false,
-    simplifyVal: 1.2,
+    simplifyVal: 1.4,
     relocationInfo: {
       small: { x:0.1, y:0.5, w:0.8, h:0.2 },
       narrow: { x:0.1, y:0.5, w:0.8, h:0.2 },

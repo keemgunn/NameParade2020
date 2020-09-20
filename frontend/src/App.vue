@@ -3,10 +3,10 @@
     <Background/>
     <div id="content">
       <Loader/>
-      <TitleSign/>
+      <TitleSign v-if="this.SEQ === 312"/>
       
 
-      <Pathmaker v-if="0"/>
+      <Pathmaker v-if="1"/>
 
       <test v-if="test.modal"/>
     </div>

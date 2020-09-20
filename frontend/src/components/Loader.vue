@@ -369,8 +369,6 @@ export default {
 
   ._wide { // ==============================
     width: 100%; height: 4.6vw;
-    justify-content: center;
-    align-items: center;
     .title-box{
       position: absolute; top: 0; left: 0.5vw;
       width: 99vw; height: 100%;

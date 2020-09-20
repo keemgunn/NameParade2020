@@ -25,10 +25,10 @@ let userId = randomstring.generate({
 
 const test = {
   client: {
-    loading: true, 
-    testSequence: true, 
+    // loading: true, 
+    // testSequence: true, 
 
-    loadingAmount: 70,
+    loadingAmount: 99.9,
 
     sequenceNow: ( 1 ),
     seqStates: {
@@ -258,6 +258,7 @@ export default new Vuex.Store({
       commit('fakeOff', 20);
       const {data} = await axios.get('/load/initial');
       console.log('initial data recieved: ',data);
+      console.log(data.arg);
       state.loadedArr = data.arg;
     }
 
