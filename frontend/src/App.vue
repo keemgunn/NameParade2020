@@ -3,10 +3,11 @@
     <Background/>
     <div id="content">
       <Loader/>
-      <TitleSign v-if="this.SEQ === 312"/>
+      <TitleSign v-if="SEQ < 2"/>
+
       
 
-      <Pathmaker v-if="1"/>
+      <Pathmaker v-if="0"/>
 
       <test v-if="test.modal"/>
     </div>
@@ -99,6 +100,8 @@ export default {
 
 
 <style lang="scss">
+  @import "assets/styles/animations.scss";
+
   $appHeight: 300vh;
 
   body {

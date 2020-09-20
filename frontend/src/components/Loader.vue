@@ -63,7 +63,7 @@ export default {
     loadSpeed: 60,
     fakeAmount: 3,
     pushIndex: 0,
-    nextSeq: 3000,
+    nextSeq: 2500,
   }},
   computed: {
     ...mapState([ 
@@ -111,7 +111,6 @@ export default {
           return { 
             'transition-delay': '400ms',
             'transition': '2000ms', 
-            'animation': 'load-done 300ms forward',
             'left': '50.5%',
             'width': '21.7%',
             }
@@ -119,7 +118,6 @@ export default {
           return { 
             'transition-delay': '400ms',
             'transition': '2000ms', 
-            'animation': 'load-done 300ms forward',
             'left': '50.5%',
             'width': '21.7%',
             }
@@ -127,14 +125,12 @@ export default {
           return { 
             'transition-delay': '400ms',
             'transition': '2000ms', 
-            'animation': 'load-done 300ms forward',
             'width': '44.3%',
             }
         }else{
           return { // this.VIEWTYPE === 'wide'
             'transition-delay': '400ms',
             'transition': '2000ms', 
-            'animation': 'load-done 300ms forward',
             'left': '50.5%',
             'width': '21.5%',
             }
@@ -145,11 +141,11 @@ export default {
       if(this.SEQ === 0){
         if(this.VIEWTYPE === 'small'){
           return {
-            'height': '44vh',
+            'height': '46vh',
           }
         }else if(this.VIEWTYPE === 'narrow'){
           return {
-            'height': '44vh',
+            'height': '46vh',
           }
         }else if(this.VIEWTYPE === 'tablet'){
           return {
@@ -163,11 +159,11 @@ export default {
       }else if(this.SEQ === 1){
         if(this.VIEWTYPE === 'small'){
           return {
-            'height': '40vh',
+            'height': '38vh',
           }
         }else if(this.VIEWTYPE === 'narrow'){
           return {
-            'height': '40vh',
+            'height': '38vh',
           }
         }else if(this.VIEWTYPE === 'tablet'){
           return {
@@ -227,7 +223,7 @@ export default {
         this.fakeOff(this.fakeAmount);
         setTimeout(this.faking, this.loadSpeed, 0);
       }else if(i === 0){
-        setTimeout(this.faking, 800, 1);
+        setTimeout(this.faking, 500, 1);
       }
       if(i){
         this.fakeOff(this.fakeAmount);
@@ -269,7 +265,8 @@ export default {
 .loader-wrapper{
   position: relative; top: 0; left: 0;
   width: 100vw; height: 100vh;
-  transition: 800ms;
+  transition: 600ms;
+  transition-timing-function: cubic-bezier(0,0,.17,1);
   // background-color: rgba(230, 12, 55, 0.315);
   .loader{
     position: absolute; bottom: 0px; left: 0;
@@ -343,11 +340,11 @@ export default {
         position: absolute; bottom: 50.5%; left: 0%;
       }
       ._lower {
-        position: absolute; bottom: 0%; left: -200%;
+        position: absolute; bottom: 2%; left: -200%;
       }
     }.title-box_LOADED{
       ._upper {
-        position: absolute; bottom: 54%; left: 130%;
+        position: absolute; bottom: 50.5%; left: 130%;
       }
       ._lower {
         position: absolute; bottom: 2%; left: 0;
@@ -388,10 +385,6 @@ export default {
   }
 }
 
-@keyframes load-done {
-  from { opacity: 0.5; }
-  to { opacity: 1; }
-}
 
 
 </style>

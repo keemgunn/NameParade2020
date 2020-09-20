@@ -33,7 +33,7 @@
 
   <button @click="setBBC({comp:1, hue:3})">test B</button><br>
 
-  <button @click="progressDone()">test C</button><br>
+  <button @click="renderTrigger(0)">renderTrigger(0)</button><br>
 
   <button>test D</button><br>
 
@@ -68,10 +68,7 @@ export default {
     ...mapGetters(['BBC', 'byType', 'LOADING_PROGRESS']),
   },
   methods: {
-    ...mapMutations(['setBBC']),
-    progressDone(){
-      this.$store.state.loading.filesLoaded += 1;
-    },
+    ...mapMutations(['setBBC', 'renderTrigger']),
   },
   created() {
 

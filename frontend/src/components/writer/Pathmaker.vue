@@ -21,16 +21,13 @@
 
 
 <script>
-const paper = require('paper');
 import { mapState, mapGetters, mapMutations } from 'vuex';
+const paper = require('paper');
 
 
 export default {
   name: "Pathmaker",
   components: { },
-  props: [
-    
-  ],
   data() { return {
     scope: null,
     okToWrite: false,
@@ -73,7 +70,7 @@ export default {
   methods: {
     ...mapMutations(['SEND_PATHS']),
     RELOCATE(){
-      this.writer.scale = this.getSize('x', 'vw');
+      this.writer.scale = this.getSize('w', 'vw');
       this.relocation.x = this.getSize('x', 'vw');
       this.relocation.y = this.getSize('y', 'vh');
       this.scopeSize.width = this.getSize('w', 'vw');
