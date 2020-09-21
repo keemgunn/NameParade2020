@@ -4,9 +4,9 @@
     <div id="content">
       <Loader/>
       <TitleSign v-if="SEQ < 2"/>
+      <Writer v-if="SEQ > 1"/>
 
-      
-
+    
       <Pathmaker v-if="0"/>
 
       <test v-if="test.modal"/>
@@ -20,6 +20,7 @@ import test from './test'
 import Background from './components/Background';
 import Loader from './components/Loader';
 import TitleSign from './components/TitleSign'
+import Writer from './components/Writer'
 
 import Pathmaker from './components/writer/Pathmaker'
 
@@ -31,6 +32,7 @@ export default {
     Background,
     Loader,
     TitleSign,
+    Writer,
 
     Pathmaker
   },
@@ -62,8 +64,10 @@ export default {
   watch: {
     SEQ(nu, old) {
       console.log('-- sequence changed :', old,'->',nu);
-      if(nu > 1){
-        document.querySelector('body').style.overflow = 'auto';
+      console.log('-- SEQ:', this.$store.state.seqName);
+      if(nu > 3){
+        document.querySelector( 'body' ).style['overflow-y'] = 'auto';
+        document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
       }
     },
     FILES_IN_SERVER(nu, old){
@@ -87,8 +91,9 @@ export default {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    if(this.SEQ > 1){
-      document.querySelector( 'body' ).style.overflow = 'auto';
+    if(this.SEQ > 3){
+      document.querySelector( 'body' ).style['overflow-y'] = 'auto';
+      document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
     }
     // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
   },
@@ -101,6 +106,7 @@ export default {
 
 <style lang="scss">
   @import "assets/styles/animations.scss";
+  @import "assets/fonts/CoreGothicD/coregothicd.css";
 
   $appHeight: 300vh;
 

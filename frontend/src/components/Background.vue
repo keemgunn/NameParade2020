@@ -73,10 +73,12 @@ export default {
   methods: {
     ...mapMutations(['setBBC']),
     onResize() {
-      this.scope.view.size.width = window.innerWidth;
-      this.scope.view.size.height = window.innerHeight;
+      // this.scope.view.size.width = window.innerWidth;
+      // this.scope.view.size.height = window.innerHeight;
+        // reference said: view.size is read-only
       this.scope.view.viewSize.width = window.innerWidth;
       this.scope.view.viewSize.height = window.innerHeight;
+        // reference said: view is read-only
     },
     moveCircles(winSize, circle, COLORS, bbc, i, levels){
       circle.position.x += circle.data.veloX

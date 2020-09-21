@@ -5,11 +5,13 @@ import randomstring from 'randomstring';
 
 // const resourceHost = 'http://localhost:3000'
 
+//_____ userID generate
 let userId = randomstring.generate({
   length: 12,
   charset: 'alphanumeric'
 });
 
+//_____ color variations for BBC
 const colorHarmonies = [
   [-30, 30, -40, +40, 0],
   [-35, 35, -45, +45, 0],
@@ -17,30 +19,32 @@ const colorHarmonies = [
   [0, 0, 180, 180, 180],
   [-20, +20, +180, +180, 0]
 ]
+
+//_____ random methods for UIs
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; 
-} //최댓값은 제외, 최솟값은 포함
+  return Math.floor(Math.random() * (max - min)) + min; // 최댓값은 제외, 최솟값은 포함
+} 
 
+//_____ names of sequence state
+const seqStates = {
+  0: 'loading-init',
+  1: 'loading-done',
+  2: 'writer-des',
+  3: 'writer-pm',
+  4: 'parade-'
+};
 
-
+//_____ import test configurations
 import signs_test from './test/signs_test.json';
 const test = {
   client: {
-    // loading: true, 
-    // testSequence: true, 
+    loading: true, 
+    testSequence: true, 
     
     loadingAmount: 99.9,
-    
-    sequenceNow: ( 1 ),
-    seqStates: {
-      0: 'loading-init',
-      1: 'loading-done',
-      2: 'writer-des',
-      3: 'writer-pm',
-      4: 'parade-'
-    },
+    sequenceNow: ( 2 ),
   },
   server: {
     init: true,
@@ -49,8 +53,9 @@ const test = {
 
     foo: 'bar',
   },
-  modal: true,
+  // modal: true,
 }
+
 
 Vue.use(Vuex)
 export default new Vuex.Store({
@@ -61,6 +66,7 @@ export default new Vuex.Store({
       vh: null,
     }, viewtype: null,
     sequence: 0,
+    seqName: null,
 
     loadedArr: [],
     loading: {
@@ -71,8 +77,8 @@ export default new Vuex.Store({
     colorScheme: [],
 
     writer:{
-      scale: 0,
       paths:[],
+      width: 0,
       info: {
         userId: userId,
         name: userId,
@@ -86,7 +92,8 @@ export default new Vuex.Store({
     signs: [],
 
     displayConfig: {
-      x:0, y:0, w:0, h:0
+      
+      x:0, y:0, w:0
     },
     renderSign: {
       target: -1,
@@ -129,6 +136,7 @@ export default new Vuex.Store({
 
     SEQ(state){
       if(state.test.client.testSequence){
+        state.seqName = seqStates[state.test.client.sequenceNow];
         return state.test.client.sequenceNow
       }else{
         return state.sequence

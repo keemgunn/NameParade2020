@@ -1,5 +1,5 @@
 <template>
-<div id="pathmaker">
+<div class="pathmaker">
   <canvas 
   id="maker" 
   class="maker"
@@ -8,11 +8,14 @@
   ></canvas>
 
   <div id="testModal" v-if="1">
-    <button @click="render()">render</button> <br>
+    <button>test00</button> <br>
     <button>test01</button> <br>
     <button>test02</button> <br>
     <button>test03</button> <br>
-    <button @click="SEND()">SEND</button>
+    <button @click="SEND()">SEND</button> <br><br>
+    mouseX: {{mouseX}} <br>
+    mouseY: {{mouseY}} <br>
+
   </div>
 
 </div>
@@ -31,67 +34,64 @@ export default {
   data() { return {
     scope: null,
     okToWrite: false,
-    simplifyVal: 1.4,
-    relocationInfo: {
-      small: { x:0.1, y:0.5, w:0.8, h:0.2 },
-      narrow: { x:0.1, y:0.5, w:0.8, h:0.2 },
-      tablet: { x:0.1, y:0.5, w:0.8, h:0.2 },
-      wide: { x:0.1, y:0.5, w:0.8, h:0.2 },
-    },
+    simplifyVal: 8,
+
+    canvasEl: null,
+    canvasCoords: {},
+
     visiblePath: [],
+    visibleCircle: [],
     canvasLocation: {}, // style object
     scopeSize: {width:0, height:0},
     relocation: {x:0, y:0},
 
-    // _____ RENDERING _____
-    PATHS: [],
-    renderProgress: {path:0, seg:0},
-    renderSpeed: 18,
-    RENDERED: [],
-    renPath: [],
+    // _____ TEST _____
+    mouseX: -1,
+    mouseY: -1,
+
 
   }},
   computed: {
     ...mapState(['winSize', 'writer']),
     ...mapGetters(['byType', 'VIEWTYPE']),
     X: function(){
-      return this.relocation.x
+      return this.canvasCoords.x
     },
     Y: function(){
-      return this.relocation.y
+      return this.canvasCoords.y
     },
     W: function(){
-      return this.scopeSize.width
+      return this.canvasCoords.w
     },
     H: function(){
-      return this.scopeSize.height
+      return this.canvasCoords.h
     },
   },
   methods: {
     ...mapMutations(['SEND_PATHS']),
-    RELOCATE(){
-      this.writer.scale = this.getSize('w', 'vw');
-      this.relocation.x = this.getSize('x', 'vw');
-      this.relocation.y = this.getSize('y', 'vh');
-      this.scopeSize.width = this.getSize('w', 'vw');
-      this.scopeSize.height = this.getSize('h', 'vh');
-      this.canvasLocation = {
-        'left': this._px(this.X),
-        'top': this._px(this.Y),
-        'width': this._px(this.W),
-        'height': this._px(this.H)
+    onResize(){
+      this.canvasCoords = this.getCoords(this.canvasEl);
+      this.writer.width = this.W;
+    },
+    getCoords(elem) { // crossbrowser version
+      var box = elem.getBoundingClientRect();
+      console.log(box);
+      var body = document.body;
+      var docEl = document.documentElement;
+      var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+      var scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
+      var clientTop = docEl.clientTop || body.clientTop || 0;
+      var clientLeft = docEl.clientLeft || body.clientLeft || 0;
+      var top  = box.top +  scrollTop - clientTop;
+      var left = box.left + scrollLeft - clientLeft;
+      return { 
+        x: Math.round(left),
+        y: Math.round(top),
+        w: box.width, 
+        h: box.height
       };
-      if(this.scope.view){
-        this.scope.view.viewSize.width = this.W;
-        this.scope.view.viewSize.height = this.H;
-      }
     },
-    getSize(i, el){
-      return this['relocationInfo'][this.VIEWTYPE][i] * this['winSize'][el]
-    },
-    _px(source){
-      return source + 'px'
-    },
+
 
     SEND(){
       this.SEND_PATHS();
@@ -100,85 +100,30 @@ export default {
       }
       this.writer.paths = [];
     },
-
-
-    render(){
-      if(this.RENDERED.length){ // DELETE WHEN EXISTS
-        for(var i=0; i < this.RENDERED.length; i++){
-          this.RENDERED[i].remove();
-        }
-      }
-      this.PATHS = this.writer.paths;
-      this.stroke({
-        pathIndex: this.renderProgress.path, 
-        segIndex: this.renderProgress.seg
-      });
-    },
-    stroke({pathIndex, segIndex}){
-
-      let segPoint = new this.scope.Point(this.PATHS[pathIndex][segIndex].x, this.PATHS[pathIndex][segIndex].y);
-
-      if(segIndex===0){ 
-        // FIRST SEG ---
-        this.renPath = new this.scope.Path({
-          segments: [ segPoint ], // array
-          strokeColor: 'red',
-          strokeWidth: 7,
-          strokeCap: 'round'
-        });
-        this.renderProgress.seg += 1;
-        setTimeout(this.stroke, this.renderSpeed, {
-          pathIndex: this.renderProgress.path, 
-          segIndex: this.renderProgress.seg
-        });
-      }
-      else if(segIndex === this.PATHS[pathIndex].length-1){ 
-        // LAST SEG ---
-        this.renPath.add(segPoint);
-        this.renPath.simplify(this.simplifyVal);
-        this.RENDERED.push(this.renPath);
-        if(pathIndex === this.PATHS.length-1){
-          // LAST PATH / LAST SEG ---
-          console.log('-- RENDER DONE --');
-          this.renderProgress.path = 0;
-          this.renderProgress.seg = 0;
-        }else{
-          this.renderProgress.path += 1;
-          this.renderProgress.seg = 0;
-          setTimeout(this.stroke, this.renderSpeed*20, {
-            pathIndex: this.renderProgress.path, 
-            segIndex: this.renderProgress.seg
-          })
-        }
-      }
-      else{
-        this.renPath.add(segPoint);
-        this.renPath.smooth('continuous');
-        this.renderProgress.seg += 1;
-        setTimeout(this.stroke, this.renderSpeed, {
-          pathIndex: this.renderProgress.path, 
-          segIndex: this.renderProgress.seg
-        })
-      }
-    },
-    
-
-
   },
   created() {
-    this.scope = new paper.PaperScope();
   },
   mounted() {
-    this.RELOCATE();
+    this.canvasEl = document.getElementById('maker');
+    this.onResize();
+    this.scope = new paper.PaperScope();
     this.$nextTick(() => {
-      window.addEventListener('resize', this.RELOCATE);
+      window.addEventListener('resize', this.onResize);
     });
     this.scope.setup(document.getElementById('maker'));
-    this.scope.view._pixelRatio = 1;
-    this.RELOCATE();
 
-    console.log(this.scope.view);
-    console.log(document.getElementById('maker').style);
+
+    console.log(this.scope);
+
+
+
+
+
+    this.scope.view.onMouseMove = (event) => {
+      this.mouseX = event.point.x;
+      this.mouseY = event.point.y;
+    }
+
 
     var visible;
     var segPoints = [];
@@ -193,6 +138,7 @@ export default {
     this.scope.view.onMouseDown = (event) => {
       this.okToWrite = true;
       segPoints = [];
+      console.log(this.X);
       var locatedPoint = new this.scope.Point(
         event.point.x + this.X, 
         event.point.y + this.Y
@@ -201,11 +147,14 @@ export default {
         segments: [ locatedPoint ], // array
         strokeColor: 'white',
         strokeWidth: 5,
-        strokeCap: 'round'
-      })
-      var pointCore = {x: event.point.x, y: event.point.y}
+        strokeCap: 'round',
+        // fullySelected: true
+      });
+
+      var pointCore = {x: event.point.x, y: event.point.y};
       segPoints.push(pointCore);
     }
+
 
     this.scope.view.onMouseDrag = (event) => {
       if(this.okToWrite){
@@ -215,13 +164,23 @@ export default {
         )
         visible.add(locatedPoint);
         visible.smooth('continuous');
+
+
+
+
+
         var pointCore = {x: event.point.x, y: event.point.y};
         segPoints.push(pointCore);
       }
     }
 
+
+
     this.scope.view.onMouseUp = () => {
       visible.simplify(this.simplifyVal);
+
+      console.log(visible.segments);
+
       this.visiblePath.push(visible);
       visible = [];
       this.writer.paths.push(segPoints);
@@ -234,8 +193,6 @@ export default {
 
 
 
-
-
   }
 }
 </script>
@@ -243,19 +200,25 @@ export default {
 
 
 <style lang="scss" scoped> 
+.pathmaker{
+  position: relative; top: 0; left: 0;
+  width: 100%; height: 100%;
+  // background-color: rgba(255, 0, 0, 0.397);
+}
+
 .maker{
-  z-index: -10;
-  position: fixed;
+  z-index: 0;
+  position: relative; top: 0; left: 0; 
+  width: calc(100% - 4px); height: calc(100% - 4px);
   border: solid 2px white;
-  background-color: rgba(0, 0, 0, 0.527);
 }
 
 
 #testModal {
   position: fixed;
   padding: 3px;
-  left: 140px;
-  top: 30px;
+  left: 2%;
+  bottom: 10%;
   border: solid 2px white;
   opacity: 0.8;
   button {

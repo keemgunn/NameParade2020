@@ -177,6 +177,24 @@ export default {
       }else if(this.SEQ === 2){
         if(this.VIEWTYPE === 'small'){
           return {
+            'height': '22vw',
+          }
+        }else if(this.VIEWTYPE === 'narrow'){
+          return {
+            'height': '22vw',
+          }
+        }else if(this.VIEWTYPE === 'tablet'){
+          return {
+            'height': '20vw',
+          }
+        }else{
+          return { // this.VIEWTYPE === 'wide'
+            'height': '5vw',
+          }
+        }
+      }else if(this.SEQ === 3){
+        if(this.VIEWTYPE === 'small'){
+          return {
             'height': '12vw',
           }
         }else if(this.VIEWTYPE === 'narrow'){
@@ -227,6 +245,7 @@ export default {
       }
       if(i){
         this.fakeOff(this.fakeAmount);
+        // LOADING DONE ANIMATION
         this.closeLoading();
       }
     },
@@ -327,7 +346,7 @@ export default {
       top: 0%; left: 50.5%;
     }
     .load-bar{
-      bottom: 0; left: 0.5%;
+      bottom: 0; left: 0.5%; 
     }
   }
 

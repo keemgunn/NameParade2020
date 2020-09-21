@@ -9,17 +9,24 @@ const configPath = path.join(__dirname, '../data/config.json');
 let config = readSync(configPath);
 function syncConfig() {
   update(configPath, config);
+  console.log(config);
   console.log(' -- config synced');
 }
 
 const signsPath = path.join(__dirname, '../data/signs/');
+let signsCount = fileCounter(signsPath);
+config.signs = signsCount;
+syncConfig();
+
+
 function fileCounter(path) {
-  fs.readdirSync(path, (err, files) => {
+  let result = fs.readdirSync(path, (err, files) => {
     if(err){
       return console.log('something wrong ...@dataManager/fileCounter');
     }
     return files.length
   });
+  return result;
 }
 function readSync(file){
   let rawdata = fs.readFileSync(file);
