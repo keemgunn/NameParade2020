@@ -10,8 +10,8 @@
   <div id="testModal" v-if="1">
     <button>test00</button> <br>
     <button>test01</button> <br>
-    <button>test02</button> <br>
-    <button>test03</button> <br>
+    <button @click="stop()">stop()</button> <br>
+    <button @click="RR()">RR()</button> <br>
     <button @click="SEND()">SEND</button> <br><br>
     mouseX: {{mouseX}} <br>
     mouseY: {{mouseY}} <br>
@@ -32,12 +32,15 @@ export default {
   name: "Pathmaker",
   components: { },
   data() { return {
-    scope: null,
+    pm_scope: null,
     okToWrite: false,
     simplifyVal: 8,
 
     canvasEl: null,
     canvasCoords: {},
+
+    visible: null,
+    actual: null,
 
     visiblePath: [],
     visibleCircle: [],
@@ -52,7 +55,7 @@ export default {
 
   }},
   computed: {
-    ...mapState(['winSize', 'writer']),
+    ...mapState(['winSize', 'writer', 'renderSign']),
     ...mapGetters(['byType', 'VIEWTYPE']),
     X: function(){
       return this.canvasCoords.x
@@ -93,6 +96,24 @@ export default {
     },
 
 
+    RR(){
+      this.renderSign.scale = 1;
+      this.renderSign.arr = this.writer.paths;
+    },
+    stop(){
+      this.renderSign.arr = [];
+    },
+
+
+
+
+
+
+
+
+
+
+
     SEND(){
       this.SEND_PATHS();
       for(var i=0; i < this.visiblePath.length; i++){
@@ -106,88 +127,92 @@ export default {
   mounted() {
     this.canvasEl = document.getElementById('maker');
     this.onResize();
-    this.scope = new paper.PaperScope();
+    this.pm_scope = new paper.PaperScope();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     });
-    this.scope.setup(document.getElementById('maker'));
+    this.pm_scope.setup(document.getElementById('maker'));
 
 
-    console.log(this.scope);
+    console.log(this.pm_scope);
 
 
 
 
 
-    this.scope.view.onMouseMove = (event) => {
+    this.pm_scope.view.onMouseMove = (event) => {
       this.mouseX = event.point.x;
       this.mouseY = event.point.y;
-    }
+    };
 
-
-    var visible;
-    var segPoints = [];
-
-    this.scope.view.onMouseEnter = () => {
+    this.pm_scope.view.onMouseEnter = () => {
       this.okToWrite = true;
-    }
-    this.scope.view.onMouseLeave = () => {
+    };
+    this.pm_scope.view.onMouseLeave = () => {
       this.okToWrite = false;
-    }
+    };
 
-    this.scope.view.onMouseDown = (event) => {
+    this.pm_scope.view.onMouseDown = (event) => {
       this.okToWrite = true;
-      segPoints = [];
-      console.log(this.X);
-      var locatedPoint = new this.scope.Point(
+      var locatedPoint = new this.pm_scope.Point(
         event.point.x + this.X, 
         event.point.y + this.Y
-      )
-      visible = new this.scope.Path({
+      );
+      var justPoint = new this.pm_scope.Point(
+        event.point.x,
+        event.point.y
+      );
+      this.visible = new this.pm_scope.Path({
         segments: [ locatedPoint ], // array
         strokeColor: 'white',
         strokeWidth: 5,
-        strokeCap: 'round',
-        // fullySelected: true
+        strokeCap: 'round'
       });
-
-      var pointCore = {x: event.point.x, y: event.point.y};
-      segPoints.push(pointCore);
+      this.actual = new this.pm_scope.Path({
+        segments: [ justPoint ]
+      });
     }
 
 
-    this.scope.view.onMouseDrag = (event) => {
+    this.pm_scope.view.onMouseDrag = (event) => {
       if(this.okToWrite){
-        var locatedPoint = new this.scope.Point(
+        var locatedPoint = new this.pm_scope.Point(
           event.point.x + this.X, 
           event.point.y + this.Y
-        )
-        visible.add(locatedPoint);
-        visible.smooth('continuous');
-
-
-
-
-
-        var pointCore = {x: event.point.x, y: event.point.y};
-        segPoints.push(pointCore);
+        );
+        var justPoint = new this.pm_scope.Point(
+          event.point.x,
+          event.point.y
+        );
+        this.visible.add(locatedPoint);
+        this.visible.smooth('continuous');
+        this.actual.add(justPoint);
+        this.actual.smooth('continuous');
       }
     }
 
 
 
-    this.scope.view.onMouseUp = () => {
-      visible.simplify(this.simplifyVal);
+    this.pm_scope.view.onMouseUp = () => {
+      this.visible.simplify(this.simplifyVal);
+        this.visible.fullySelected = true;
+      this.actual.simplify(this.simplifyVal);
+      this.visiblePath.push(this.visible);
+      this.writer.paths.push(this.actual);
 
-      console.log(visible.segments);
+      
+      console.log(this.visible);
+      this.visible = null;
+      this.actual = null;
 
-      this.visiblePath.push(visible);
-      visible = [];
-      this.writer.paths.push(segPoints);
-      segPoints = [];
+
+
+
+      // this.writer.paths.push(segPoints);
+      // segPoints = [];
         // it saves segPoints without SIMPLIFICATION
         // SO ITS SEGMENTS ARE MUCH MORE THAN VISIBLEPATH's
-    }
+    };
 
 
 

@@ -42,6 +42,7 @@ const test = {
   client: {
     loading: true, 
     testSequence: true, 
+    renderWhenPathsAreReady: true,
     
     loadingAmount: 99.9,
     sequenceNow: ( 2 ),
@@ -92,7 +93,7 @@ export default new Vuex.Store({
     signs: [],
 
     displayConfig: {
-      
+
       x:0, y:0, w:0
     },
     renderSign: {
@@ -168,10 +169,18 @@ export default new Vuex.Store({
     },
 
     RENDER_Q(state){
-      if(state.renderSign.target === -1){
-        return false
+      if(state.test.client.renderWhenPathsAreReady){
+        if(state.renderSign.arr.length){
+          return true
+        }else{
+          return false
+        }
       }else{
-        return true
+        if(state.renderSign.target === -1){
+          return false
+        }else{
+          return true
+        }
       }
     },
 

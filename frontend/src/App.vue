@@ -3,7 +3,7 @@
     <Background/>
     <div id="content">
       <Loader/>
-      <TitleSign v-if="SEQ < 2"/>
+      <TitleSign v-if="1"/>
       <Writer v-if="SEQ > 1"/>
 
     
