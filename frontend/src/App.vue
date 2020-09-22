@@ -1,11 +1,11 @@
 <template>
   <div class="app">
     <Background/>
-    <div id="content">
+      <div id="content">
       <Loader/>
-      <TitleSign v-if="SEQ < 2"/>
+        <TitleSign v-if="SEQ < 2"/>
       <Writer v-if="SEQ > 1"/>
-
+가나다라마바사
     
       <Pathmaker v-if="0"/>
 
@@ -19,8 +19,8 @@ import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import test from './test'
 import Background from './components/Background';
 import Loader from './components/Loader';
-import TitleSign from './components/TitleSign'
-import Writer from './components/Writer'
+import TitleSign from './components/TitleSign';
+import Writer from './components/Writer';
 
 import Pathmaker from './components/writer/Pathmaker'
 
