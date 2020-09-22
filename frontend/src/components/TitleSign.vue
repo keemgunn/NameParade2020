@@ -114,8 +114,9 @@ export default {
           * this.mySign.scale + this.Y - 100)
       );
       if(segIndex===0){ 
+        console.log(this.effectProp[pathIndex]);
         // FIRST SEG ---------
-        this.newEffect(this.scope, segPoint, segIndex);
+        this.effect.push(this.newEffect(this.scope, segPoint, pathIndex));
         this.renPath = new this.scope.Path({
           segments: [ segPoint ], // array
           strokeColor: this.strokeStyle.color,
@@ -150,13 +151,18 @@ export default {
       }
     },
     newEffect(scope, point, i){
-      this.effectProp[i].center = point;
+      this.effectProp[i].center = [point.x, point.y];
+      console.log(this.effectProp[i]);
       let eff = new scope.Path.Circle(this.effectProp[i]);
-      this.effect.push(eff);
-      console.log(this.effect);
+      console.log(eff);
+      return eff
     }
     // 같은 펑션 안에서 똑같은 메서드를 통한 똑같은 도형이 다시 만들어질 수가 없네
     // 설정한 정보들을 하나도 못 받아내고 있어
+    // -- 해답: 같은 펑션, 같은 메서드를 이용해서 오브젝트를 만들 수는 있다.
+    // 하지만 전달받는 속성 인자들에 동일한 오브젝트를 사용하면
+    // 두 번째 부터는 몇 가지 인자들이 유실된다. 
+    // 처음 랜더링 하고 전달받은 속성 인자를 없애나 그러는 것 같음.
 
 
 
@@ -197,6 +203,8 @@ export default {
     // ___________ PAPER TEST METHOD ______________
     const pm = require('../test/paperMethods');
     pm.boundCheck(this.scope);
+
+
   },
   beforeUpdate() {
     
