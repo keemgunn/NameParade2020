@@ -14,6 +14,10 @@ router.get('/initial', (req, res) => {
   dm.getAllSigns(res);
 })
 
+router.post('/mysign', (req, res) => {
+  console.log('$request ... /load/sendMySign');
+  dm.writeSync(req.body.signPackage, dm.SignPath(999));
+})
 
 
 

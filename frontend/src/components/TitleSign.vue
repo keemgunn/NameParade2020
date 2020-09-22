@@ -28,6 +28,7 @@
 import { mapState, mapGetters, mapMutations } from 'vuex';
 const paper = require('paper');
 
+const axios = require('axios');
 
 
 
@@ -44,6 +45,8 @@ export default {
     renderSpeed: 18,
     RENDERED: [],
     renPath: [],
+
+    signPackage : []
   }},
   computed: {
     ...mapState(['winSize', 'displayConfig', 'renderSign']),
@@ -147,7 +150,11 @@ export default {
 
 
 
-
+    async sendMySign(){
+      console.log('sendMySign');
+      let {data} = axios.post('/load/mysign', {signPackage:this.signPackage});
+      console.log(data);
+    }
 
   },
   watch: {
@@ -191,19 +198,28 @@ export default {
     console.log(gunn);
 
 
-    let signWidth = this.scope.view.bounds.width
+    let signWidth = this.scope.view.bounds.width;
+    let signHeight = gunn.bounds.bottom - keem.bounds.top;
     console.log(signWidth);
+    console.log(signHeight);
 
     let marginTop = keem.bounds.top;
     console.log(marginTop);
-    
-    console.log(keem.bounds.left);
 
+    let keemSegments = [];
+    for(var i=0; i < keem.segments.length; i++){
+      keemSegments.push({x:keem.segments[i].point.x,y:keem.segments[i].point.y});
+    }
+    let gunnSegments = [];
+    for(var j=0; j < gunn.segments.length; j++){
+      gunnSegments.push({x:gunn.segments[j].point.x,y:gunn.segments[j].point.y});
+    }
+    this.signPackage.push(keemSegments);
+    this.signPackage.push(gunnSegments);
 
-
-    // this.scope.view.onMouseMove = (event) => {
-    //   console.log(event.point.x, event.point.y);
-    // }
+    this.scope.view.onMouseDown = () => {
+      this.sendMySign();
+    }
 
   },
   beforeUpdate() {
