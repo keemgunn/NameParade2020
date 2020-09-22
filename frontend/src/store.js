@@ -44,7 +44,7 @@ const test = {
     testSequence: true, 
     
     loadingAmount: 99.9,
-    sequenceNow: ( 2 ),
+    sequenceNow: ( 1 ),
   },
   server: {
     init: true,

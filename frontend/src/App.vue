@@ -4,8 +4,10 @@
       <div id="content">
       <Loader/>
         <TitleSign v-if="SEQ < 2"/>
-      <Writer v-if="SEQ > 1"/>
-가나다라마바사
+      <!-- <Writer v-if="SEQ > 1"/> -->
+      <Writer v-if="0"/>
+      
+
     
       <Pathmaker v-if="0"/>
 
