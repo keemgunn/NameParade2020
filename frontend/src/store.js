@@ -92,7 +92,6 @@ export default new Vuex.Store({
     signs: [],
 
     displayConfig: {
-      
       x:0, y:0, w:0
     },
     renderSign: {
