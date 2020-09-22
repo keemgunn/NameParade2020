@@ -78,163 +78,106 @@ export default {
       return source + 'px'
     },
 
-    rendasfder(){
-      this.stroke({
-        pathIndex: this.renderProgress.path, 
-        segIndex: this.renderProgress.seg
-      });
-    },
-    stroke({pathIndex, segIndex}){
-      let segPoint = new this.scope.Point(
-        this.renderSign.arr[pathIndex][segIndex].x 
-          * this.renderSign.scale
-        ,this.renderSign.arr[pathIndex][segIndex].y 
-          * this.renderSign.scale
-      );
-      if(segIndex===0){ 
-        // FIRST SEG ---
-        this.renPath = new this.scope.Path({
-          segments: [ segPoint ], // array
-          strokeColor: 'red',
-          strokeWidth: 7,
-          strokeCap: 'round'
-        });
-        this.renderProgress.seg += 1;
-        setTimeout(this.stroke, this.renderSpeed, {
-          pathIndex: this.renderProgress.path, 
-          segIndex: this.renderProgress.seg
-        });
-      }
-      else if(segIndex === this.renderSign.arr[pathIndex].length-1){ 
-        // LAST SEG ---
-        this.renPath.add(segPoint);
-        this.renPath.simplify(this.simplifyVal);
-        this.RENDERED.push(this.renPath);
-        if(pathIndex === this.renderSign.arr.length-1){
-          // LAST PATH / LAST SEG ---
-          console.log('-- RENDER DONE --');
-          this.renderProgress.path = 0;
-          this.renderProgress.seg = 0;
-        }else{
-          this.renderProgress.path += 1;
-          this.renderProgress.seg = 0;
-          setTimeout(this.stroke, this.renderSpeed*20, {
-            pathIndex: this.renderProgress.path, 
-            segIndex: this.renderProgress.seg
-          })
-        }
-      }
-      else{
-        this.renPath.add(segPoint);
-        this.renPath.smooth('continuous');
-        this.renderProgress.seg += 1;
-        setTimeout(this.stroke, this.renderSpeed, {
-          pathIndex: this.renderProgress.path, 
-          segIndex: this.renderProgress.seg
-        })
-      }
-    },
 
-    render(pathNow, segNow){
+    render(scope, goRen, renderSign, pathLength, segLength, pathNow, segNow, single, circle, expandCounter, expandLimit, intersection, renPath){
       console.log('=== render ===');
-      console.log('renderSign', this.renderSign);
+      console.log('renderSign', renderSign);
 
-      if(this.expandCounter === 0){
-        if(this.single === null){
-          if(segNow === this.segLength-1){
-            if(pathNow === this.pathLength-1){
+      if(expandCounter === 0){
+        if(single === null){
+          if(segNow === segLength-1){
+            if(pathNow === pathLength-1){
               pathNow = 0;
               segNow = 0;
-              this.goRen = false;
+              goRen = false;
             }else{
               pathNow += 1;
-              segNow = this.renderSign.arr[pathNow].length
+              segNow = renderSign.arr[pathNow].length
               segNow = 0;
             }
           }else{
             console.log(pathNow);
             console.log(segNow);
-            let segA = this.renderSign.arr[pathNow]['segments'][segNow];
-            let segB = this.renderSign.arr[pathNow]['segments'][segNow + 1];
-            this.startNewSingle(segA, segB);
-            this.startPath(segA.point);
-            this.getIntersection(this.single, this.circle);
-            this.addSeg(this.intersection);
-            this.expandCounter += 1;
+            let segA = renderSign.arr[pathNow]['segments'][segNow];
+            let segB = renderSign.arr[pathNow]['segments'][segNow + 1];
+            console.log(segA);
+            console.log(segB);
+            this.startNewSingle(scope, segA, segB, expandLimit, single, circle);
+            this.startPath(scope, renPath, segA.point);
+            this.getIntersection(single, circle, intersection);
+            this.addSeg(renPath, intersection);
+            expandCounter += 1;
           }
         }
-      }else if(this.expandCounter > this.expandLimit-1){
+      }else if(expandCounter > expandLimit-1){
         segNow += 1;
-        this.closeSingle();
+        this.closeSingle(single, circle, expandCounter, expandLimit);
       }else{
-        this.expandCricle(this.circle);
-        this.getIntersection(this.single, this.circle);
-        this.addSeg(this.intersection);
-        this.expandCounter += 1;
+        this.expandCricle(circle);
+        this.getIntersection(single, circle, intersection);
+        this.addSeg(renPath, intersection);
+        expandCounter += 1;
       }
     },
 
 
-    startNewSingle(segA, segB){
+    startNewSingle(scope, segA, segB, expandLimit, single, circle){
       console.log('-- startNewSingle --');
-      this.setExpandLimit(segA, segB);
-      this.createSingle(segA, segB);
-      this.createCircle(segA);
+      this.setExpandLimit(scope, segA, segB, expandLimit);
+      this.createSingle(scope, segA, segB, single);
+      this.createCircle(scope, segA, circle);
     },
-    setExpandLimit(segA, segB){
-      let path = new this.scope.Point(
+    setExpandLimit(scope, segA, segB, expandLimit){
+      let path = new scope.Point(
         segA.point.x - segB.point.x,
         segA.point.y - segB.point.y
       )
-      this.expandLimit = path.length;
-      console.log('expandLimit',this.expandLimit);
+      expandLimit = path.length;
+      console.log('expandLimit',expandLimit);
     },
-    createSingle(segA, segB){
-      var pointZero = new this.scope.Point( 0, 0 );
-      var handleA = new this.scope.Point(
+    createSingle(scope, segA, segB, single){
+      var pointZero = new scope.Point( 0, 0 );
+      var handleA = new scope.Point(
         segA.handleOut.x,
         segA.handleOut.y,
       );
-      var handleB = new this.scope.Point(
+      var handleB = new scope.Point(
         segB.handleIn.x,
         segB.handleIn.y,
       );
-      var APoint = new this.scope.Point(
+      var APoint = new scope.Point(
         segA.point.x,
         segA.point.y,
       );
-      var BPoint = new this.scope.Point(
+      var BPoint = new scope.Point(
         segB.point.x,
         segB.point.y,
       );
-      var A = new this.scope.Segment(APoint, pointZero, handleA);
-      var B = new this.scope.Segment(BPoint, handleB, pointZero);
-      this.single = new this.scope.Path(A, B);
-      this.single.strokeColor = 'white';
-      this.single.fullySelected = true;
-      console.log('single', this.single);
+      var A = new scope.Segment(APoint, pointZero, handleA);
+      var B = new scope.Segment(BPoint, handleB, pointZero);
+      single = new scope.Path(A, B);
+      single.strokeColor = 'white';
+      single.fullySelected = true;
+      console.log('single', single);
     },
-    createCircle(segA){
+    createCircle(scope, segA, circle){
       console.log(segA.point.x);
       console.log(segA.point.y);
-      var cir = this.Circle(segA.point.x, segA.point.y, 1);
+      var cir = new scope.Path.Circle({
+        center: new scope.Point(segA.point.x, segA.point.y),
+        radius: 1
+      });
       cir.strokeColor = 'white';
       console.log(cir);
-      this.circle = cir;
-      console.log('circle', this.circle);
+      circle = cir;
+      console.log('circle', circle);
     },
-    Circle(x, y, r){
-      var path = new this.scope.Path.Circle({
-        center: new this.scope.Point(x, y),
-        radius: r
-      });
-      return path
-    },
-    closeSingle(){
-      this.single = null;
-      this.circle = null;
-      this.expandCounter = 0;
-      this.expandLimit = 0;
+    closeSingle(single, circle, expandCounter, expandLimit){
+      single = null;
+      circle = null;
+      expandCounter = 0;
+      expandLimit = 0;
+      console.log(single, circle, expandCounter, expandLimit);
     },
 
 
@@ -242,7 +185,7 @@ export default {
       circle.radius += 1;
       console.log('circle.radius', circle.radius);
     },
-    getIntersection(path1, path2) {
+    getIntersection(path1, path2, intersection) {
       // console.log(path1.getIntersections);
       // console.log(path1.getCurves());
       let A = path1;
@@ -250,20 +193,20 @@ export default {
       console.log(A);
       console.log(B);
       let intersections = A.getIntersections(B);
-      this.intersection = intersections[0].point;
-      console.log('intersection', this.intersection);
+      intersection = intersections[0].point;
+      console.log('intersection', intersection);
     },
-    startPath(point){
-      this.renPath = new this.scope.Path({
+    startPath(scope, renPath, point){
+      renPath = new scope.Path({
         segments: [ point ],
         strokeColor: 'red',
         strokeWidth: 7,
         strokeCap: 'round'
       });
     },
-    addSeg(interectionPoint){
-      this.renPath.add(interectionPoint);
-      this.renPath.smooth('continuous');
+    addSeg(renPath, interectionPoint){
+      renPath.add(interectionPoint);
+      renPath.smooth('continuous');
       interectionPoint = null;
     }
 
@@ -302,7 +245,7 @@ export default {
 
     this.scope.view.onFrame = () => {
       if(this.goRen){
-        this.render(this.renderProgress.path, this.renderProgress.seg)
+        this.render(this.scope, this.goRen, this.renderSign, this.pathLength, this.segLength, this.renderProgress.path, this.renderProgress.seg, this.single, this.circle, this.expandCounter, this.expandLimit, this.intersection, this.renPath)
       }else{
         return 1
       }
