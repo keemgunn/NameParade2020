@@ -164,8 +164,6 @@ export default new Vuex.Store({
       state.loading.fakeOffset += amount;
     },
 
-    
-
     async SEND_PATHS(state){
       if(state.writer.paths.length){
         state.writer.info.writeTime = Date.now();

@@ -14,6 +14,7 @@
     </transition>
   </div></div>
 
+
   <div class="my-wrapper">
   <div class="my-name-is" :class="byType">
     <transition name="appear">
@@ -32,10 +33,25 @@
   </div></div>
 
   <transition name="appear">
-  <div class="pathmaker-wrapper"  v-if="elSequence > 4">
-    <Pathmaker :class="byType" />
+  <div class="pathmaker-wrapper" v-if="elSequence > 4">
+    <div class="pm" :class="byType">
+      <Pathmaker/>
+    </div>
   </div>
   </transition>
+
+  <transition name="appear">
+  <div class="btn-wrapper" 
+  v-if="(elSequence === 5) && (pathBtns)">
+    <div class="bw" :class="byType">
+      <div class="btn left"
+        >undo</div>
+      <div class="btn right">done</div>
+    </div>
+  </div>
+  </transition>
+
+
 
 </div></div>
 </template>
@@ -51,14 +67,15 @@ export default {
   name,
   components: { Pathmaker, },
   props: [
-
+    
   ],
   data() { return {
-    elSequence: 0
+    elSequence: 0,
+    pathBtns: false,
   }},
   computed: {
     ...mapState(['aniTiming']),
-    ...mapGetters(['byType', 'SEQ']),
+    ...mapGetters(['byType', 'SEQ', 'NEW_PATHS']),
     AT: function(){
       return this['aniTiming'][name]
     },
@@ -83,6 +100,16 @@ export default {
         }
       }else{
         return { 'height': 0 }
+      }
+    }
+  },
+  watch: {
+    NEW_PATHS(nu, old){
+      if(nu === 0){
+        this.pathBtns = false;
+      }else{
+        this.pathBtns = true;
+        return old
       }
     }
   },
@@ -267,30 +294,124 @@ export default {
 }
 
 .pathmaker-wrapper{
-  position: relative; top: 0; 
+  .pm{
+    position: relative; top: 0;
+    // background-color: rgba(255, 0, 255, 0.363);
+    border: solid 2px white;
+  }
   ._small{
     left: 6vw;
     width: 88vw; 
-    height: calc(88vw * (.55));
+    height: calc(88vw * (.5));
   }
   ._narrow{
     left: 6vw;
     width: 88vw; 
-    height: calc(88vw * (.55));
+    height: calc(88vw * (.5));
   }
   ._tablet{
     left: 8vw;
     width: 84vw; 
-    height: calc(84vw * (.55));
+    height: calc(84vw * (.5));
   }
   ._wide{
     left: 20vw;
     width: 60vw; 
-    height: calc(60vw * (.55));
+    height: calc(60vw * (.5));
   }
 }
 
 
+.btn-wrapper{
+  .bw{
+  position: relative; 
+  // background-color: rgba(240, 248, 255, 0.514);
+    .btn {
+      position: relative; top: 18%;
+      width: 48%; height: 82%;
+      border: 2px solid white;
+      user-select: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      letter-spacing: -0.6%;
+      transition: 600ms;
 
+    }
+    
+
+    .one{
+      left: 26%;
+    }
+    .left{
+      float: left;
+    }
+    .right{
+      float: right;
+    }
+  }
+  ._small { 
+    left: calc(6vw);
+    width: calc(88vw + 4px); 
+    height: calc(88vw * (.16));
+    font-size: 5vw;
+    line-height: 11.5vw;
+    .btn:hover {
+      cursor: pointer;
+      background-color: transparent;
+      transition: 600ms;
+    }
+    .btn:active {
+      transition: 140ms;
+      background-color:rgba(240, 248, 255, 0.42);
+    }
+  }
+  ._narrow { 
+    left: 6vw;
+    width: calc(88vw + 4px); 
+    height: calc(88vw * (.16));
+    font-size: 5vw;
+    line-height: 11.5vw;
+    .btn:hover {
+      cursor: pointer;
+      background-color: transparent;
+      transition: 600ms;
+    }
+    .btn:active {
+      transition: 140ms;
+      background-color:rgba(240, 248, 255, 0.42);
+    }
+  }
+  ._tablet { 
+    left: 18vw;
+    width: calc(64vw + 4px); 
+    height: calc(64vw * (.16));
+    font-size: 4vw;
+    line-height: 8vw;
+    .btn:hover {
+      cursor: pointer;
+      background-color: transparent;
+      transition: 600ms;
+    }
+    .btn:active {
+      transition: 140ms;
+      background-color:rgba(240, 248, 255, 0.42);
+    }
+  }
+  ._wide {
+    left: 32vw;
+    width: calc(36vw + 4px); 
+    height: calc(36vw * (.16));
+    font-size: 2.8vw;
+    line-height: 4.6vw;
+    .btn:hover {
+      cursor: pointer;
+      background-color: rgba(240, 248, 255, 0.3);
+      transition: 140ms;
+    }
+    .btn:active {
+      background-color:rgba(240, 248, 255, 0.42);
+    }
+  }
+}
 
 </style>

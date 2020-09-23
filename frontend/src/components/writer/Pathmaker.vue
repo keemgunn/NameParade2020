@@ -1,18 +1,6 @@
 <template>
 <div class="pathmaker">
-  <canvas 
-  id="maker" 
-  class="maker"
-  :class="byType"
-  :style="canvasLocation"
-  ></canvas>
-
-
-
-  <div class="btn-wrapper" :class="byType">
-
-  </div>
-
+  <canvas id="maker" class="maker"></canvas>
 </div>
 </template>
 
@@ -30,22 +18,10 @@ export default {
     scope: null,
     canvasEl: null,
     canvasCoords: {},
-
     okToWrite: false,
-    simplifyVal: 8,
+    simplifyVal: 5,
     strokeWidth: 0,
-
     visiblePath: [],
-    visibleCircle: [],
-    canvasLocation: {}, // style object
-    scopeSize: {width:0, height:0},
-    relocation: {x:0, y:0},
-
-    // _____ TEST _____
-    mouseX: -1,
-    mouseY: -1,
-
-
   }},
   computed: {
     ...mapState(['winSize', 'writer']),
@@ -78,15 +54,16 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['SEND_PATHS']),
+    ...mapMutations([]),
     onResize(){
       this.canvasCoords = this.getCoords(this.canvasEl);
+      this.scope.view.viewSize.width = this.W;
+      this.scope.view.viewSize.height = this.H;
       this.writer.width = this.W;
       this.strokeWidth = this.W / 85;
     },
     getCoords(elem) { // crossbrowser version
       var box = elem.getBoundingClientRect();
-      console.log(box);
       var body = document.body;
       var docEl = document.documentElement;
       var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
@@ -116,12 +93,12 @@ export default {
   },
   mounted() {
     this.canvasEl = document.getElementById('maker');
-    this.onResize();
     this.scope = new paper.PaperScope();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     });
     this.scope.setup(document.getElementById('maker'));
+    this.onResize();
 
     this.scope.view.onMouseMove = (event) => {
       this.mouseX = event.point.x;
@@ -193,8 +170,8 @@ export default {
 
 
 
-
-
+    // const pm = require('../../test/paperMethods');
+    // pm.boundCheck(this.scope);
   }
 }
 </script>
@@ -205,38 +182,11 @@ export default {
 .pathmaker{
   position: relative; top: 0; left: 0;
   width: 100%; height: 100%;
-  // background-color: rgba(255, 0, 0, 0.397);
+  // background-color: rgba(0, 255, 98, 0.295);
 }
-
-.maker{
+#maker{
   z-index: 0;
   position: relative; top: 0; left: 0; 
-  width: calc(100% - 4px); height: calc(100% - 4px);
-  border: solid 2px white;
+  width: 100%; height: 100%;
 }
-
-.button-wrapper{
-  position: relative;
-  ._small { // ==============================
-    width: 100%; height: 21vw;
-
-  }
-
-  ._narrow { // ==============================
-    width: 100%; height: 21vw;
-
-  }
-
-  ._tablet { // ==============================
-    width: 100%; height: 19vw;
-
-  }
-
-  ._wide { // ==============================
-    width: 100%; height: 4.6vw;
-
-  }
-}
-
-
 </style>
