@@ -1,83 +1,97 @@
 <template>
-  <div class="app" :class="{'ALL-LOADED':(LOADING_PROGRESS >= 1)}">
+  <div class="app">
     <Background/>
     <div id="content">
       <Loader/>
+      <TitleSign v-if="SEQ < 2"/>
+      <Writer v-if="SEQ > 1"/>
+      
 
-
-      <div id="test">
-        vw: {{winSize.vw}} <br>
-        vh: {{winSize.vh}} <br>
-        loadedAmount: {{loadedAmount}}
-        - msg said - <br> {{msg}}
-        <button @click="setBBC({comp:-1, hue:-1})">test A</button><br>
-        <button @click="setBBC({comp:1, hue:3})">test B</button><br>
-        <button @click="progressDone()">test C</button><br>
-        <button>test D</button><br>
-      </div>
-
-
-
-
-
+      <test v-if="test.modal"/>
     </div>
   </div>
 </template>
 
 <script> 
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
+import test from './test/test.vue'
 import Background from './components/Background';
 import Loader from './components/Loader';
+import TitleSign from './components/TitleSign';
+import Writer from './components/Writer';
+
 
 
 export default {
   name: 'App',
   components: {
+    test,
     Background,
-    Loader
-  },
-  data() {
-    return {
-      loadedAmount: '',
-      msg: ''
-    }
+    Loader,
+    TitleSign,
+    Writer,
+
   },
   computed: {
-    ...mapState(['winSize']),
-    ...mapGetters(['byType', 'LOADING_PROGRESS'])
+    ...mapState([
+        'test', 
+        'winSize', 
+      ]),
+    ...mapGetters([
+        'byType', 
+        'SEQ', 
+        'FILES_IN_SERVER',
+      ])
   },
   methods: {
-    ...mapMutations(['setBBC']),
+    ...mapMutations([
+        'moveTo', 
+        'setBBC', 
+      ]),
+    ...mapActions([
+        'INITIATE', 
+        'startSignLoad'
+      ]),
     onResize() {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
     },
-    progressDone(){
-      this.$store.state.loading.filesLoaded += 1;
-    }
   },
   watch: {
-    LOADING_PROGRESS(new0, old0) {
-      this.loadedAmount = new0 - old0;
-      if(new0 >= 1){
-        document.querySelector('body').style.overflow = 'auto';
+    SEQ(nu, old) {
+      console.log('-- sequence changed :', old,'->',nu);
+      console.log('-- SEQ:', this.$store.state.seqName);
+      if(nu > 3){
+        document.querySelector( 'body' ).style['overflow-y'] = 'auto';
+        document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
+      }
+    },
+    FILES_IN_SERVER(nu, old){
+      if(this.SEQ === 0){
+        console.log('--- start loading signs ---');
+        console.log('filesInServer:', nu);
+        this.startSignLoad();
+      }else{ // > 0
+        console.log('file index update');
+        console.log('from:', old, ' / to:', nu);
       }
     },
   },
   created() {
-    this.winSize.vw = window.innerWidth;
-    this.winSize.vh = window.innerHeight;
+    this.onResize();
     this.setBBC({comp:-1, hue:-1});
+    this.INITIATE();
   },
   mounted() {
-    // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
     this.onResize();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    if(this.LOADING_PROGRESS >= 1){
-      document.querySelector( 'body' ).style.overflow = 'auto';
+    if(this.SEQ > 3){
+      document.querySelector( 'body' ).style['overflow-y'] = 'auto';
+      document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
     }
+    // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
   },
   beforeDestroy() { 
     window.removeEventListener('resize', this.onResize); 
@@ -87,8 +101,10 @@ export default {
 
 
 <style lang="scss">
-  $appHeight: 300vh;
+  @import "assets/styles/animations.scss";
+  @import "assets/fonts/CoreGothicD/coregothicd.css";
 
+  $appHeight: 300vh;
 
   body {
     overflow: hidden;
@@ -100,14 +116,10 @@ export default {
     position: absolute; top: 0; left: 0;
     margin: 0; padding: 0;
     width: 100vw; height: $appHeight;
-    // overflow: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: aliceblue;
-  }.ALL-LOADED {
-    transition: 300ms;
-    overflow-x: hidden; overflow-y: auto;
   }
 
   #content{
@@ -117,9 +129,5 @@ export default {
     width: 100%; height: 100%;
   }
 
-  #test {
-  position: absolute; top: 0%; left: 0%;
-  width: 100px; height: fit-content;
-  }
-  
+
 </style>
