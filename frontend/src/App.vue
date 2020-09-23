@@ -1,11 +1,10 @@
 <template>
   <div class="app">
     <Background/>
-      <div id="content">
+    <div id="content">
       <Loader/>
-        <TitleSign v-if="SEQ < 2"/>
-      <!-- <Writer v-if="SEQ > 1"/> -->
-      <Writer v-if="0"/>
+      <TitleSign v-if="SEQ < 2"/>
+      <Writer v-if="SEQ > 1"/>
       
 
     

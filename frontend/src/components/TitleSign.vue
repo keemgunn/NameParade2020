@@ -2,7 +2,7 @@
 <div class="title-sign-wrapper">
   <canvas id="title-sign"></canvas>
 
-  <div id="test">
+  <div id="test" v-if="0">
     <button @click="render()">render go</button>
   </div>
 
@@ -18,9 +18,9 @@
 import { mapState, mapGetters, mapMutations } from 'vuex';
 const paper = require('paper');
 
-
+const name = "TitleSign";
 export default {
-  name: "TitleSign",
+  name,
   components: { },
   data() { return {
     scope: null,
@@ -33,7 +33,6 @@ export default {
       scale:0, arr:[], offsetX:0, offSetY:0
     },
     renderProgress: {path:0, seg:0},
-    renderSpeed: [5, 7],
     renPath: [], RENDERED: [],
     effect: [],
     effectProp: [
@@ -54,8 +53,11 @@ export default {
     },
   }},
   computed: {
-    ...mapState([]),
+    ...mapState(['aniTiming']),
     ...mapGetters(['SEQ']),
+    AT: function(){
+      return this['aniTiming'][name]
+    },
     X: function(){
       return this.canvasCoords.x
     },
@@ -82,7 +84,7 @@ export default {
       this.mySign.offsetX = this.canvasCoords.w * 0.02
       this.mySign.offsetY = -(this.canvasCoords.h * 0.15)
     },
-    getCoords(elem) { // crossbrowser version
+    getCoords(elem) {
       var box = elem.getBoundingClientRect();
       var body = document.body;
       var docEl = document.documentElement;
@@ -99,7 +101,6 @@ export default {
         h: box.height
       };
     },
-  
     render(){
       if(this.mySign.arr.length){
         this.stroke(this.proInfo);
@@ -125,7 +126,7 @@ export default {
           strokeCap: 'round'
         });
         this.renderProgress.seg += 1;
-        setTimeout(this.stroke, this.renderSpeed[pathIndex], this.proInfo);
+        setTimeout(this.stroke, this.AT.renderSpeed[pathIndex], this.proInfo);
       }
       else if(segIndex === this.mySign.arr[pathIndex].length-1){ 
         // LAST SEG ---------
@@ -140,7 +141,7 @@ export default {
         }else{
           this.renderProgress.path += 1;
           this.renderProgress.seg = 0;
-          setTimeout(this.stroke, 100, this.proInfo);
+          setTimeout(this.stroke, this.AT.between, this.proInfo);
         }
       }
       else{
@@ -148,7 +149,7 @@ export default {
         this.renPath.smooth('continuous');
         this.renderProgress.seg += 1;
         this.effect[pathIndex].position = segPoint;
-        setTimeout(this.stroke, this.renderSpeed[pathIndex], this.proInfo);
+        setTimeout(this.stroke, this.AT.renderSpeed[pathIndex], this.proInfo);
       }
     },
     newEffect(scope, point, i){
@@ -158,32 +159,14 @@ export default {
       console.log(eff);
       return eff
     }
-    // 같은 펑션 안에서 똑같은 메서드를 통한 똑같은 도형이 다시 만들어질 수가 없네
-    // 설정한 정보들을 하나도 못 받아내고 있어
-    // -- 해답: 같은 펑션, 같은 메서드를 이용해서 오브젝트를 만들 수는 있다.
-    // 하지만 전달받는 속성 인자들에 동일한 오브젝트를 사용하면
-    // 두 번째 부터는 몇 가지 인자들이 유실된다. 
-    // 처음 랜더링 하고 전달받은 속성 인자를 없애나 그러는 것 같음.
-
-
-
 
 
   },
   watch: {
     SEQ(nu, old){
-      if(nu){
+      if(old === 0 && nu === 1){
         console.log('-- render go --');
-        // this.render();
-      }
-      if(old){
-        console.log('-- render done --');
-        // == refresh method here ==
-        // if(this.RENDERED.length){
-        //   for(var i=0; i < this.RENDERED.length; i++){
-        //     this.RENDERED[i].remove();
-        //   }
-        // }
+        setTimeout(this.render, this.AT.beforeRender);
       }
     }
   },
@@ -197,15 +180,8 @@ export default {
       window.addEventListener('resize', this.onResize);
     });
     this.scope.setup(document.getElementById('title-sign'));
-
     this.mySign.arr = require('../assets/data/mySign.json');
     this.mySign.scale = ( this.W / 1750 );
-
-    // ___________ PAPER TEST METHOD ______________
-    const pm = require('../test/paperMethods');
-    pm.boundCheck(this.scope);
-
-
   },
   beforeUpdate() {
     
@@ -222,7 +198,7 @@ export default {
 .title-sign-wrapper{
   position: relative; 
   width: 100vw; height: 25vw;
-  background-color: rgba(240, 248, 255, 0.164);
+  // background-color: rgba(240, 248, 255, 0.164);
 }
 
 #title-sign{

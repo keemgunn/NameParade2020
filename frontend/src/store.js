@@ -1,81 +1,40 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
-import randomstring from 'randomstring';
-
-// const resourceHost = 'http://localhost:3000'
+const animation = require('./assets/javascripts/animation');
+const ui = require('./assets/javascripts/uiAction');
+const test = require('./test/test');
 
 //_____ userID generate
+import randomstring from 'randomstring';
 let userId = randomstring.generate({
   length: 12,
   charset: 'alphanumeric'
 });
 
-//_____ color variations for BBC
-const colorHarmonies = [
-  [-30, 30, -40, +40, 0],
-  [-35, 35, -45, +45, 0],
-  [-30, 30, -40, +40, 180],
-  [0, 0, 180, 180, 180],
-  [-20, +20, +180, +180, 0]
-]
-
-//_____ random methods for UIs
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min)) + min; // 최댓값은 제외, 최솟값은 포함
-} 
-
-//_____ names of sequence state
-const seqStates = {
-  0: 'loading-init',
-  1: 'loading-done',
-  2: 'writer-des',
-  3: 'writer-pm',
-  4: 'parade-'
-};
-
-//_____ import test configurations
-import signs_test from './test/signs_test.json';
-const test = {
-  client: {
-    loading: true, 
-    testSequence: true, 
-    
-    loadingAmount: 99.9,
-    sequenceNow: ( 1 ),
-  },
-  server: {
-    init: true,
-    signLoad: true,
-    filesInServer: true,
-
-    foo: 'bar',
-  },
-  // modal: true,
-}
-
-
 Vue.use(Vuex)
 export default new Vuex.Store({
-  state: { //================================
-    test: test,
-    winSize: {
-      vw: null,
-      vh: null,
-    }, viewtype: null,
+  state: {
+    //__________________CONFIGS
+    test: test.configs,
+    winSize: { vw: null, vh: null }, 
+    viewtype: null,
     sequence: 0,
     seqName: null,
 
+    //__________________UI
+    desColor: [],
+    aniTiming: animation.timing,
+
+    //__________________LOADER
     loadedArr: [],
     loading: {
-        fakeOffset: 0,
-        faker: 100 + 150,
+      fakeOffset: 0,
+      faker: 100 + 150,
       filesInServer: 0
-    },
-    colorScheme: [],
-
+    }, 
+    
+    //__________________PATHMAKER
     writer:{
       paths:[],
       width: 0,
@@ -89,8 +48,9 @@ export default new Vuex.Store({
         outTime: null
       }
     },
+    
+    //__________________RENDERER
     signs: [],
-
     displayConfig: {
       x:0, y:0, w:0
     },
@@ -100,10 +60,10 @@ export default new Vuex.Store({
       arr: [],
       name: null
     },
-
-
   },
-  getters: { //==============================
+
+
+  getters: { 
 
     VIEWTYPE(state){
       if(state.winSize.vw < 550){
@@ -132,10 +92,8 @@ export default new Vuex.Store({
         _wide: (state.viewtype === 'wide'),
       }
     },
-
     SEQ(state){
       if(state.test.client.testSequence){
-        state.seqName = seqStates[state.test.client.sequenceNow];
         return state.test.client.sequenceNow
       }else{
         return state.sequence
@@ -145,7 +103,6 @@ export default new Vuex.Store({
     FILES_IN_SERVER(state){
       return state.loading.filesInServer
     },
-
     LOADING_PROGRESS(state, getters){
       let result;
       if(getters.SEQ === 0){
@@ -177,23 +134,10 @@ export default new Vuex.Store({
     NEW_PATHS(state){
       return state.writer.paths.length
     },
-
-    BBC(state){
-      return state.colorScheme
-    },
-
-
-    
-
-
-
-
-
-
   },
-  mutations: { //============================
 
-    //__________________________ DATA METHODS
+
+  mutations: {
 
     async PUT_INITDATA(state, recieved){
       console.log('$$$ request ...$m/PUT_INITDATA');
@@ -201,7 +145,7 @@ export default new Vuex.Store({
       state.writer.info.ip = recieved.ip;
       state.writer.info.uag = recieved.uag;
       if(state.test.server.filesInServer){
-        state.loading.filesInServer = signs_test.length; 
+        state.loading.filesInServer = test.signs.length; 
       }else{
         const {data} = await axios.get('/load/file-count');
         state.loading.filesInServer = data.jsonCount; 
@@ -212,13 +156,15 @@ export default new Vuex.Store({
       state.sequence = sequence;
     },
 
+    pushToSigns(state, arr){
+      state.signs.push(arr);
+    },
+    
     fakeOff(state, amount){
       state.loading.fakeOffset += amount;
     },
 
-    pushToSigns(state, arr){
-      state.signs.push(arr);
-    },
+    
 
     async SEND_PATHS(state){
       if(state.writer.paths.length){
@@ -235,25 +181,7 @@ export default new Vuex.Store({
     //__________________________ UI METHODS
 
     setBBC(state, {comp, hue}){
-      let harmonies, stdColor;
-      if(comp<0){
-        harmonies = colorHarmonies[getRandomInt(0, colorHarmonies.length)];
-      }else{
-        harmonies = colorHarmonies[comp]
-      }
-      if(hue<0){
-        stdColor = getRandomInt(0, 361);
-      }else{
-        stdColor = hue
-      }
-      state.colorScheme = [
-        stdColor,
-        stdColor + harmonies[0],
-        stdColor + harmonies[1],
-        stdColor + harmonies[2],
-        stdColor + harmonies[3],
-        stdColor + harmonies[4]
-      ]
+      state.desColor = ui.newBBC({comp, hue});
     },
 
     renderTrigger(state, i){
@@ -262,7 +190,7 @@ export default new Vuex.Store({
       state.renderSign.arr = [];
       state.renderSign.name = null;
       if(i === -1){ // random
-        let tango = getRandomInt(0, state.loading.filesInServer);
+        let tango = ui.randomInt(0, state.loading.filesInServer);
         state.renderSign.scale = state.displayConfig.width / state.signs[tango].scale;
         state.renderSign.arr = state.signs[tango].paths;
         state.renderSign.name = state.signs[tango].name;
@@ -316,7 +244,7 @@ export default new Vuex.Store({
       console.log('initiating_SIGNLOAD ...$a/startSignLoad');
       commit('fakeOff', 20);
       if(state.test.server.signLoad){
-        state.loadedArr = signs_test;
+        state.loadedArr = test.signs;
       }else{
         const {data} = await axios.get('/load/initial');
         console.log('initial data recieved: ',data.length);
@@ -324,8 +252,5 @@ export default new Vuex.Store({
       }
     }
 
-
-
-    
   }
 })

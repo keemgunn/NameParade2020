@@ -42,6 +42,8 @@
     v-if="VIEWTYPE === 'tablet'"
     :style="loadBar"></div>
 
+    <br><br><br><br><br><br><br><br>
+
   </div>
 
 </div>
@@ -57,16 +59,17 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
 
+const name = "Loader";
 export default {
-  name: "Loader",
+  name,
   data() { return {
-    loadSpeed: 60,
+    name: name,
     fakeAmount: 3,
     pushIndex: 0,
-    nextSeq: 2500,
   }},
   computed: {
     ...mapState([ 
+        'aniTiming',
         'loadedArr',
         'loading'
       ]),
@@ -78,59 +81,62 @@ export default {
         'LOADING_PROGRESS', 
         'SIGNS'
       ]),
+      AT: function(){
+        return this['aniTiming'][name]
+      },
     loadBar: function() {
       if(this.LOADING_PROGRESS < 1){
         let full;
         if(this.VIEWTYPE === 'small'){
           full = 98 / 2; 
           return { 
-            'transition': '300ms', 
+            'transition': this.AT.loadingTransition, 
             'width': (this.LOADING_PROGRESS * full) + '%' 
           }
         }else if(this.VIEWTYPE === 'narrow'){
           full = 98 / 2; 
           return { 
-            'transition': '300ms', 
+            'transition': this.AT.loadingTransition, 
             'width': (this.LOADING_PROGRESS * full) + '%' 
           }
         }else if(this.VIEWTYPE === 'tablet'){
           full = 100; 
           return { 
-            'transition': '300ms', 
+            'transition': this.AT.loadingTransition, 
             'width': (this.LOADING_PROGRESS * full) + '%' 
           }
         }else{
           full = 100 / 2; 
           return { // this.VIEWTYPE === 'wide'
-            'transition': '300ms', 
+            'transition': this.AT.loadingTransition, 
             'width': (this.LOADING_PROGRESS * full) + '%' 
           }
         }
       }else{
         if(this.VIEWTYPE === 'small'){
           return { 
-            'transition-delay': '400ms',
-            'transition': '2000ms', 
+            'transition-delay': this.AT.loadedDelay,
+            'transition': this.AT.loadedTransition, 
             'left': '50.5%',
             'width': '21.7%',
             }
         }else if(this.VIEWTYPE === 'narrow'){
           return { 
-            'transition-delay': '400ms',
-            'transition': '2000ms', 
+            'transition-delay': this.AT.loadedDelay,
+            'transition': this.AT.loadedTransition, 
             'left': '50.5%',
             'width': '21.7%',
             }
         }else if(this.VIEWTYPE === 'tablet'){
           return { 
-            'transition-delay': '400ms',
-            'transition': '2000ms', 
+            'transition-delay': this.AT.loadedDelay,
+            'transition': this.AT.loadedTransition, 
             'width': '44.3%',
             }
         }else{
           return { // this.VIEWTYPE === 'wide'
-            'transition-delay': '400ms',
-            'transition': '2000ms', 
+            'transition-delay': this.AT.loadedDelay,
+            'transition': this.AT.loadedTransition, 
             'left': '50.5%',
             'width': '21.5%',
             }
@@ -229,19 +235,19 @@ export default {
       this.pushToSigns(this.loadedArr[i]);
       if(this.SIGNS.length < this.FILES_IN_SERVER){
         this.pushIndex += 1;
-        setTimeout(this.push, this.loadSpeed, this.pushIndex);
+        setTimeout(this.push, this.AT.loadSpeed, this.pushIndex);
       }else{
         console.log('-- signs all pushed --');
-        this.loadedArr = [];
+        this.$store.state.loadedArr = [];
         this.faking(0);
       }
     },
     faking(i){
       if(this.loading.fakeOffset < this.loading.faker - this.fakeAmount){
         this.fakeOff(this.fakeAmount);
-        setTimeout(this.faking, this.loadSpeed, 0);
+        setTimeout(this.faking, this.AT.loadSpeed, 0);
       }else if(i === 0){
-        setTimeout(this.faking, 500, 1);
+        setTimeout(this.faking, this.AT.loadStop, 1);
       }
       if(i){
         this.fakeOff(this.fakeAmount);
@@ -251,7 +257,7 @@ export default {
     },
     closeLoading(){ 
       console.log('-- LOAD DONE --');
-      setTimeout(this.moveTo, this.nextSeq, 1);
+      setTimeout(this.moveTo, this.AT.seq01, 1);
     }
   },
   watch: {
@@ -260,6 +266,8 @@ export default {
         console.log('watch: $loadedArr:', old.length, nu.length);
         console.log('-- initial loading start --');
         this.startLoadingAnimation();
+      }else{
+        console.log('watch: $loadedArr initialized');
       }
     }
   },

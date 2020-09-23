@@ -8,50 +8,55 @@
 
 
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex'
+import { mapState, mapGetters, mapMutations } from 'vuex';
 const paper = require('paper');
+import { random } from '../assets/javascripts/uiAction';
+import { bbc } from '../assets/javascripts/uiAction';
 
+const name = 'Background';
 export default {
-  name: "Background",
+  name,
   data() { return {
     scope: null,
-    COLORS: [],
-    levels:{
-      now: 0, 
-      start: 42, 
-      end: 38,
-    },
+    bbcApear: false,
+    h: [], // [a, b, c, d, e, f]
+    hueVector: [], // -1 , 0, 1
+    l: [0, 0], // [start, end]
+    desLev: {start: 42, end: 38 },
     size: 0.66, amount: 6,
-    velocity: 0.4
   }},
   computed: {
     ...mapState([
+        'aniTiming',
         'winSize',
-        'colorScheme'
+        'desColor'
       ]),
     ...mapGetters([
         'VIEWTYPE', 
         'LOADING_PROGRESS', 
         'NEW_PATHS'
       ]),
+    AT: function(){
+      return this['aniTiming'][name]
+    },
     bgLoading: function(){
       let full = 100;
       if(this.LOADING_PROGRESS === 1){
         if(this.NEW_PATHS){
           return {
-            'transition': '800ms',
+            'transition': this.AT.fadeBlackTransition,
             'background-color': 'black',
             'opacity': '100%'
           }
         }else{
           return {
-            'transition': '400ms',
+            'transition': this.AT.loadedTransition,
             'opacity': '100%'
           }
         }
       }else{
         return {
-          'transition': '300ms',
+          'transition': this.AT.loadingTransition,
           'opacity': (this.LOADING_PROGRESS * full) + '%'
         }
       }
@@ -73,57 +78,85 @@ export default {
   methods: {
     ...mapMutations(['setBBC']),
     onResize() {
-      // this.scope.view.size.width = window.innerWidth;
-      // this.scope.view.size.height = window.innerHeight;
-        // reference said: view.size is read-only
       this.scope.view.viewSize.width = window.innerWidth;
       this.scope.view.viewSize.height = window.innerHeight;
-        // reference said: view is read-only
     },
-    moveCircles(winSize, circle, COLORS, bbc, i, levels){
+    moveCircles(circle, i){
       circle.position.x += circle.data.veloX
       circle.position.y += circle.data.veloY
-      if((circle.position.x<0)||(circle.position.x>winSize.vw)){
+      //__ bounce X
+      if((circle.position.x<0)||(circle.position.x>this.winSize.vw)){
         circle.data.veloX *= -1 ;
       }
-      if((circle.position.y<0)||(circle.position.y>winSize.vh)){
+      //__ bounce Y
+      if((circle.position.y<0)||(circle.position.y>this.winSize.vh)){
         circle.data.veloY *= -1 ;
       }
-      if(COLORS[i] !== bbc){
-        if(bbc > COLORS[i]){
-          COLORS[i] += 0.5;
-        }else{
-          COLORS[i] -= 0.5;
-        }
-        if(levels.now < levels.start){
-          levels.now += 0.1;
-          if(levels.now < levels.end + 0.1){
-            circle.fillColor.gradient.stops = [
-              'hsl('+COLORS[i]+'deg, 100%, '+levels.now+'%)', 
-              'hsl('+COLORS[i]+'deg, 100%, '+levels.now+'%, 0)'
-            ]
+      //__ hue compare
+      if(this.desColor[i] > this.h[i]){
+        if(this.hueVector[i] === 0){
+          if(this.desColor[i] - this.h[i] > 180){
+            this.hueVector[i] = -1;
           }else{
-            circle.fillColor.gradient.stops = [
-              'hsl('+ COLORS[i] + 'deg, 100%, '+levels.now+'%)', 
-              'hsl('+ COLORS[i] + 'deg, 100%, '+levels.end+'%, 0)'
-            ]
+            this.hueVector[i] = 1;
           }
-        }else{
-          circle.fillColor.gradient.stops = [
-          'hsl('+ COLORS[i] + 'deg, 100%, '+levels.start+'%)', 
-          'hsl('+ COLORS[i] + 'deg, 100%, '+levels.end+'%, 0)'
-          ]
         }
+      }else if(this.h[i] > this.desColor[i]){
+        if(this.hueVector[i] === 0){
+          if(this.h[i] - this.desColor[i] > 180){
+            this.hueVector[i] = 1;
+          }else{
+            this.hueVector[i] = -1;
+          }
+        }
+      }else{
+        if(this.hueVector[i] !== 0){
+          this.hueVector[i] = 0;
+        }
+      }
+      //__ hue Change
+      if(this.hueVector[i] !==0){
+        this.h[i] += this.AT.hueVelocity;
+        this.h[i] = bbc.hueModify(this.h[i]);
+      }
+      //__ level Change
+      let lcGo = false;
+      if(this.bbcApear){
+        if(this.l[0] < this.desLev.start){
+          lcGo = true;
+          this.l[0] += this.AT.levelVelocity;
+        }
+        if(this.l[1] < this.desLev.end){
+          lcGo = true;
+          this.l[1] += this.AT.levelVelocity;
+        }
+      }else{
+        if(this.l[0] > 0){
+          lcGo = true;
+          this.l[0] -= this.AT.levelVelocity;
+        }
+        if(this.l[1] > 0){
+          lcGo = true;
+          this.l[1] -= this.AT.levelVelocity;
+        }
+      }
+      //__ Color Render
+      if((this.hueVector[i] !== 0)||(lcGo)){
+        circle.fillColor.gradient.stops = [
+          bbc.HSLA(this.h[i], 100, this.l[0], 1),
+          bbc.HSLA(this.h[i], 100, this.l[1], 0)
+        ];
       }
     }
   },
   watch: {
     NEW_PATHS(nu, old){ // 0 or something
       if(nu){
+        this.bbcApear = true;
         this.setBBC({comp:-1, hue:-1});
-      }
-      if(old){
-        console.log(old);
+      }else{
+        console.log('watcher: nopaths', old);
+        this.bbcApear = false;
       }
     }
   },
@@ -136,27 +169,27 @@ export default {
     this.scope.setup(document.getElementById('BG'));
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
-    })
+    });
 
     let circles = [];
     for(var i=0; i < this.amount; i++){
-      let color = 'hsl('+ this.colorScheme[i] + 'deg, 100%, 0%)'
-      let colora = 'hsl('+ this.colorScheme[i] + 'deg, 100%, 0%, 0)'
+      this.hueVector.push(0);
       var circle = new this.scope.Path.Circle({
         center: new this.scope.Point(
           Math.random() * (this.winSize.vw),
-          Math.random() * (this.winSize.vh)
-        ),
-        radius: Math.random() * (this.radius.max - this.radius.min) + this.radius.min,
+          Math.random() * (this.winSize.vh)),
+        radius: random(this.radius.min, this.radius.max),
         data: {
-          veloX: Math.random() * this.velocity,
-          veloY: Math.random() * this.velocity,
-          sizeVar: Math.random()
+          veloX: random(0,this.AT.circleVelocity),
+          veloY: random(0,this.AT.circleVelocity)
         }
       });
       circle.fillColor = {
         gradient: {
-          stops: [color, colora],
+          stops: [
+            bbc.HSLA(this.desColor[i], 100, this.l[0], 1), 
+            bbc.HSLA(this.desColor[i], 100, this.l[1], 0)
+          ],
           radial: true
         },
         origin: circle.position,
@@ -165,11 +198,9 @@ export default {
       circle.blendMode = 'saturation'
       circles[i] = circle;
     }
-
-
     this.scope.view.onFrame = () => {
       for(var i=0; i < this.amount; i++){
-        this.moveCircles(this.winSize, circles[i], this.COLORS, this.colorScheme[i], i, this.levels);
+        this.moveCircles(circles[i], i);
       }
     }
     this.$store.state.loading.fakeOffset += 20;
