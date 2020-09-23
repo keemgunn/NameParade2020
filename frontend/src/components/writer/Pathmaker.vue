@@ -216,9 +216,26 @@ export default {
 }
 
 .button-wrapper{
-  
+  position: relative;
+  ._small { // ==============================
+    width: 100%; height: 21vw;
 
+  }
 
+  ._narrow { // ==============================
+    width: 100%; height: 21vw;
+
+  }
+
+  ._tablet { // ==============================
+    width: 100%; height: 19vw;
+
+  }
+
+  ._wide { // ==============================
+    width: 100%; height: 4.6vw;
+
+  }
 }
 
 
