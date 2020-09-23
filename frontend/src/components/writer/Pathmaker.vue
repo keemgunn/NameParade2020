@@ -60,7 +60,15 @@ export default {
       this.scope.view.viewSize.width = this.W;
       this.scope.view.viewSize.height = this.H;
       this.writer.width = this.W;
-      this.strokeWidth = this.W / 85;
+      if(this.VIEWTYPE === 'small'){
+        this.strokeWidth = this.W / 66;
+      }else if(this.VIEWTYPE === 'narrow'){
+        this.strokeWidth = this.W / 66;
+      }else if(this.VIEWTYPE === 'tablet'){
+        this.strokeWidth = this.W / 80;
+      }else{
+        this.strokeWidth = this.W / 85;
+      }
     },
     getCoords(elem) { // crossbrowser version
       var box = elem.getBoundingClientRect();
@@ -106,14 +114,12 @@ export default {
     }
 
     var visible, segPoints;
-
     this.scope.view.onMouseEnter = () => {
       this.okToWrite = true;
     }
     this.scope.view.onMouseLeave = () => {
       this.okToWrite = false;
     }
-
     this.scope.view.onMouseDown = (event) => {
       this.okToWrite = true;
       segPoints = [];
@@ -143,11 +149,6 @@ export default {
         )
         visible.add(locatedPoint);
         visible.smooth('continuous');
-
-
-
-
-
         var pointCore = {x: event.point.x, y: event.point.y};
         segPoints.push(pointCore);
       }
@@ -157,8 +158,8 @@ export default {
 
     this.scope.view.onMouseUp = () => {
       visible.simplify(this.simplifyVal);
-
-      console.log(visible.segments);
+      console.log(visible.position);
+      
 
       this.visiblePath.push(visible);
       visible = [];

@@ -362,7 +362,7 @@ export default {
     }
     .btn:active {
       transition: 140ms;
-      background-color:rgba(240, 248, 255, 0.42);
+      background-color:rgba(240, 248, 255, 0.55);
     }
   }
   ._narrow { 
@@ -378,7 +378,7 @@ export default {
     }
     .btn:active {
       transition: 140ms;
-      background-color:rgba(240, 248, 255, 0.42);
+      background-color:rgba(240, 248, 255, 0.55);
     }
   }
   ._tablet { 
@@ -394,7 +394,7 @@ export default {
     }
     .btn:active {
       transition: 140ms;
-      background-color:rgba(240, 248, 255, 0.42);
+      background-color:rgba(240, 248, 255, 0.55);
     }
   }
   ._wide {
@@ -409,7 +409,7 @@ export default {
       transition: 140ms;
     }
     .btn:active {
-      background-color:rgba(240, 248, 255, 0.42);
+      background-color:rgba(240, 248, 255, 0.55);
     }
   }
 }
