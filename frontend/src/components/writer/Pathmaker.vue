@@ -18,14 +18,25 @@ export default {
     scope: null,
     canvasEl: null,
     canvasCoords: {},
-    okToWrite: false,
+    okToWrite: 0, 
     simplifyVal: 5,
     strokeWidth: 0,
     visiblePath: [],
+    noMorePath: 1,
+    topOffset: 0,
   }},
   computed: {
-    ...mapState(['winSize', 'writer', 'writerUndo']),
-    ...mapGetters(['byType', 'VIEWTYPE', 'NEW_PATHS']),
+    ...mapState([
+        'winSize',
+        'writer',
+        'writerUndo',
+        'writerDone'
+      ]),
+    ...mapGetters([
+        'byType', 
+        'VIEWTYPE', 
+        'NEW_PATHS'
+      ]),
     AT: function(){
       return this['aniTiming'][name]
     },
@@ -70,6 +81,29 @@ export default {
       }else{
         return old
       }
+    },
+    writerDone(nu, old){
+      if(nu){
+        console.log('-- writer done');
+        this.topOffset -= this.topOffset * 0.03;
+        this.noMorePath = 0;
+        this.scope.view.onFrame = (event) => {
+          if(event.count > 400){
+            this.scope.onFrame = null;
+          }else if(event.count > 20){
+            let delta = ( this.topOffset - this.getTop(this.canvasEl) ) * 0.1;
+            for(var i=0; i < this.visiblePath.length; i++){
+              this.visiblePath[i].position = 
+              new this.scope.Point(
+                this.visiblePath[i].position.x,
+                this.visiblePath[i].position.y - delta
+              )
+            } this.topOffset -= delta;
+          }
+        }
+      }else{
+        return old
+      }
     }
   },
   methods: {
@@ -106,8 +140,15 @@ export default {
         h: box.height
       };
     },
-
-
+    getTop(elem) {
+      var box = elem.getBoundingClientRect();
+      var body = document.body;
+      var docEl = document.documentElement;
+      var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+      var clientTop = docEl.clientTop || body.clientTop || 0;
+      var top  = box.top +  scrollTop - clientTop;
+      return Math.round(top)
+    },
     SEND(){
       this.SEND_PATHS();
       for(var i=0; i < this.visiblePath.length; i++){
@@ -115,8 +156,6 @@ export default {
       }
       this.writer.paths = [];
     },
-  },
-  created() {
   },
   mounted() {
     this.canvasEl = document.getElementById('maker');
@@ -132,42 +171,41 @@ export default {
       this.mouseY = event.point.y;
     }
 
-
-
-
     var visible, actual;
     this.scope.view.onMouseEnter = () => {
-      this.okToWrite = true;
+      this.okToWrite = 1;
     }
     this.scope.view.onMouseLeave = () => {
-      this.okToWrite = false;
+      this.okToWrite = 0;
     }
     this.scope.view.onMouseDown = (event) => {
-      this.okToWrite = true;
-      var locatedPoint = new this.scope.Point(
-        event.point.x + this.X, 
-        event.point.y + this.Y
-      )
-      var rawPoint = new this.scope.Point(
-        event.point.x + this.X, 
-        event.point.y + this.Y
-      )
-      visible = new this.scope.Path({
-        segments: [ locatedPoint ],
-        strokeColor: 'white',
-        strokeWidth: this.strokeWidth,
-        strokeCap: 'round',
-        strokeJoin: 'round'
-      });
-      actual = new this.scope.Path({
-        segments: [ rawPoint ],
-        strokeWidth: 1,
-        strokeCap: 'round',
-        strokeJoin: 'round'
-      });
+      this.okToWrite = 1;
+      if(this.okToWrite * this.noMorePath){
+        var locatedPoint = new this.scope.Point(
+          event.point.x + this.X, 
+          event.point.y + this.Y
+        )
+        var rawPoint = new this.scope.Point(
+          event.point.x + this.X, 
+          event.point.y + this.Y
+        )
+        visible = new this.scope.Path({
+          segments: [ locatedPoint ],
+          strokeColor: 'white',
+          strokeWidth: this.strokeWidth,
+          strokeCap: 'round',
+          strokeJoin: 'round'
+        });
+        actual = new this.scope.Path({
+          segments: [ rawPoint ],
+          strokeWidth: 1,
+          strokeCap: 'round',
+          strokeJoin: 'round'
+        });
+      }
     }
     this.scope.view.onMouseDrag = (event) => {
-      if(this.okToWrite){
+      if(this.okToWrite*this.noMorePath){
         var locatedPoint = new this.scope.Point(
           event.point.x + this.X, 
           event.point.y + this.Y
@@ -182,18 +220,31 @@ export default {
         actual.smooth('continuous');
       }
     }
-
-
     this.scope.view.onMouseUp = () => {
-      visible.simplify(this.simplifyVal);
-      actual.simplify(this.simplifyVal);
-      
-      this.visiblePath.push(visible);
-      this.writer.paths.push(actual);
-      visible = [];
-      actual = [];
+      if(this.noMorePath === 1){
+        visible.simplify(this.simplifyVal);
+        actual.simplify(this.simplifyVal);
+        this.visiblePath.push(visible);
+        this.writer.paths.push(actual);
+        if(this.topOffset === 0){
+          this.topOffset = visible.bounds.top;
+          this.$store.state.boundInfo.top = visible.bounds.top;
+        }else if(this.topOffset > visible.bounds.top){
+          this.topOffset = visible.bounds.top;
+          this.$store.state.boundInfo.top = visible.bounds.top;
+        }
+        if(this.$store.state.boundInfo.bottom === 0){
+          this.$store.state.boundInfo.bottom = visible.bounds.bottom;
+        }else if(this.$store.state.boundInfo.bottom < visible.bounds.bottom){
+          this.$store.state.boundInfo.bottom = visible.bounds.bottom;
+        }
+        visible = null;
+        actual = null;
+      }
     }
-  }
+    
+    this.onResize();
+  },
 }
 </script>
 

@@ -49,6 +49,10 @@ export default new Vuex.Store({
       }
     },
     writerUndo: null,
+    writerDone: false,
+    boundInfo: {
+      top: 0, bottom: 0
+    },
     
     //__________________RENDERER
     signs: [],
@@ -165,17 +169,7 @@ export default new Vuex.Store({
       state.loading.fakeOffset += amount;
     },
 
-    async SEND_PATHS(state){
-      if(state.writer.paths.length){
-        state.writer.info.writeTime = Date.now();
-        const {data} = await axios.post('/push/paths', {writer: state.writer});
-        if(data.status === 200){
-          state.modal = 2;
-        }
-      }else{
-        console.log('draw signs first!');
-      }
-    },
+    
 
     //__________________________ UI METHODS
 
@@ -209,9 +203,17 @@ export default new Vuex.Store({
       }
     },
   
-    SEND_PATH(){
-
-    }
+    async SEND_PATHS(state){
+      if(state.writer.paths.length){
+        state.writer.info.writeTime = Date.now();
+        const {data} = await axios.post('/push/paths', {writer: state.writer});
+        if(data.status === 200){
+          state.modal = 2;
+        }
+      }else{
+        console.log('draw signs first!');
+      }
+    },
 
 
 

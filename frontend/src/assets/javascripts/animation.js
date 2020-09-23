@@ -31,9 +31,14 @@ const timing = {
   Writer: {
     startElements: 500,
     elAppear : 300,
+    susTransition: 500 + 'ms',
+    susDelay: 300 + 'ms',
+    susTiming: 'cubic-bezier(0,0,0,.99)',
+    pmWrapperTransition: 600 + 'ms'
   },
   Pathmaker:{
-    
+    afterDoneVelocity: 0.1,
+
   }
   
 
