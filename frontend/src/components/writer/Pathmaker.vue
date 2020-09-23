@@ -7,14 +7,9 @@
   :style="canvasLocation"
   ></canvas>
 
-  <div id="testModal" v-if="1">
-    <button>test00</button> <br>
-    <button>test01</button> <br>
-    <button>test02</button> <br>
-    <button>test03</button> <br>
-    <button @click="SEND()">SEND</button> <br><br>
-    mouseX: {{mouseX}} <br>
-    mouseY: {{mouseY}} <br>
+
+
+  <div id="btn-wrapper">
 
   </div>
 
@@ -27,17 +22,17 @@
 import { mapState, mapGetters, mapMutations } from 'vuex';
 const paper = require('paper');
 
-
+const name = 'Pathmaker';
 export default {
-  name: "Pathmaker",
+  name,
   components: { },
   data() { return {
     scope: null,
-    okToWrite: false,
-    simplifyVal: 8,
-
     canvasEl: null,
     canvasCoords: {},
+
+    okToWrite: false,
+    simplifyVal: 8,
 
     visiblePath: [],
     visibleCircle: [],
@@ -53,7 +48,10 @@ export default {
   }},
   computed: {
     ...mapState(['winSize', 'writer']),
-    ...mapGetters(['byType', 'VIEWTYPE']),
+    ...mapGetters(['byType', 'VIEWTYPE', 'NEW_PATHS']),
+    AT: function(){
+      return this['aniTiming'][name]
+    },
     X: function(){
       return this.canvasCoords.x
     },
@@ -66,6 +64,17 @@ export default {
     H: function(){
       return this.canvasCoords.h
     },
+  },
+  watch: {
+    NEW_PATHS(nu, old){
+      if(nu){
+        console.log('watcher: paths detecred', nu);
+
+      }else{
+        console.log('watcher: nopaths', old);
+
+      }
+    }
   },
   methods: {
     ...mapMutations(['SEND_PATHS']),
@@ -112,21 +121,12 @@ export default {
     });
     this.scope.setup(document.getElementById('maker'));
 
-
-    console.log(this.scope);
-
-
-
-
-
     this.scope.view.onMouseMove = (event) => {
       this.mouseX = event.point.x;
       this.mouseY = event.point.y;
     }
 
-
-    var visible;
-    var segPoints = [];
+    var visible, segPoints;
 
     this.scope.view.onMouseEnter = () => {
       this.okToWrite = true;
@@ -138,7 +138,6 @@ export default {
     this.scope.view.onMouseDown = (event) => {
       this.okToWrite = true;
       segPoints = [];
-      console.log(this.X);
       var locatedPoint = new this.scope.Point(
         event.point.x + this.X, 
         event.point.y + this.Y
@@ -148,6 +147,7 @@ export default {
         strokeColor: 'white',
         strokeWidth: 5,
         strokeCap: 'round',
+        strokeJoin: 'round'
         // fullySelected: true
       });
 
@@ -213,25 +213,6 @@ export default {
   border: solid 2px white;
 }
 
-
-#testModal {
-  position: fixed;
-  padding: 3px;
-  left: 2%;
-  bottom: 10%;
-  border: solid 2px white;
-  opacity: 0.8;
-  button {
-    margin: 2px;
-  }button:hover{
-    cursor: pointer;
-  }
-
-
-  transition-timing-function: cubic-bezier(0,.82,.38,.92);
-
-
-}
 
 
 

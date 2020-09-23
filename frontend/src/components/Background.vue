@@ -3,6 +3,13 @@
   {{VIEWTYPE}}
   <div id="bg-loading" :style="bgLoading"></div>
   <canvas id="BG"></canvas>
+
+
+  <div id="test">
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <h1>{{desColor}}</h1>
+    <h1>{{h}}</h1>
+  </div>
 </div>
 </template>
 
@@ -12,7 +19,6 @@ import { mapState, mapGetters, mapMutations } from 'vuex';
 const paper = require('paper');
 import { random } from '../assets/javascripts/uiAction';
 import { bbc } from '../assets/javascripts/uiAction';
-
 const name = 'Background';
 export default {
   name,
@@ -110,13 +116,11 @@ export default {
           }
         }
       }else{
-        if(this.hueVector[i] !== 0){
-          this.hueVector[i] = 0;
-        }
+        this.hueVector[i] = 0;
       }
       //__ hue Change
       if(this.hueVector[i] !==0){
-        this.h[i] += this.AT.hueVelocity;
+        this.h[i] += (this.AT.hueVelocity*this.hueVector[i]);
         this.h[i] = bbc.hueModify(this.h[i]);
       }
       //__ level Change
@@ -142,6 +146,7 @@ export default {
       }
       //__ Color Render
       if((this.hueVector[i] !== 0)||(lcGo)){
+        console.log('color render');
         circle.fillColor.gradient.stops = [
           bbc.HSLA(this.h[i], 100, this.l[0], 1),
           bbc.HSLA(this.h[i], 100, this.l[1], 0)
@@ -155,13 +160,14 @@ export default {
         this.bbcApear = true;
         this.setBBC({comp:-1, hue:-1});
       }else{
-        console.log('watcher: nopaths', old);
         this.bbcApear = false;
+        this.desLev = [0, 0];
+        return old
       }
     }
   },
   created() {
-    this.COLORS = this.colorScheme;
+    this.h = this.desColor;
     this.scope = new paper.PaperScope();
     this.$store.state.loading.fakeOffset += 20;
   },
@@ -170,6 +176,7 @@ export default {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     });
+
 
     let circles = [];
     for(var i=0; i < this.amount; i++){
@@ -232,5 +239,12 @@ export default {
   width: 100%; height: 100%;
   transition: '500ms';
   background-color: #1130D1;
+}
+
+
+
+#test{
+  z-index: 100;
+  color: aliceblue;
 }
 </style>

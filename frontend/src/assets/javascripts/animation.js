@@ -14,8 +14,6 @@ const timing = {
     circleVelocity: 0.4,
     hueVelocity: 0.5,
     levelVelocity: 0.1,
-    
-
   },
   Loader: {
     loadSpeed : 60,
@@ -29,12 +27,13 @@ const timing = {
     beforeRender: 300,
     renderSpeed: [5, 7],
     between: 100,
-
   },
   Writer: {
     startElements: 500,
     elAppear : 300,
-
+  },
+  Pathmaker:{
+    
   }
   
 

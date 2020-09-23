@@ -7,9 +7,6 @@
       <Writer v-if="SEQ > 1"/>
       
 
-    
-      <Pathmaker v-if="0"/>
-
       <test v-if="test.modal"/>
     </div>
   </div>
@@ -17,13 +14,12 @@
 
 <script> 
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
-import test from './test'
+import test from './test/test.vue'
 import Background from './components/Background';
 import Loader from './components/Loader';
 import TitleSign from './components/TitleSign';
 import Writer from './components/Writer';
 
-import Pathmaker from './components/writer/Pathmaker'
 
 
 export default {
@@ -35,7 +31,6 @@ export default {
     TitleSign,
     Writer,
 
-    Pathmaker
   },
   computed: {
     ...mapState([

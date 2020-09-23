@@ -33,7 +33,7 @@ function newBBC({comp, hue}){
   }
   let result = [stdColor];
   for(var i=0; i<harmonies.length; i++){
-    result.push(stdColor + harmonies[i]);
+    result.push(bbc.hueModify(stdColor + harmonies[i]));
   }
   return result
 }

@@ -10,7 +10,6 @@
   modal: {{modal}} <br>
   justLoaded: {{loading.justLoaded}} <br>
   loading: {{LOADING_PROGRESS * 100}}% <br>
-  BBC:<br>{{BBC}}<br>
   writer.scopeSize:{{writer.scopeSize}}
   writer.pixelRatio:{{writer.pixelRatio}}
   writer.relocation:{{writer.relocation}}
@@ -65,7 +64,7 @@ export default {
   }},
   computed: {
     ...mapState(['viewtype', 'modal', 'winSize', 'loading', 'writer']),
-    ...mapGetters(['BBC', 'byType', 'LOADING_PROGRESS']),
+    ...mapGetters(['byType', 'LOADING_PROGRESS']),
   },
   methods: {
     ...mapMutations(['setBBC', 'renderTrigger']),
