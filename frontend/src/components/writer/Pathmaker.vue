@@ -9,7 +9,7 @@
 
 
 
-  <div id="btn-wrapper">
+  <div class="btn-wrapper" :class="byType">
 
   </div>
 
@@ -33,6 +33,7 @@ export default {
 
     okToWrite: false,
     simplifyVal: 8,
+    strokeWidth: 0,
 
     visiblePath: [],
     visibleCircle: [],
@@ -81,6 +82,7 @@ export default {
     onResize(){
       this.canvasCoords = this.getCoords(this.canvasEl);
       this.writer.width = this.W;
+      this.strokeWidth = this.W / 85;
     },
     getCoords(elem) { // crossbrowser version
       var box = elem.getBoundingClientRect();
@@ -145,7 +147,7 @@ export default {
       visible = new this.scope.Path({
         segments: [ locatedPoint ], // array
         strokeColor: 'white',
-        strokeWidth: 5,
+        strokeWidth: this.strokeWidth,
         strokeCap: 'round',
         strokeJoin: 'round'
         // fullySelected: true
@@ -213,7 +215,11 @@ export default {
   border: solid 2px white;
 }
 
+.button-wrapper{
+  
 
+
+}
 
 
 </style>

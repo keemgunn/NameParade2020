@@ -3,13 +3,6 @@
   {{VIEWTYPE}}
   <div id="bg-loading" :style="bgLoading"></div>
   <canvas id="BG"></canvas>
-
-
-  <div id="test">
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-    <h1>{{desColor}}</h1>
-    <h1>{{h}}</h1>
-  </div>
 </div>
 </template>
 
@@ -146,7 +139,6 @@ export default {
       }
       //__ Color Render
       if((this.hueVector[i] !== 0)||(lcGo)){
-        console.log('color render');
         circle.fillColor.gradient.stops = [
           bbc.HSLA(this.h[i], 100, this.l[0], 1),
           bbc.HSLA(this.h[i], 100, this.l[1], 0)
@@ -156,13 +148,12 @@ export default {
   },
   watch: {
     NEW_PATHS(nu, old){ // 0 or something
-      if(nu){
-        this.bbcApear = true;
-        this.setBBC({comp:-1, hue:-1});
-      }else{
+      if(nu === 0){
         this.bbcApear = false;
         this.desLev = [0, 0];
-        return old
+      }else if(nu > old){
+        this.bbcApear = true;
+        this.setBBC({comp:-1, hue:-1});
       }
     }
   },
@@ -239,12 +230,5 @@ export default {
   width: 100%; height: 100%;
   transition: '500ms';
   background-color: #1130D1;
-}
-
-
-
-#test{
-  z-index: 100;
-  color: aliceblue;
 }
 </style>
