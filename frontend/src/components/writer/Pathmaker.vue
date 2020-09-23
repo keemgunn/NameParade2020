@@ -24,7 +24,7 @@ export default {
     visiblePath: [],
   }},
   computed: {
-    ...mapState(['winSize', 'writer']),
+    ...mapState(['winSize', 'writer', 'writerUndo']),
     ...mapGetters(['byType', 'VIEWTYPE', 'NEW_PATHS']),
     AT: function(){
       return this['aniTiming'][name]
@@ -44,12 +44,31 @@ export default {
   },
   watch: {
     NEW_PATHS(nu, old){
-      if(nu){
-        console.log('watcher: paths detecred', nu);
-
+      if(nu === 0){
+        console.log('watcher: nopaths');
+      }else if(nu > old){
+        console.log('watcher: paths ++', nu);
+        console.log(this.writer.paths);
       }else{
-        console.log('watcher: nopaths', old);
-
+        console.log('watcher: paths --', nu);
+        console.log(this.writer.paths);
+      }
+    },
+    writerUndo(nu, old){
+      if(nu){
+        this.writer.paths[nu].remove();
+        this.visiblePath[nu].remove();
+        this.writer.paths.pop();
+        this.visiblePath.pop();
+        this.$store.state.writerUndo = null;
+      }else if(nu === 0){
+        this.writer.paths[nu].remove();
+        this.visiblePath[nu].remove();
+        this.writer.paths.pop();
+        this.visiblePath.pop();
+        this.$store.state.writerUndo = null;
+      }else{
+        return old
       }
     }
   },
@@ -113,7 +132,10 @@ export default {
       this.mouseY = event.point.y;
     }
 
-    var visible, segPoints;
+
+
+
+    var visible, actual;
     this.scope.view.onMouseEnter = () => {
       this.okToWrite = true;
     }
@@ -122,57 +144,55 @@ export default {
     }
     this.scope.view.onMouseDown = (event) => {
       this.okToWrite = true;
-      segPoints = [];
       var locatedPoint = new this.scope.Point(
         event.point.x + this.X, 
         event.point.y + this.Y
       )
+      var rawPoint = new this.scope.Point(
+        event.point.x + this.X, 
+        event.point.y + this.Y
+      )
       visible = new this.scope.Path({
-        segments: [ locatedPoint ], // array
+        segments: [ locatedPoint ],
         strokeColor: 'white',
         strokeWidth: this.strokeWidth,
         strokeCap: 'round',
         strokeJoin: 'round'
-        // fullySelected: true
       });
-
-      var pointCore = {x: event.point.x, y: event.point.y};
-      segPoints.push(pointCore);
+      actual = new this.scope.Path({
+        segments: [ rawPoint ],
+        strokeWidth: 1,
+        strokeCap: 'round',
+        strokeJoin: 'round'
+      });
     }
-
-
     this.scope.view.onMouseDrag = (event) => {
       if(this.okToWrite){
         var locatedPoint = new this.scope.Point(
           event.point.x + this.X, 
           event.point.y + this.Y
         )
+        var rawPoint = new this.scope.Point(
+          event.point.x + this.X, 
+          event.point.y + this.Y
+        )
         visible.add(locatedPoint);
+        actual.add(rawPoint);
         visible.smooth('continuous');
-        var pointCore = {x: event.point.x, y: event.point.y};
-        segPoints.push(pointCore);
+        actual.smooth('continuous');
       }
     }
 
 
-
     this.scope.view.onMouseUp = () => {
       visible.simplify(this.simplifyVal);
-      console.log(visible.position);
+      actual.simplify(this.simplifyVal);
       
-
       this.visiblePath.push(visible);
+      this.writer.paths.push(actual);
       visible = [];
-      this.writer.paths.push(segPoints);
-      segPoints = [];
-        // it saves segPoints without SIMPLIFICATION
-        // SO ITS SEGMENTS ARE MUCH MORE THAN VISIBLEPATH's
+      actual = [];
     }
-
-
-
-    // const pm = require('../../test/paperMethods');
-    // pm.boundCheck(this.scope);
   }
 }
 </script>

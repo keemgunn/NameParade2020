@@ -48,6 +48,7 @@ export default new Vuex.Store({
         outTime: null
       }
     },
+    writerUndo: null,
     
     //__________________RENDERER
     signs: [],
@@ -202,16 +203,10 @@ export default new Vuex.Store({
       }
     },
 
-
-
-    
-
-    CHECK_FILES(){
-
-    },
-
-    LOAD_FILES(){
-
+    UNDO_PATH(state){
+      if(state.writer.paths.length){
+        state.writerUndo = state.writer.paths.length - 1;
+      }
     },
   
     SEND_PATH(){

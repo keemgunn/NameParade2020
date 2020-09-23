@@ -45,6 +45,7 @@
   v-if="(elSequence === 5) && (pathBtns)">
     <div class="bw" :class="byType">
       <div class="btn left"
+        @click="UNDO_PATH()"
         >undo</div>
       <div class="btn right">done</div>
     </div>
@@ -114,7 +115,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations([]),
+    ...mapMutations(['UNDO_PATH']),
     proceed(){
       this.elSequence += 1;
       if(this.elSequence < 5){
