@@ -1,13 +1,11 @@
 function boundCheck(scope){
   let bounds = scope.view.bounds;
-  console.log(bounds);
   let coords = [
     [0, 0],
     [bounds.width, 0],
     [bounds.width, bounds.height],
     [0, bounds.height],
   ];
-  console.log(coords);
   for(var i=0; i < coords.length; i++){
     var circle = new scope.Path.Circle([
       coords[i][0], coords[i][1]

@@ -30,10 +30,10 @@ export default {
 
     renderReady: false,
     mySign: {
-      scale:0, arr:[]
+      scale:0, arr:[], offsetX:0, offSetY:0
     },
     renderProgress: {path:0, seg:0},
-    renderSpeed: [1, 6],
+    renderSpeed: [5, 7],
     renPath: [], RENDERED: [],
     effect: [],
     effectProp: [
@@ -49,8 +49,8 @@ export default {
     ],
 
     strokeStyle: {
-      color: 'red',
-      width: 7
+      color: 'white',
+      width: 10
     },
   }},
   computed: {
@@ -79,10 +79,11 @@ export default {
     ...mapMutations(['renderTrigger']), 
     onResize(){
       this.canvasCoords = this.getCoords(this.canvasEl);
+      this.mySign.offsetX = this.canvasCoords.w * 0.02
+      this.mySign.offsetY = -(this.canvasCoords.h * 0.15)
     },
     getCoords(elem) { // crossbrowser version
       var box = elem.getBoundingClientRect();
-      console.log(box);
       var body = document.body;
       var docEl = document.documentElement;
       var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
@@ -109,9 +110,9 @@ export default {
     stroke({pathIndex, segIndex}){
       let segPoint = new this.scope.Point(
         (this.mySign.arr[pathIndex][segIndex].x 
-          * this.mySign.scale + this.X)
+          * this.mySign.scale + this.X + this.mySign.offsetX)
         ,(this.mySign.arr[pathIndex][segIndex].y 
-          * this.mySign.scale + this.Y - 100)
+          * this.mySign.scale + this.Y + this.mySign.offsetY)
       );
       if(segIndex===0){ 
         console.log(this.effectProp[pathIndex]);
@@ -198,7 +199,7 @@ export default {
     this.scope.setup(document.getElementById('title-sign'));
 
     this.mySign.arr = require('../assets/data/mySign.json');
-    this.mySign.scale = ( this.W / 870 );
+    this.mySign.scale = ( this.W / 1750 );
 
     // ___________ PAPER TEST METHOD ______________
     const pm = require('../test/paperMethods');
