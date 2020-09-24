@@ -3,30 +3,14 @@ const fs = require('fs');
 const randomstring = require('randomstring');
 const { EventEmitter } = require('events');
 
-
-
 const configPath = path.join(__dirname, '../data/config.json');
-let config = readSync(configPath);
-function syncConfig() {
-  update(configPath, config);
-  console.log(config);
-  console.log(' -- config synced');
-}
-
 const signsPath = path.join(__dirname, '../data/signs/');
-let signsCount = fileCounter(signsPath);
-config.signs = signsCount;
-syncConfig();
+let config = readSync(configPath);
+updateConfigs();
 
 
-function fileCounter(path) {
-  let result = fs.readdirSync(path, (err, files) => {
-    if(err){
-      return console.log('something wrong ...@dataManager/fileCounter');
-    }
-  });
-  return result;
-}
+//______________ ESSENTIALS ____________
+
 function readSync(file){
   let rawdata = fs.readFileSync(file);
   let parsed = JSON.parse(rawdata);
@@ -43,13 +27,55 @@ function update(file, source){
 }
 
 
-//______________ SIGN METHODS ____________
+//______________ CONFIIGS ____________
 
-let monitor = new EventEmitter();
-
-function SignPath(i) {
-  return signsPath + i + '.json'
+function updateConfigs(){
+  config.signs = getSignsArrAsc();
+  config.emptySeats = getEmptySeatsArr();
+  syncConfig();
 }
+
+function syncConfig() {
+  update(configPath, config);
+  console.log(config);
+  console.log(' -- config synced');
+}
+
+function getEmptySeatsArr(){
+  let result = []; 
+  let lastNum = config.signs[config.signs.length-1];
+  for(var i=0; i<lastNum; i++){
+    if(!config.signs.includes(i)){
+      result.push(i);
+    }
+  }
+  result = result.sort((a,b)=>{
+    return b - a
+  }) // ... DESCENDING 
+  return result;
+}
+
+function getSignsArrAsc() {
+  let result = fs.readdirSync(signsPath, (err, files) => {
+    if(err){
+      return console.log('something wrong ...@dataManager/getSignsArrAsc');
+    }
+  }); // result == files array
+  let intArr = [];
+  for(var i=0; i < result.length; i++){
+    const names = result[i].split('.');
+    intArr.push(parseInt(names[0]));
+  }
+  // _____ SORT ASCENDING
+  intArr = intArr.sort((a,b)=>{
+    return a - b
+  });
+  return intArr;
+}
+
+
+//______________ SIGN METHODS ____________
+let monitor = new EventEmitter();
 
 function getAllSigns(res) {
   const queryID = ResponseMonitor(monitor, res);
@@ -59,7 +85,6 @@ function getAllSigns(res) {
       return console.log('something wrong ...@dataManager/getAllFiles');
     }
   });
-
   monitor.on('read-done', () => {
     readCount += 1;
     if(readCount < fileNames.length){
@@ -75,7 +100,6 @@ function getAllSigns(res) {
       monitor.emit('delete-listener', 'read-done')
     }
   })
-
   if(fileNames.length){
     readForEachSync(
       monitor, 
@@ -94,6 +118,31 @@ function readForEachSync(monitor, path, resArr) {
   let parsed = JSON.parse(rawdata);
   resArr.push(parsed);
   monitor.emit('read-done');
+}
+
+
+function newSign(data){
+  let newSeat = findSeat()
+  let path = SignPath(newSeat);
+  writeSync(data, path);
+    console.log(' -- sign saved:', path);
+  config.signs.push(newSeat);
+  config.signs = config.signs.sort((a,b)=>{
+    return a - b
+  });
+  syncConfig();
+}
+
+function SignPath(i) {
+  return signsPath + i + '.json'
+}
+
+function findSeat(){
+  if(config.emptySeats.length){
+    return comfig.sings.emptySeats.pop()
+  }else{
+    return config.signs.length
+  }
 }
 
 
@@ -129,15 +178,10 @@ monitor.on('delete-listener', (name) => {
 
 
 
-module.exports.configPath = configPath;
-module.exports.signsPath = signsPath;
-module.exports.config = config;
 
-module.exports.fileCounter = fileCounter;
-module.exports.readSync = readSync;
-module.exports.writeSync = writeSync;
-module.exports.update = update;
-
-module.exports.SignPath = SignPath;
-module.exports.getAllSigns = getAllSigns;
-module.exports.syncConfig = syncConfig;
+module.exports = { 
+  configPath, signsPath, config,
+  readSync, writeSync, update,
+  syncConfig, updateConfigs,
+  getAllSigns, newSign
+}
