@@ -24,7 +24,6 @@ function fileCounter(path) {
     if(err){
       return console.log('something wrong ...@dataManager/fileCounter');
     }
-    return files.length
   });
   return result;
 }
@@ -59,7 +58,6 @@ function getAllSigns(res) {
     if(err){
       return console.log('something wrong ...@dataManager/getAllFiles');
     }
-    return files
   });
 
   monitor.on('read-done', () => {

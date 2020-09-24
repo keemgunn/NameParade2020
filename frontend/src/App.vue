@@ -68,9 +68,15 @@ export default {
     },
     FILES_IN_SERVER(nu, old){
       if(this.SEQ === 0){
-        console.log('--- start loading signs ---');
-        console.log('filesInServer:', nu);
-        this.startSignLoad();
+        if(nu){
+          console.log('--- start loading signs ---');
+          console.log('filesInServer:', nu);
+          this.startSignLoad();
+        }else{
+          console.log('--- no sign data ---');
+          console.log('filesInServer:', nu);
+          this.$store.state.loading.filesInServer = 0
+        }
       }else{ // > 0
         console.log('file index update');
         console.log('from:', old, ' / to:', nu);

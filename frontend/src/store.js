@@ -27,11 +27,11 @@ export default new Vuex.Store({
     aniTiming: animation.timing,
 
     //__________________LOADER
-    loadedArr: [],
+    loadedArr: null,
     loading: {
       fakeOffset: 0,
       faker: 100 + 150,
-      filesInServer: 0
+      filesInServer: null
     }, 
     
     //__________________PATHMAKER
@@ -166,7 +166,8 @@ export default new Vuex.Store({
         state.loading.filesInServer = test.signs.length; 
       }else{
         const {data} = await axios.get('/load/file-count');
-        state.loading.filesInServer = data.jsonCount; 
+        console.log(data.jsonCount);
+        state.loading.filesInServer = data.jsonCount.length; 
       }
     },
 
@@ -255,7 +256,7 @@ export default new Vuex.Store({
         state.loadedArr = test.signs;
       }else{
         const {data} = await axios.get('/load/initial');
-        console.log('initial data recieved: ',data.length);
+        console.log('initial data recieved:', data.arg.length);
         state.loadedArr = data.arg;
       }
     }

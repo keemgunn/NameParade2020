@@ -42,8 +42,6 @@
     v-if="VIEWTYPE === 'tablet'"
     :style="loadBar"></div>
 
-    <br><br><br><br><br><br><br><br>
-
   </div>
 
 </div>
@@ -262,12 +260,16 @@ export default {
   },
   watch: {
     loadedArr(nu, old){
-      if(old.length === 0 && this.SEQ === 0){
-        console.log('watch: $loadedArr:', old.length, nu.length);
-        console.log('-- initial loading start --');
-        this.startLoadingAnimation();
-      }else{
-        console.log('watch: $loadedArr initialized');
+      console.log('loadedArr', nu);
+      if(this.SEQ === 0){
+        if(nu){
+          console.log('-- initial loading start --');
+          this.startLoadingAnimation();
+        }else{
+          console.log('-- no signs to load --');
+          this.faking(0);
+        }
+        return old
       }
     }
   },
