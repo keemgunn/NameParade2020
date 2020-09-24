@@ -5,7 +5,7 @@ const configs = {
     writerDone: true,
     
     loadingAmount: 99.9,
-    sequenceNow: ( 3 ),
+    sequenceNow: ( 1 ),
   },
   server: {
     init: true,
