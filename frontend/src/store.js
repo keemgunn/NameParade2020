@@ -139,6 +139,19 @@ export default new Vuex.Store({
     NEW_PATHS(state){
       return state.writer.paths.length
     },
+
+    WRITER_DONE(state){
+      if(state.test.client.writerDone){
+        return true
+      }else{
+        return state.writerDone
+      }
+    },
+
+    USER_NAME(state){
+      return state.writer.info.name
+    }
+
   },
 
 

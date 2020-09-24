@@ -10,10 +10,11 @@
 
 
 <script>
+import{ mapState, mapGetters, mapMutations} from 'vuex';
 
-
+const name ="";
 export default {
-  name: "",
+  name,
   components: { },
   props: [
 
@@ -22,10 +23,15 @@ export default {
 
   }},
   computed: {
+    ...mapState([]),
+    ...mapGetters([]),
+
 
   },
   methods: {
+    ...mapMutations([]),
 
+    
   },
   created() {
 

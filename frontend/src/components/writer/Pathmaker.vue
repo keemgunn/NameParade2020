@@ -89,7 +89,7 @@ export default {
         this.noMorePath = 0;
         this.scope.view.onFrame = (event) => {
           if(event.count > 400){
-            this.scope.onFrame = null;
+            this.scope.onFrame = {};
           }else if(event.count > 20){
             let delta = ( this.topOffset - this.getTop(this.canvasEl) ) * 0.1;
             for(var i=0; i < this.visiblePath.length; i++){
@@ -242,12 +242,10 @@ export default {
         actual = null;
       }
     }
-    
     this.onResize();
   },
 }
 </script>
-
 
 
 <style lang="scss" scoped> 
