@@ -21,7 +21,7 @@ export default {
     h: [], // [a, b, c, d, e, f]
     hueVector: [], // -1 , 0, 1
     l: [0, 0], // [start, end]
-    desLev: {start: 42, end: 38 },
+    desLev: [ 42 , 38 ],
     size: 0.66, amount: 6,
   }},
   computed: {
@@ -119,11 +119,11 @@ export default {
       //__ level Change
       let lcGo = false;
       if(this.bbcApear){
-        if(this.l[0] < this.desLev.start){
+        if(this.l[0] < this.desLev[0]){
           lcGo = true;
           this.l[0] += this.AT.levelVelocity;
         }
-        if(this.l[1] < this.desLev.end){
+        if(this.l[1] < this.desLev[1]){
           lcGo = true;
           this.l[1] += this.AT.levelVelocity;
         }
@@ -153,6 +153,7 @@ export default {
         this.desLev = [0, 0];
       }else if(nu > old){
         this.bbcApear = true;
+        this.desLev = [42, 38];
         this.setBBC({comp:-1, hue:-1});
       }
     }

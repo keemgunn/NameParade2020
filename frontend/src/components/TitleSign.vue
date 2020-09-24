@@ -2,7 +2,7 @@
 <div class="title-sign-wrapper">
   <canvas id="title-sign"></canvas>
 
-  <div id="test" v-if="0">
+  <div id="test" v-if="1">
     <button @click="render()">render go</button>
   </div>
 

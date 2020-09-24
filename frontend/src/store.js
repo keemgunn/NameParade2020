@@ -48,6 +48,11 @@ export default new Vuex.Store({
         outTime: null
       }
     },
+    writerUndo: null,
+    writerDone: false,
+    boundInfo: {
+      top: 0, bottom: 0
+    },
     
     //__________________RENDERER
     signs: [],
@@ -134,6 +139,19 @@ export default new Vuex.Store({
     NEW_PATHS(state){
       return state.writer.paths.length
     },
+
+    WRITER_DONE(state){
+      if(state.test.client.writerDone){
+        return true
+      }else{
+        return state.writerDone
+      }
+    },
+
+    USER_NAME(state){
+      return state.writer.info.name
+    }
+
   },
 
 
@@ -164,17 +182,7 @@ export default new Vuex.Store({
       state.loading.fakeOffset += amount;
     },
 
-    async SEND_PATHS(state){
-      if(state.writer.paths.length){
-        state.writer.info.writeTime = Date.now();
-        const {data} = await axios.post('/push/paths', {writer: state.writer});
-        if(data.status === 200){
-          state.modal = 2;
-        }
-      }else{
-        console.log('draw signs first!');
-      }
-    },
+    
 
     //__________________________ UI METHODS
 
@@ -202,21 +210,23 @@ export default new Vuex.Store({
       }
     },
 
-
-
-    
-
-    CHECK_FILES(){
-
-    },
-
-    LOAD_FILES(){
-
+    UNDO_PATH(state){
+      if(state.writer.paths.length){
+        state.writerUndo = state.writer.paths.length - 1;
+      }
     },
   
-    SEND_PATH(){
-
-    }
+    async SEND_PATHS(state){
+      if(state.writer.paths.length){
+        state.writer.info.writeTime = Date.now();
+        const {data} = await axios.post('/push/paths', {writer: state.writer});
+        if(data.status === 200){
+          state.modal = 2;
+        }
+      }else{
+        console.log('draw signs first!');
+      }
+    },
 
 
 
