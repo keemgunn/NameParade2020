@@ -34,7 +34,8 @@ const timing = {
     susTransition: 500 + 'ms',
     susDelay: 300 + 'ms',
     susTiming: 'cubic-bezier(0,0,0,.99)',
-    pmWrapperTransition: 600 + 'ms'
+    pmWrapperTransition: 600 + 'ms',
+    pmWrapperDelay: 300 +'ms'
   },
   Pathmaker:{
     afterDoneVelocity: 0.1,

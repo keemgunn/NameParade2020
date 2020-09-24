@@ -147,7 +147,7 @@ export default {
         }
       }else{
         return {
-          'height': '0',
+          'height': '5vh',
           'transition': this.AT.susTransition,
           'transition-delay': this.AT.susDelay,
           'transition-timing-function': this.AT.susTiming
@@ -157,9 +157,10 @@ export default {
     afterPath: function(){
       if(this.writerDone){
         return {
-          'border': 'solid 2px transparent',
+          // 'border': 'solid 2px transparent',
           'transition': this.AT.pmWrapperTransition,
-          'height': (this.boundInfo.bottom - this.boundInfo.top)*1.1 +'px'
+          'transition-delay': this.AT.susDelay,
+          'height': (this.boundInfo.bottom - this.boundInfo.top)*1.15 +'px'
         }
       }else{
         return {}
