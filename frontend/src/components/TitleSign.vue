@@ -2,7 +2,7 @@
 <div class="title-sign-wrapper">
   <canvas id="title-sign"></canvas>
 
-  <div id="test" v-if="1">
+  <div id="test" v-if="0">
     <button @click="render()">render go</button>
   </div>
 
@@ -118,7 +118,7 @@ export default {
       if(segIndex===0){ 
         console.log(this.effectProp[pathIndex]);
         // FIRST SEG ---------
-        this.effect.push(this.newEffect(this.scope, segPoint, pathIndex));
+        // this.effect.push(this.newEffect(this.scope, segPoint, pathIndex));
         this.renPath = new this.scope.Path({
           segments: [ segPoint ], // array
           strokeColor: this.strokeStyle.color,
@@ -132,7 +132,7 @@ export default {
         // LAST SEG ---------
         this.renPath.add(segPoint);
         this.RENDERED.push(this.renPath);
-        this.effect[pathIndex].position = segPoint;
+        // this.effect[pathIndex].position = segPoint;
         if(pathIndex === this.mySign.arr.length-1){
           // LAST PATH && LAST SEG ------
           console.log('-- RENDER DONE --');
@@ -148,7 +148,7 @@ export default {
         this.renPath.add(segPoint);
         this.renPath.smooth('continuous');
         this.renderProgress.seg += 1;
-        this.effect[pathIndex].position = segPoint;
+        // this.effect[pathIndex].position = segPoint;
         setTimeout(this.stroke, this.AT.renderSpeed[pathIndex], this.proInfo);
       }
     },

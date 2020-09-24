@@ -61,7 +61,7 @@ function getAllSigns(res) {
     }
     return files
   });
-  
+
   monitor.on('read-done', () => {
     readCount += 1;
     if(readCount < fileNames.length){
@@ -77,12 +77,21 @@ function getAllSigns(res) {
       monitor.emit('delete-listener', 'read-done')
     }
   })
-  readForEachSync(
-    monitor, 
-    signsPath + fileNames[readCount], 
-    result
-  );
-}function readForEachSync(monitor, path, resArr) {
+
+  if(fileNames.length){
+    readForEachSync(
+      monitor, 
+      signsPath + fileNames[readCount], 
+      result
+    );
+  }else{
+    monitor.emit(queryID, result);
+    console.log('result: ', result.length, ' ... @dataManager/getAllFiles');
+    monitor.emit('delete-listener', queryID);
+    monitor.emit('delete-listener', 'read-done')
+  }
+}
+function readForEachSync(monitor, path, resArr) {
   let rawdata = fs.readFileSync(path);
   let parsed = JSON.parse(rawdata);
   resArr.push(parsed);
