@@ -294,7 +294,7 @@ export default {
 .loader-wrapper{
   position: relative; top: 0; left: 0;
   width: 100vw; height: 100vh;
-  transition: 600ms;
+  transition: 500ms;
   transition-timing-function: cubic-bezier(0,0,.17,1);
   // background-color: rgba(230, 12, 55, 0.315);
   .loader{
