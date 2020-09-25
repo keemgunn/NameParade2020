@@ -2,10 +2,11 @@
   <div class="app">
     <Background/>
     <div id="content">
-      <Loader/>
-      <TitleSign v-if="SEQ < 2"/>
-      <Writer v-if="SEQ > 1"/>
-      
+      <Title/>
+      <Writer v-if="(SEQ === 2) || (SEQ === 3)"/>
+      <Parade v-if="SEQ > 3" />
+    
+
 
       <test v-if="test.modal"/>
     </div>
@@ -16,9 +17,9 @@
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import test from './test/test.vue'
 import Background from './components/Background';
-import Loader from './components/Loader';
-import TitleSign from './components/TitleSign';
+import Title from './components/Title';
 import Writer from './components/Writer';
+import Parade from './components/Parade';
 
 
 
@@ -27,21 +28,23 @@ export default {
   components: {
     test,
     Background,
-    Loader,
-    TitleSign,
+    Title,
     Writer,
+    Parade
 
   },
   computed: {
     ...mapState([
         'test', 
-        'winSize', 
+        'winSize',
       ]),
     ...mapGetters([
         'TC', 'TS',
         'byType', 
         'SEQ', 
         'FILES_IN_SERVER',
+        'SIGN_SENT',
+
       ])
   },
   methods: {
@@ -85,6 +88,17 @@ export default {
           console.log('file index update to:', nu.length);
           return old
         }
+      }
+    },
+    SIGN_SENT(nu, old){
+      if(nu === true){
+        if(this.TC.testSequence){
+          this.$store.state.test.client.sequenceNow = 4;
+        }else{
+          this.moveTo(4);
+        }
+      }else{
+        return old
       }
     }
   },

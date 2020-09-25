@@ -48,9 +48,8 @@ export default new Vuex.Store({
     },
     writerUndo: null,
     writerDone: false,
-    boundInfo: {
-      top: 0, bottom: 0
-    },
+    signSent: false,
+
     
     //__________________RENDERER
     displayConfig: {
@@ -141,12 +140,22 @@ export default new Vuex.Store({
 
     USER_NAME(state){
       return state.writer.info.name
+    },
+
+    SIGN_SENT(state){
+      return state.signSent
     }
+
+
 
   },
 
 
   mutations: {
+
+    setBBC(state, {comp, hue}){
+      state.desColor = ui.newBBC({comp, hue});
+    },
 
     async PUT_INITDATA(state, recieved){
       console.log('$$$ request ...$m/PUT_INITDATA');
@@ -164,34 +173,6 @@ export default new Vuex.Store({
       state.signs.push(arr);
     },
     
-    
-
-    //__________________________ UI METHODS
-
-    setBBC(state, {comp, hue}){
-      state.desColor = ui.newBBC({comp, hue});
-    },
-
-    renderTrigger(state, i){
-      state.renderSign.target = -1;
-      state.renderSign.scale = 0;
-      state.renderSign.arr = [];
-      state.renderSign.name = null;
-      if(i === -1){ // random
-        let tango = ui.randomInt(0, state.loading.filesInServer);
-        state.renderSign.scale = state.displayConfig.width / state.signs[tango].scale;
-        state.renderSign.arr = state.signs[tango].paths;
-        state.renderSign.name = state.signs[tango].name;
-        state.renderSign.target = tango;
-      }else{
-        state.renderSign.scale = state.displayConfig.width / state.signs[i].scale;
-        state.renderSign.arr = state.signs[i].paths;
-        state.renderSign.name = state.signs[i].name;
-        state.renderSign.target = i;
-        console.log('asdfasfd', state.displayConfig.width, state.signs[i].scale, state.renderSign.scale);
-      }
-    },
-
     UNDO_PATH(state){
       if(state.writer.paths.length){
         state.writerUndo = state.writer.paths.length - 1;
@@ -199,7 +180,9 @@ export default new Vuex.Store({
     },
   
     async SEND_PATHS(state){
-      if(state.writer.paths.length){
+      if(state.test.server.sendPaths){
+        state.signSent = true;
+      }else{
         state.writer.info.writeTime = Date.now();
         const newSign = {
           svg: state.writer.svg,
@@ -207,10 +190,8 @@ export default new Vuex.Store({
         };
         const {data} = await axios.post('/push/paths', newSign);
         if(data.status === 200){
-          state.modal = 2;
+          state.signSent = true;
         }
-      }else{
-        console.log('draw signs first!');
       }
     },
 

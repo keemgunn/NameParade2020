@@ -2,17 +2,19 @@ const configs = {
   client: {
     testSequence: true, 
     signLoadDone: true,
-    
-    loading: true, 
-    writerDone: true,
+    titleSignRendered: true,
+    // writerDone: true,
+
+
     
     loadingAmount: 100,
-    sequenceNow: ( 2 ),
+    sequenceNow: ( 1 ),
   },
   server: {
     init: true,
     filesInServer: true,
     signLoad: true,
+    sendPaths: true,
 
     foo: 'bar',
   },

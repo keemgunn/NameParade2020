@@ -7,12 +7,8 @@
   vw: {{winSize.vw}} <br>
   vh: {{winSize.vh}} <br>
   viewtype: {{viewtype}} <br>
-  modal: {{modal}} <br>
-  justLoaded: {{loading.justLoaded}} <br>
-  loading: {{LOADING_PROGRESS * 100}}% <br>
+  SEQ: {{SEQ}} <br>
   writer.scopeSize:{{writer.scopeSize}}
-  writer.pixelRatio:{{writer.pixelRatio}}
-  writer.relocation:{{writer.relocation}}
   
 
 
@@ -28,11 +24,11 @@
 
 
 
-  <button @click="setBBC({comp:-1, hue:-1})">test A</button><br>
+  <button>test A</button><br>
 
-  <button @click="setBBC({comp:1, hue:3})">test B</button><br>
+  <button>test B</button><br>
 
-  <button @click="renderTrigger(0)">renderTrigger(0)</button><br>
+  <button>test C</button><br>
 
   <button>test D</button><br>
 
@@ -63,11 +59,11 @@ export default {
     msg04: null,
   }},
   computed: {
-    ...mapState(['viewtype', 'modal', 'winSize', 'loading', 'writer']),
-    ...mapGetters(['byType', 'LOADING_PROGRESS']),
+    ...mapState(['viewtype', 'winSize', 'writer']),
+    ...mapGetters(['byType', 'SEQ']),
   },
   methods: {
-    ...mapMutations(['setBBC', 'renderTrigger']),
+    ...mapMutations(['setBBC']),
   },
   created() {
 

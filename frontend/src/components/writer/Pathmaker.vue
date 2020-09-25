@@ -52,10 +52,8 @@ export default {
         console.log('watcher: nopaths');
       }else if(nu > old){
         console.log('watcher: paths ++', nu);
-        console.log(this.writer.paths);
       }else{
         console.log('watcher: paths --', nu);
-        console.log(this.writer.paths);
       }
     },
     writerUndo(nu, old){
@@ -117,9 +115,7 @@ export default {
     },
     exportSvg(){
       this.makeGroup();
-      console.log(this.writer.pathGroup);
       this.makeSvg();
-      console.log(this.writer.svg);
     },
     makeGroup(){
       this.writer.pathGroup = new this.scope.Group({
@@ -153,7 +149,6 @@ export default {
     this.scope.view.onMouseDown = (event) => {
       contact = 1;
       let firstPoint = pm.newPoint(this.scope, event);
-      console.log(this.strokeWidth);
       path = pm.Stroke(this.scope, firstPoint, this.strokeWidth)
     }
     this.scope.view.onMouseDrag = (event) => {
