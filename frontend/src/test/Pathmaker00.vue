@@ -9,7 +9,6 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
 const paper = require('paper');
-const pm = require('../../assets/javascripts/pathmaker');
 
 const name = 'Pathmaker';
 export default {
@@ -19,23 +18,12 @@ export default {
     scope: null,
     canvasEl: null,
     canvasCoords: {},
-
     okToWrite: 0, 
-    inkLoaded: 1,
-
-    inBoard: 0,
-    contact: 0,
-
-
-    pathMode: 0,
-    pm: [
-      'narrower', 'straight'
-    ],
-
-    strokeWidth: 4,
-    Paths: [],
-
-
+    simplifyVal: 5,
+    strokeWidth: 0,
+    visiblePath: [],
+    noMorePath: 1,
+    topOffset: 0,
   }},
   computed: {
     ...mapState([
@@ -98,7 +86,21 @@ export default {
       if(nu){
         console.log('-- writer done');
         this.topOffset -= this.topOffset * 0.03;
-        this.inkLoaded = 0;
+        this.noMorePath = 0;
+        this.scope.view.onFrame = (event) => {
+          if(event.count > 400){
+            this.scope.onFrame = {};
+          }else if(event.count > 20){
+            let delta = ( this.topOffset - this.getTop(this.canvasEl) ) * 0.1;
+            for(var i=0; i < this.visiblePath.length; i++){
+              this.visiblePath[i].position = 
+              new this.scope.Point(
+                this.visiblePath[i].position.x,
+                this.visiblePath[i].position.y - delta
+              )
+            } this.topOffset -= delta;
+          }
+        }
       }else{
         return old
       }
@@ -138,6 +140,15 @@ export default {
         h: box.height
       };
     },
+    getTop(elem) {
+      var box = elem.getBoundingClientRect();
+      var body = document.body;
+      var docEl = document.documentElement;
+      var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+      var clientTop = docEl.clientTop || body.clientTop || 0;
+      var top  = box.top +  scrollTop - clientTop;
+      return Math.round(top)
+    },
     SEND(){
       this.SEND_PATHS();
       for(var i=0; i < this.visiblePath.length; i++){
@@ -155,73 +166,82 @@ export default {
     this.scope.setup(document.getElementById('maker'));
     this.onResize();
 
-    
+    this.scope.view.onMouseMove = (event) => {
+      this.mouseX = event.point.x;
+      this.mouseY = event.point.y;
+    }
 
-
-    let coords = { x: 0, y: 0 };
-    let last = null;
-    let curr = null;
-    let delta = null;
-    let path = [
-      // segments from pm.Stroke 
-    ];
-    let width = 8;
-
-
-
+    var visible, actual;
     this.scope.view.onMouseEnter = () => {
-      this.inboard = 1;
+      this.okToWrite = 1;
     }
     this.scope.view.onMouseLeave = () => {
-      this.inboard = 0;
-      this.contact = 0;
+      this.okToWrite = 0;
     }
-    this.scope.view.onMouseMove = (event) => {
-      coords = pm.relocateCoords(event, this.canvasCoords);
-    }
-    this.scope.view.onMouseDown = () => {
-      last = pm.newPath(this.scope, coords);
-      this.contact = 1;
-    }
-    this.scope.view.onMouseUp = () => {
-      this.contact = 0;
-    }
-
-
-    this.scope.view.onMouseDrag = (event) => {
-      let {x,y} = pm.relocateCoords(event, this.canvasCoords);
-      curr = pm.newPath(this.scope, {x,y});
-      delta = pm.getDelta(this.scope, last, curr);
-      let seg = pm.Stroke(
-        this.scope,{
-          width,
-          curr,
-          delta
-        }
-      );
-      path.push(seg);
-      last = curr;
-    }
-
-
-
-    this.scope.view.onFrame = () => {
-      if(this.inboard * this.contact){
-        curr = pm.newPath(this.scope, coords);
-        delta = pm.getDelta(this.scope, last, curr);
-        let seg = pm.Stroke(
-        this.scope,{
-            width,
-            curr,
-            delta
-          }
-        );
-        path.push(seg);
-        last = curr;
+    this.scope.view.onMouseDown = (event) => {
+      this.okToWrite = 1;
+      if(this.okToWrite * this.noMorePath){
+        var locatedPoint = new this.scope.Point(
+          event.point.x + this.X, 
+          event.point.y + this.Y
+        )
+        var rawPoint = new this.scope.Point(
+          event.point.x + this.X, 
+          event.point.y + this.Y
+        )
+        visible = new this.scope.Path({
+          segments: [ locatedPoint ],
+          strokeColor: 'white',
+          strokeWidth: this.strokeWidth,
+          strokeCap: 'round',
+          strokeJoin: 'round'
+        });
+        actual = new this.scope.Path({
+          segments: [ rawPoint ],
+          strokeWidth: 1,
+          strokeCap: 'round',
+          strokeJoin: 'round'
+        });
       }
     }
-
-
+    this.scope.view.onMouseDrag = (event) => {
+      if(this.okToWrite*this.noMorePath){
+        var locatedPoint = new this.scope.Point(
+          event.point.x + this.X, 
+          event.point.y + this.Y
+        )
+        var rawPoint = new this.scope.Point(
+          event.point.x + this.X, 
+          event.point.y + this.Y
+        )
+        visible.add(locatedPoint);
+        actual.add(rawPoint);
+        visible.smooth('continuous');
+        actual.smooth('continuous');
+      }
+    }
+    this.scope.view.onMouseUp = () => {
+      if(this.noMorePath === 1){
+        visible.simplify(this.simplifyVal);
+        actual.simplify(this.simplifyVal);
+        this.visiblePath.push(visible);
+        this.writer.paths.push(actual);
+        if(this.topOffset === 0){
+          this.topOffset = visible.bounds.top;
+          this.$store.state.boundInfo.top = visible.bounds.top;
+        }else if(this.topOffset > visible.bounds.top){
+          this.topOffset = visible.bounds.top;
+          this.$store.state.boundInfo.top = visible.bounds.top;
+        }
+        if(this.$store.state.boundInfo.bottom === 0){
+          this.$store.state.boundInfo.bottom = visible.bounds.bottom;
+        }else if(this.$store.state.boundInfo.bottom < visible.bounds.bottom){
+          this.$store.state.boundInfo.bottom = visible.bounds.bottom;
+        }
+        visible = null;
+        actual = null;
+      }
+    }
     this.onResize();
   },
 }

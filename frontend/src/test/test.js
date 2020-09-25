@@ -1,16 +1,16 @@
 const configs = {
   client: {
-    // loading: true, 
-    // testSequence: true, 
+    loading: true, 
+    testSequence: true, 
     // writerDone: true,
     
     loadingAmount: 99.9,
-    sequenceNow: ( 1 ),
+    sequenceNow: ( 2 ),
   },
   server: {
-    // init: true,
-    // signLoad: true,
-    // filesInServer: true,
+    init: true,
+    signLoad: true,
+    filesInServer: true,
 
     foo: 'bar',
   },
