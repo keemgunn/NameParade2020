@@ -23,8 +23,8 @@ export default {
     okToWrite: 0, 
     inkLoaded: 1,
 
-    inBoard: 0,
-    contact: 0,
+    // inBoard: 0,
+    // contact: 0,
 
 
     pathMode: 0,
@@ -108,18 +108,27 @@ export default {
     ...mapMutations([]),
     onResize(){
       this.canvasCoords = this.getCoords(this.canvasEl);
-      this.scope.view.viewSize.width = this.W;
-      this.scope.view.viewSize.height = this.H;
+      this.canvasCoords.center = {
+        x: this.canvasCoords.x + (this.canvasCoords.w/2),
+        y: this.canvasCoords.y + (this.canvasCoords.h/2)
+      };
+      this.scope.view.viewSize = new this.scope.Size(
+        this.canvasCoords.w , this.canvasCoords.h
+      );
+      this.scope.view.center = new this.scope.Point(
+        this.canvasCoords.center.x, 
+        this.canvasCoords.center.y
+      )
       this.writer.width = this.W;
-      if(this.VIEWTYPE === 'small'){
-        this.strokeWidth = this.W / 66;
-      }else if(this.VIEWTYPE === 'narrow'){
-        this.strokeWidth = this.W / 66;
-      }else if(this.VIEWTYPE === 'tablet'){
-        this.strokeWidth = this.W / 80;
-      }else{
-        this.strokeWidth = this.W / 85;
-      }
+      // if(this.VIEWTYPE === 'small'){
+      //   this.strokeWidth = this.W / 66;
+      // }else if(this.VIEWTYPE === 'narrow'){
+      //   this.strokeWidth = this.W / 66;
+      // }else if(this.VIEWTYPE === 'tablet'){
+      //   this.strokeWidth = this.W / 80;
+      // }else{
+      //   this.strokeWidth = this.W / 85;
+      // }
     },
     getCoords(elem) { // crossbrowser version
       var box = elem.getBoundingClientRect();
@@ -135,7 +144,7 @@ export default {
         x: Math.round(left),
         y: Math.round(top),
         w: box.width, 
-        h: box.height
+        h: box.height,
       };
     },
     SEND(){
@@ -155,10 +164,8 @@ export default {
     this.scope.setup(document.getElementById('maker'));
     this.onResize();
 
-    
-
-
-    let coords = { x: 0, y: 0 };
+  
+    let coords = { x:0, y:0 };
     let last = null;
     let curr = null;
     let delta = null;
@@ -166,51 +173,43 @@ export default {
       // segments from pm.Stroke 
     ];
     let width = 8;
+    let contact = 0;
 
 
 
     this.scope.view.onMouseEnter = () => {
-      this.inboard = 1;
+      // console.log('enter');
     }
     this.scope.view.onMouseLeave = () => {
-      this.inboard = 0;
-      this.contact = 0;
+      console.log('leave');
+      // inboard = 0; 
+      contact = 0;
     }
     this.scope.view.onMouseMove = (event) => {
-      coords = pm.relocateCoords(event, this.canvasCoords);
+      console.log('move');
+      coords = {x:event.point.x, y:event.point.y};
     }
-    this.scope.view.onMouseDown = () => {
+    this.scope.view.onMouseDown = (event) => {
+      console.log('down');
+      coords = {x:event.point.x, y:event.point.y};
       last = pm.newPath(this.scope, coords);
-      this.contact = 1;
+      contact = 1;
     }
     this.scope.view.onMouseUp = () => {
-      this.contact = 0;
+      console.log('up');
+      contact = 0;
     }
 
 
-    this.scope.view.onMouseDrag = (event) => {
-      let {x,y} = pm.relocateCoords(event, this.canvasCoords);
-      curr = pm.newPath(this.scope, {x,y});
-      delta = pm.getDelta(this.scope, last, curr);
-      let seg = pm.Stroke(
-        this.scope,{
-          width,
-          curr,
-          delta
-        }
-      );
-      path.push(seg);
-      last = curr;
-    }
+    
 
-
-
+    this.onResize();
     this.scope.view.onFrame = () => {
-      if(this.inboard * this.contact){
+      if(contact){
         curr = pm.newPath(this.scope, coords);
         delta = pm.getDelta(this.scope, last, curr);
         let seg = pm.Stroke(
-        this.scope,{
+          this.scope,{
             width,
             curr,
             delta
@@ -222,7 +221,38 @@ export default {
     }
 
 
-    this.onResize();
+
+
+
+
+
+    // setTimeout(setupFrameFunction, 1800, {
+    //   scope: this.scope, 
+    //   inboard: this.inboard,
+    //   contact: this.contact
+    //   });
+    // function setupFrameFunction(
+    //   {scope , inboard, contact}){
+    //   console.log('-- setupFrameFunction --');
+    //   scope.view.onFrame = (event) => {
+    //     console.log(inboard*contact);
+    //     if(inboard * contact){
+    //       curr = pm.newPath(scope, event);
+    //       delta = pm.getDelta(scope, last, curr);
+    //       let seg = pm.Stroke(
+    //         scope,{
+    //           width,
+    //           curr,
+    //           delta
+    //         }
+    //       );
+    //       path.push(seg);
+    //       last = curr;
+    //     }
+    //   }
+    // }
+
+
   },
 }
 </script>

@@ -1,10 +1,3 @@
-function relocateCoords(event, canvasCoords){
-  return {
-    x: event.point.x + canvasCoords.x,
-    y: event.point.y + canvasCoords.y
-  }
-}
-
 function newPath(scope, {x,y}) {
   return new scope.Point(x,y)
 }
@@ -42,7 +35,7 @@ function newRect(scope, {width, delta}){
     point: new scope.Point(0,0),
     size: new scope.Size(
       delta.length * strokeConfig.length , 
-      width + (delta.length * strokeConfig.width)
+      width - (delta.length * strokeConfig.width)
     )
   })
 }
@@ -50,7 +43,6 @@ function newRect(scope, {width, delta}){
 
 
 export {
-  relocateCoords,
   newPath,
   getDelta,
   Stroke
