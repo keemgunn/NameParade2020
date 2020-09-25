@@ -23,8 +23,7 @@ export default {
     ...mapState([
         'winSize',
         'writer',
-        'writerUndo',
-        'writerDone'
+        'writerUndo'
       ]),
     ...mapGetters([
         'byType', 
@@ -71,19 +70,6 @@ export default {
       }else{
         return old
       }
-    },
-    writerDone(nu, old){
-      if(nu){
-        console.log('-- writer done');
-        // this.makeGroup();
-        // console.log(this.writer.pathGroup);
-
-
-
-        
-      }else{
-        return old
-      }
     }
   },
   methods: {
@@ -112,7 +98,7 @@ export default {
         this.strokeWidth = this.W / 85;
       }
     },
-    getCoords(elem) { // crossbrowser version
+    getCoords(elem) {
       var box = elem.getBoundingClientRect();
       var body = document.body;
       var docEl = document.documentElement;
@@ -146,10 +132,6 @@ export default {
         bounds: 'content'
       });
     }
-
-
-
-  
   },
   mounted() {
     this.canvasEl = document.getElementById('maker');
@@ -160,30 +142,20 @@ export default {
     this.scope.setup(document.getElementById('maker'));
     this.onResize();
 
-    console.log(this.scope.view);
-
     let contact = 0;
     let path;
-
-    // let coords = { x:0, y:0 };
-    // this.scope.view.onMouseMove = (event) => {
-    //   coords = {x:event.point.x, y:event.point.y};
-    // }
-
     this.scope.view.onMouseEnter = () => {
       contact = 1;
     }
     this.scope.view.onMouseLeave = () => {
       contact = 0;
     }
-
     this.scope.view.onMouseDown = (event) => {
       contact = 1;
       let firstPoint = pm.newPoint(this.scope, event);
       console.log(this.strokeWidth);
       path = pm.Stroke(this.scope, firstPoint, this.strokeWidth)
     }
-
     this.scope.view.onMouseDrag = (event) => {
       if(contact){
         let nextPoint = pm.newPoint(this.scope, event);
@@ -191,27 +163,23 @@ export default {
         path.smooth('continuous');
       }
     }
-
     this.scope.view.onMouseUp = () => {
       path.simplify(this.simplifyVal);
       contact = 0;
       this.writer.paths.push(path);
     }
-
   },
   beforeDestroy() {
     this.exportSvg();
     this.writer.pathGroup.remove();
+    this.scope.view.remove();
   },
 }
 </script>
-
-
 <style lang="scss" scoped> 
 .pathmaker{
   position: relative; top: 0; left: 0;
   width: 100%; height: 100%;
-  // background-color: rgba(0, 255, 98, 0.295);
 }
 #maker{
   z-index: 0;
