@@ -3,8 +3,8 @@ const router = express.Router();
 const dm = require('../api/dataManager');
 
 router.post('/paths', (req, res) => {
-  const { writer } = req.body;
-  dm.newSign(writer);
+  const newSign = req.body;
+  dm.newSign(newSign);
   res.json({status: 200});
 })
 

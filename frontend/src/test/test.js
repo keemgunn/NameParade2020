@@ -1,11 +1,11 @@
 const configs = {
   client: {
-    // loading: true, 
+    loading: true, 
     // testSequence: true, 
     // writerDone: true,
     
-    loadingAmount: 99.9,
-    sequenceNow: ( 1 ),
+    loadingAmount: 100,
+    sequenceNow: ( 2 ),
   },
   server: {
     // init: true,

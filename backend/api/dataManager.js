@@ -132,6 +132,7 @@ function ResponseMonitor(monitor, res) {
 
 function newSign(data){
   let newSeat = findSeat()
+  console.log(newSeat);
   let path = SignPath(newSeat);
   writeSync(data, path);
     console.log(' -- sign saved:', path);
@@ -148,7 +149,7 @@ function SignPath(i) {
 
 function findSeat(){
   if(config.emptySeats.length){
-    return comfig.sings.emptySeats.pop()
+    return config.emptySeats.pop()
   }else{
     return config.signs.length
   }
