@@ -27,25 +27,12 @@ export default {
     canvasEl: null,
     canvasCoords: {},
 
-
     renderReady: false,
     mySign: {
       scale:0, arr:[], offsetX:0, offSetY:0
     },
     renderProgress: {path:0, seg:0},
     renPath: [], RENDERED: [],
-    // effect: [],
-    // effectProp: [
-    //   {
-    //     center: null,
-    //     radius: 10,
-    //     fillColor: 'white'
-    //   },{
-    //     center: null,
-    //     radius: 15,
-    //     fillColor: 'pink'
-    //   }
-    // ],
 
     strokeStyle: {
       color: 'white',
@@ -118,16 +105,13 @@ export default {
           * this.mySign.scale + this.Y + this.mySign.offsetY)
       );
       if(segIndex===0){ 
-        // console.log(this.effectProp[pathIndex]);
         // FIRST SEG ---------
-        // this.effect.push(this.newEffect(this.scope, segPoint, pathIndex));
         this.renPath = new this.scope.Path({
           segments: [ segPoint ], // array
           strokeColor: this.strokeStyle.color,
           strokeWidth: this.strokeStyle.width,
           strokeCap: 'round'
         });
-        // this.renPath.strokeColor.alpha = this.strokeStyle.alpha;
         this.renderProgress.seg += 1;
         setTimeout(this.stroke, this.AT.renderSpeed[pathIndex], this.proInfo);
       }
@@ -135,12 +119,9 @@ export default {
         // LAST SEG ---------
         this.renPath.add(segPoint);
         this.RENDERED.push(this.renPath);
-        // this.effect[pathIndex].position = segPoint;
         if(pathIndex === this.mySign.arr.length-1){
           // LAST PATH && LAST SEG ------
           console.log('-- RENDER DONE --');
-          // this.RENDERED[0].strokeColor.alpha = 1;
-          // this.RENDERED[1].strokeColor.alpha = 1;
           this.renderProgress.path = 0;
           this.renderProgress.seg = 0;
           setTimeout(this.fadeOut, this.AT.before_seq12);
@@ -154,19 +135,9 @@ export default {
         this.renPath.add(segPoint);
         this.renPath.smooth('continuous');
         this.renderProgress.seg += 1;
-        // this.effect[pathIndex].position = segPoint;
         setTimeout(this.stroke, this.AT.renderSpeed[pathIndex], this.proInfo);
       }
     },
-    newEffect(scope, point, i){
-      this.effectProp[i].center = [point.x, point.y];
-      console.log(this.effectProp[i]);
-      let eff = new scope.Path.Circle(this.effectProp[i]);
-      console.log(eff);
-      return eff
-    },
-
-
 
     fadeOut(){
       this.scope.view.onFrame = (event) => {
