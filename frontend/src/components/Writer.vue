@@ -43,8 +43,8 @@
 
   <transition name="writer-appear">
   <div class="pathmaker-wrapper"
-  v-if="elSequence > 4">
-    <div class="pm" :class="byType" :style="afterPath">
+  v-if="(elSequence > 4) && !WRITER_DONE">
+    <div class="pm" :class="byType">
       <Pathmaker/>
     </div>
   </div>
@@ -78,7 +78,7 @@
   v-if="(submitBtn)">
     <div class="bw" :class="byType">
       <div class="btn one"
-        
+        @click="SEND_PATHS"
         >submit</div>
     </div>
   </div>
@@ -164,18 +164,6 @@ export default {
           'transition-delay': this.AT.susDelay,
           'transition-timing-function': this.AT.susTiming
         }
-      }
-    },
-    afterPath: function(){
-      if(this.WRITER_DONE){
-        return {
-          // 'border': 'solid 2px transparent',
-          'transition': this.AT.pmWrapperTransition,
-          'transition-delay': this.AT.susDelay,
-          'height': (this.boundInfo.bottom - this.boundInfo.top)*1.15 +'px'
-        }
-      }else{
-        return {}
       }
     }
   },

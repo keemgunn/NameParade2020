@@ -3,9 +3,6 @@
   <canvas id="maker" class="maker"></canvas>
 </div>
 </template>
-
-
-
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
 const paper = require('paper');
@@ -19,22 +16,8 @@ export default {
     scope: null,
     canvasEl: null,
     canvasCoords: {},
-
-    okToWrite: 0, 
-    inkLoaded: 1,
-
-    // inBoard: 0,
-    // contact: 0,
-
-
-    pathMode: 0,
-    pm: [
-      'narrower', 'straight'
-    ],
-
     strokeWidth: 1,
     simplifyVal: 1,
-
   }},
   computed: {
     ...mapState([
@@ -79,15 +62,11 @@ export default {
     writerUndo(nu, old){
       if(nu){
         this.writer.paths[nu].remove();
-        this.visiblePath[nu].remove();
         this.writer.paths.pop();
-        this.visiblePath.pop();
         this.$store.state.writerUndo = null;
       }else if(nu === 0){
         this.writer.paths[nu].remove();
-        this.visiblePath[nu].remove();
         this.writer.paths.pop();
-        this.visiblePath.pop();
         this.$store.state.writerUndo = null;
       }else{
         return old
@@ -96,8 +75,12 @@ export default {
     writerDone(nu, old){
       if(nu){
         console.log('-- writer done');
-        this.topOffset -= this.topOffset * 0.03;
-        this.inkLoaded = 0;
+        // this.makeGroup();
+        // console.log(this.writer.pathGroup);
+
+
+
+        
       }else{
         return old
       }
@@ -146,13 +129,27 @@ export default {
         h: box.height,
       };
     },
-    SEND(){
-      this.SEND_PATHS();
-      for(var i=0; i < this.visiblePath.length; i++){
-        this.visiblePath[i].remove();
-      }
-      this.writer.paths = [];
+    exportSvg(){
+      this.makeGroup();
+      console.log(this.writer.pathGroup);
+      this.makeSvg();
+      console.log(this.writer.svg);
     },
+    makeGroup(){
+      this.writer.pathGroup = new this.scope.Group({
+        children: this.writer.paths
+      })
+    },
+    makeSvg(){
+      this.writer.svg = this.writer.pathGroup.exportSVG({
+        asString: true,
+        bounds: 'content'
+      });
+    }
+
+
+
+  
   },
   mounted() {
     this.canvasEl = document.getElementById('maker');
@@ -162,6 +159,8 @@ export default {
     });
     this.scope.setup(document.getElementById('maker'));
     this.onResize();
+
+    console.log(this.scope.view);
 
     let contact = 0;
     let path;
@@ -199,6 +198,10 @@ export default {
       this.writer.paths.push(path);
     }
 
+  },
+  beforeDestroy() {
+    this.exportSvg();
+    this.writer.pathGroup.remove();
   },
 }
 </script>

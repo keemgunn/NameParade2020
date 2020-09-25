@@ -37,6 +37,8 @@ export default new Vuex.Store({
     //__________________PATHMAKER
     writer:{
       paths:[],
+      pathGroup: null,
+      svg: '',
       width: 0,
       info: {
         userId: userId,
@@ -222,7 +224,11 @@ export default new Vuex.Store({
     async SEND_PATHS(state){
       if(state.writer.paths.length){
         state.writer.info.writeTime = Date.now();
-        const {data} = await axios.post('/push/paths', {writer: state.writer});
+        const newSign = {
+          svg: state.writer.svg,
+          info: state.writer.info
+        };
+        const {data} = await axios.post('/push/paths', newSign);
         if(data.status === 200){
           state.modal = 2;
         }
