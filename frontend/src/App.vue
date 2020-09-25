@@ -38,6 +38,7 @@ export default {
         'winSize', 
       ]),
     ...mapGetters([
+        'TC', 'TS',
         'byType', 
         'SEQ', 
         'FILES_IN_SERVER',
@@ -67,20 +68,25 @@ export default {
       }
     },
     FILES_IN_SERVER(nu, old){
-      if(this.SEQ === 0){
-        if(nu.length){
-          console.log('--- start loading signs ---');
-          console.log('filesInServer:', nu.length);
-          this.startSignLoad();
-        }else{
-          console.log('--- no sign data ---');
-          console.log('filesInServer:', nu.length);
+      if(this.TC.signLoadDone){
+        console.log('--- test: start loading signs ---');
+        this.startSignLoad();
+      }else{
+        if(this.SEQ === 0){
+          if(nu.length){
+            console.log('--- start loading signs ---');
+            console.log('filesInServer:', nu.length);
+            this.startSignLoad();
+          }else{
+            console.log('--- no sign data ---');
+            console.log('filesInServer:', nu.length);
+          }
+        }else{ // > 0
+          console.log('file index update to:', nu.length);
+          return old
         }
-      }else{ // > 0
-        console.log('file index update');
-        console.log('from:', old.length, ' / to:', nu.length);
       }
-    },
+    }
   },
   created() {
     this.onResize();

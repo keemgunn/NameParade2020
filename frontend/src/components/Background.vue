@@ -32,31 +32,22 @@ export default {
       ]),
     ...mapGetters([
         'VIEWTYPE', 
-        'LOADING_PROGRESS', 
         'NEW_PATHS'
       ]),
     AT: function(){
       return this['aniTiming'][name]
     },
     bgLoading: function(){
-      let full = 100;
-      if(this.LOADING_PROGRESS === 1){
-        if(this.NEW_PATHS){
-          return {
-            'transition': this.AT.fadeBlackTransition,
-            'background-color': 'black',
-            'opacity': '100%'
-          }
-        }else{
-          return {
-            'transition': this.AT.loadedTransition,
-            'opacity': '100%'
-          }
+      if(this.NEW_PATHS){
+        return {
+          'transition': this.AT.fadeBlackTransition,
+          'background-color': 'black',
+          'opacity': '100%'
         }
       }else{
         return {
-          'transition': this.AT.loadingTransition,
-          'opacity': (this.LOADING_PROGRESS * full) + '%'
+          'transition': this.AT.loadedTransition,
+          'opacity': '100%'
         }
       }
     },
@@ -161,7 +152,6 @@ export default {
   created() {
     this.h = this.desColor;
     this.scope = new paper.PaperScope();
-    this.$store.state.loading.fakeOffset += 20;
   },
   mounted() {
     this.scope.setup(document.getElementById('BG'));
@@ -202,7 +192,6 @@ export default {
         this.moveCircles(circles[i], i);
       }
     }
-    this.$store.state.loading.fakeOffset += 20;
   },
 }
 </script>
