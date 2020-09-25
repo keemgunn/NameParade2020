@@ -250,7 +250,7 @@ export default new Vuex.Store({
       commit('fakeOff', 20);
       state.writer.info.inTime = Date.now();
       if(state.test.server.init){
-        commit('PUT_INITDATA', {ip: 'data.ip', uag: 'data.uag'});
+        commit('PUT_INITDATA', {ip: 'data.ip-test', uag: 'data.uag-test'});
       }else{
         const {data} = await axios.post('/init/enter', {userId});
         commit('PUT_INITDATA', {ip: data.ip, uag: data.uag});
