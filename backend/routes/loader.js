@@ -6,7 +6,7 @@ const dm = require('../api/dataManager');
 
 router.get('/file-count', (req, res) => {
   console.log('$request ... /load/file-count');
-  res.json({jsonCount: dm.config.signs});
+  res.json(dm.config.signs);
 })
 
 router.get('/initial', (req, res) => {

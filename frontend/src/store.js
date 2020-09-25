@@ -166,8 +166,10 @@ export default new Vuex.Store({
         state.loading.filesInServer = test.signs.length; 
       }else{
         const {data} = await axios.get('/load/file-count');
-        // data.jsonCount === arrays of filename
-        state.loading.filesInServer = data.jsonCount.length; 
+          // data === arrays of filenames
+        console.log(' - files in server:');
+        console.log(data);
+        state.loading.filesInServer = data; 
       }
     },
 

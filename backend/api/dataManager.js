@@ -119,6 +119,15 @@ function readForEachSync(monitor, path, resArr) {
   resArr.push(parsed);
   monitor.emit('read-done');
 }
+function ResponseMonitor(monitor, res) {
+  const queryID = randomstring.generate(4);
+  monitor.on(queryID, (arg) => {
+    res.json({arg});
+    console.log('responsed... queryID: ', queryID);
+  });
+  return queryID
+}
+
 
 
 function newSign(data){
@@ -150,17 +159,6 @@ function findSeat(){
 
 
 //______________ MONITOR SETTINGS ____________
-
-function ResponseMonitor(monitor, res) {
-  const queryID = randomstring.generate(4);
-  monitor.on(queryID, (arg) => {
-    console.log(arg);
-    res.json({arg});
-    console.log('responsed... queryID: ', queryID);
-  });
-  return queryID
-}
-
 monitor.on('query success', (arg) => {
   console.log('$$$ QUERY SUCCESS ... @dataManager/monitor\n   affected: ', arg.affectedRows);
   affected += arg.affectedRows;
@@ -174,6 +172,7 @@ monitor.on('delete-listener', (name) => {
   monitor.removeAllListeners(name);
   console.log('$$$ listener-deleted:', name);
 });
+
 
 
 

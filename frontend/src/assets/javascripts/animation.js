@@ -27,6 +27,9 @@ const timing = {
     beforeRender: 300,
     renderSpeed: [5, 7],
     between: 100,
+    // before_seq12: 2000,
+    fadeOutVelo: 500,
+    seq12: 200
   },
   Writer: {
     startElements: 500,

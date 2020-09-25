@@ -231,12 +231,12 @@ export default {
     },
     push(i){
       this.pushToSigns(this.loadedArr[i]);
-      if(this.SIGNS.length < this.FILES_IN_SERVER){
+      if(this.SIGNS.length < this.FILES_IN_SERVER.length){
         this.pushIndex += 1;
         setTimeout(this.push, this.AT.loadSpeed, this.pushIndex);
       }else{
         console.log('-- signs all pushed --');
-        this.$store.state.loadedArr = [];
+        this.$store.state.loadedArr = null;
         this.faking(0);
       }
     },
@@ -260,9 +260,9 @@ export default {
   },
   watch: {
     loadedArr(nu, old){
-      console.log('loadedArr', nu);
+      console.log('loadedArr', nu.length);
       if(this.SEQ === 0){
-        if(nu){
+        if(nu.length){
           console.log('-- initial loading start --');
           this.startLoadingAnimation();
         }else{
