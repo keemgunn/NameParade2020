@@ -13,7 +13,6 @@ function getDelta(scope, last, curr){
 }
 
 function Stroke(scope, point, width){
-  console.log('width', width);
   return new scope.Path({
     segments: [ point ],
     strokeColor: 'white',

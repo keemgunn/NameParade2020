@@ -146,10 +146,6 @@ export default {
       }
     },
 
-
-
-
-
     async sendMySign(){
       console.log('sendMySign');
       let {data} = axios.post('/load/mysign', {signPackage:this.signPackage});

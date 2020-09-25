@@ -138,7 +138,6 @@ export default {
         setTimeout(this.stroke, this.AT.renderSpeed[pathIndex], this.proInfo);
       }
     },
-
     fadeOut(){
       this.scope.view.onFrame = (event) => {
         if(this.opacity > 0){
@@ -154,8 +153,6 @@ export default {
         }
       }
     }
-
-
   },
   watch: {
     SEQ(nu, old){
@@ -165,8 +162,6 @@ export default {
       }
     }
   },
-  created() {
-    },
   mounted() {
     this.canvasEl = document.getElementById('title-sign');
     this.onResize();
@@ -198,14 +193,7 @@ export default {
   width: 100vw; height: 25vw;
   // background-color: rgba(240, 248, 255, 0.164);
 }
-
 #title-sign{
   width: 100%; height: 100%;
 }
-
-
-
-
-
-
 </style>

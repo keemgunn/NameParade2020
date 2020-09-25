@@ -21,18 +21,14 @@ export default new Vuex.Store({
     viewtype: null,
     sequence: 0,
     seqName: null,
-
+    
+    connections: 0,
+    filesInServer: null,
+    signsArr: null,
+    
     //__________________UI
     desColor: [],
     aniTiming: animation.timing,
-
-    //__________________LOADER
-    loadedArr: null,
-    loading: {
-      fakeOffset: 0,
-      faker: 100 + 150,
-      filesInServer: null
-    }, 
     
     //__________________PATHMAKER
     writer:{
@@ -52,12 +48,10 @@ export default new Vuex.Store({
     },
     writerUndo: null,
     writerDone: false,
-    boundInfo: {
-      top: 0, bottom: 0
-    },
+    signSent: false,
+
     
     //__________________RENDERER
-    signs: [],
     displayConfig: {
       x:0, y:0, w:0
     },
@@ -71,6 +65,13 @@ export default new Vuex.Store({
 
 
   getters: { 
+
+    TC(state){ // Test Client
+      return state.test.client
+    },
+    TS(state){
+      return state.stest.server
+    },
 
     VIEWTYPE(state){
       if(state.winSize.vw < 550){
@@ -91,6 +92,7 @@ export default new Vuex.Store({
         }
       }
     },
+
     byType(state){
       return {
         _small: (state.viewtype === 'small'),
@@ -99,6 +101,7 @@ export default new Vuex.Store({
         _wide: (state.viewtype === 'wide'),
       }
     },
+
     SEQ(state){
       if(state.test.client.testSequence){
         return state.test.client.sequenceNow
@@ -108,26 +111,11 @@ export default new Vuex.Store({
     },
 
     FILES_IN_SERVER(state){
-      return state.loading.filesInServer
-    },
-    LOADING_PROGRESS(state, getters){
-      let result;
-      if(getters.SEQ === 0){
-        result = (state.signs.length + state.loading.fakeOffset) / (state.loading.filesInServer + state.loading.faker);
-        if(result >= 1){
-          result = 1;
-        }
-        if(state.test.client.loading){ 
-          result = (state.test.client.loadingAmount)/100 
-        }
-      }else{
-        result = 1;
-      }
-      return result
+      return state.filesInServer
     },
 
     SIGNS(state){
-      return state.signs
+      return state.signsArr
     },
 
     RENDER_Q(state){
@@ -152,27 +140,29 @@ export default new Vuex.Store({
 
     USER_NAME(state){
       return state.writer.info.name
+    },
+
+    SIGN_SENT(state){
+      return state.signSent
     }
+
+
 
   },
 
 
   mutations: {
 
+    setBBC(state, {comp, hue}){
+      state.desColor = ui.newBBC({comp, hue});
+    },
+
     async PUT_INITDATA(state, recieved){
       console.log('$$$ request ...$m/PUT_INITDATA');
-        state.loading.fakeOffset += 30;
       state.writer.info.ip = recieved.ip;
       state.writer.info.uag = recieved.uag;
-      if(state.test.server.filesInServer){
-        state.loading.filesInServer = test.signs.length; 
-      }else{
-        const {data} = await axios.get('/load/file-count');
-          // data === arrays of filenames
-        console.log(' - files in server:');
-        console.log(data);
-        state.loading.filesInServer = data; 
-      }
+      state.connections = recieved.connections;
+      state.filesInServer = recieved.signs;
     },
 
     moveTo(state, sequence){
@@ -183,38 +173,6 @@ export default new Vuex.Store({
       state.signs.push(arr);
     },
     
-    fakeOff(state, amount){
-      state.loading.fakeOffset += amount;
-    },
-
-    
-
-    //__________________________ UI METHODS
-
-    setBBC(state, {comp, hue}){
-      state.desColor = ui.newBBC({comp, hue});
-    },
-
-    renderTrigger(state, i){
-      state.renderSign.target = -1;
-      state.renderSign.scale = 0;
-      state.renderSign.arr = [];
-      state.renderSign.name = null;
-      if(i === -1){ // random
-        let tango = ui.randomInt(0, state.loading.filesInServer);
-        state.renderSign.scale = state.displayConfig.width / state.signs[tango].scale;
-        state.renderSign.arr = state.signs[tango].paths;
-        state.renderSign.name = state.signs[tango].name;
-        state.renderSign.target = tango;
-      }else{
-        state.renderSign.scale = state.displayConfig.width / state.signs[i].scale;
-        state.renderSign.arr = state.signs[i].paths;
-        state.renderSign.name = state.signs[i].name;
-        state.renderSign.target = i;
-        console.log('asdfasfd', state.displayConfig.width, state.signs[i].scale, state.renderSign.scale);
-      }
-    },
-
     UNDO_PATH(state){
       if(state.writer.paths.length){
         state.writerUndo = state.writer.paths.length - 1;
@@ -222,7 +180,9 @@ export default new Vuex.Store({
     },
   
     async SEND_PATHS(state){
-      if(state.writer.paths.length){
+      if(state.test.server.sendPaths){
+        state.signSent = true;
+      }else{
         state.writer.info.writeTime = Date.now();
         const newSign = {
           svg: state.writer.svg,
@@ -230,10 +190,8 @@ export default new Vuex.Store({
         };
         const {data} = await axios.post('/push/paths', newSign);
         if(data.status === 200){
-          state.modal = 2;
+          state.signSent = true;
         }
-      }else{
-        console.log('draw signs first!');
       }
     },
 
@@ -247,27 +205,29 @@ export default new Vuex.Store({
   actions: { //==============================
     async INITIATE({commit, state}){
       console.log("==== INITIATING REQUEST ====");
-      commit('fakeOff', 20);
       state.writer.info.inTime = Date.now();
       if(state.test.server.init){
-        commit('PUT_INITDATA', {ip: 'data.ip-test', uag: 'data.uag-test'});
+        commit('PUT_INITDATA', {
+          ip: 'data.ip-test', 
+          uag: 'data.uag-test',
+          connections: 8080,
+          signs: test.signsArr
+        });
       }else{
-        const {data} = await axios.post('/init/enter', {userId});
-        commit('PUT_INITDATA', {ip: data.ip, uag: data.uag});
+        const {data} = await axios.post('/api/init', {userId});
+        commit('PUT_INITDATA', data);
       }
     },
 
-    async startSignLoad({commit, state}){
+    async startSignLoad({state}){
       console.log('initiating_SIGNLOAD ...$a/startSignLoad');
-      commit('fakeOff', 20);
       if(state.test.server.signLoad){
-        state.loadedArr = test.signs;
+        state.signsArr = test.signFiles;
       }else{
         const {data} = await axios.get('/load/initial');
         console.log('initial data recieved:', data.arg.length);
-        state.loadedArr = data.arg;
+        state.signsArr = data.arg;
       }
     }
-
   }
 })

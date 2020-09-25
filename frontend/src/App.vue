@@ -2,10 +2,11 @@
   <div class="app">
     <Background/>
     <div id="content">
-      <Loader/>
-      <TitleSign v-if="SEQ < 2"/>
-      <Writer v-if="SEQ > 1"/>
-      
+      <Title/>
+      <Writer v-if="(SEQ === 2) || (SEQ === 3)"/>
+      <Parade v-if="SEQ > 3" />
+    
+
 
       <test v-if="test.modal"/>
     </div>
@@ -16,9 +17,9 @@
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import test from './test/test.vue'
 import Background from './components/Background';
-import Loader from './components/Loader';
-import TitleSign from './components/TitleSign';
+import Title from './components/Title';
 import Writer from './components/Writer';
+import Parade from './components/Parade';
 
 
 
@@ -27,20 +28,23 @@ export default {
   components: {
     test,
     Background,
-    Loader,
-    TitleSign,
+    Title,
     Writer,
+    Parade
 
   },
   computed: {
     ...mapState([
         'test', 
-        'winSize', 
+        'winSize',
       ]),
     ...mapGetters([
+        'TC', 'TS',
         'byType', 
         'SEQ', 
         'FILES_IN_SERVER',
+        'SIGN_SENT',
+
       ])
   },
   methods: {
@@ -67,20 +71,36 @@ export default {
       }
     },
     FILES_IN_SERVER(nu, old){
-      if(this.SEQ === 0){
-        if(nu.length){
-          console.log('--- start loading signs ---');
-          console.log('filesInServer:', nu.length);
-          this.startSignLoad();
-        }else{
-          console.log('--- no sign data ---');
-          console.log('filesInServer:', nu.length);
+      if(this.TC.signLoadDone){
+        console.log('--- test: start loading signs ---');
+        this.startSignLoad();
+      }else{
+        if(this.SEQ === 0){
+          if(nu.length){
+            console.log('--- start loading signs ---');
+            console.log('filesInServer:', nu.length);
+            this.startSignLoad();
+          }else{
+            console.log('--- no sign data ---');
+            console.log('filesInServer:', nu.length);
+          }
+        }else{ // > 0
+          console.log('file index update to:', nu.length);
+          return old
         }
-      }else{ // > 0
-        console.log('file index update');
-        console.log('from:', old.length, ' / to:', nu.length);
       }
     },
+    SIGN_SENT(nu, old){
+      if(nu === true){
+        if(this.TC.testSequence){
+          this.$store.state.test.client.sequenceNow = 4;
+        }else{
+          this.moveTo(4);
+        }
+      }else{
+        return old
+      }
+    }
   },
   created() {
     this.onResize();
