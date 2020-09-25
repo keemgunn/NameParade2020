@@ -1,80 +1,102 @@
 <template>
-  <div id="app">
-
-    
-    <Background 
-    />
-
-
-    
-   
-
-    
-
-
+  <div class="app">
+    <Background/>
     <div id="content">
-      <br><br>
-      vw: {{winSize.vw}} <br>
-      vh: {{winSize.vh}} <br>
-      {{watchWindowSize}} <br><br>
-      - msg said - <br> {{msg}}
-
-      <div id="test">
-        <button @click="newBBC()">test A</button><br>
-        <button>test B</button><br>
-        <button>test C</button><br>
-        <button>test D</button><br>
-      </div>
+      <Loader/>
+      <TitleSign v-if="SEQ < 2"/>
+      <Writer v-if="SEQ > 1"/>
       
+
+      <test v-if="test.modal"/>
     </div>
   </div>
 </template>
 
 <script> 
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
+import test from './test/test.vue'
 import Background from './components/Background';
+import Loader from './components/Loader';
+import TitleSign from './components/TitleSign';
+import Writer from './components/Writer';
+
 
 
 export default {
   name: 'App',
   components: {
-    Background
-  },
-  data() {
-    return {
-      watchWindowSize: '',
-      msg: ''
-    }
+    test,
+    Background,
+    Loader,
+    TitleSign,
+    Writer,
+
   },
   computed: {
-    ...mapState(['winSize'])
+    ...mapState([
+        'test', 
+        'winSize', 
+      ]),
+    ...mapGetters([
+        'byType', 
+        'SEQ', 
+        'FILES_IN_SERVER',
+      ])
   },
   methods: {
-    ...mapMutations(['newBBC']),
+    ...mapMutations([
+        'moveTo', 
+        'setBBC', 
+      ]),
+    ...mapActions([
+        'INITIATE', 
+        'startSignLoad'
+      ]),
     onResize() {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
     },
-
   },
   watch: {
-    vh(newHeight, oldHeight) {
-     this.watchWindowSize = `it changed to ${newHeight} from ${oldHeight}`;
+    SEQ(nu, old) {
+      console.log('-- sequence changed :', old,'->',nu);
+      console.log('-- SEQ:', this.$store.state.seqName);
+      if(nu > 3){
+        document.querySelector( 'body' ).style['overflow-y'] = 'auto';
+        document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
+      }
     },
-    vw(newWidth, oldWidth) {
-     this.watchWindowSize = `it changed to ${newWidth} from ${oldWidth}`;
-    }
+    FILES_IN_SERVER(nu, old){
+      if(this.SEQ === 0){
+        if(nu.length){
+          console.log('--- start loading signs ---');
+          console.log('filesInServer:', nu.length);
+          this.startSignLoad();
+        }else{
+          console.log('--- no sign data ---');
+          console.log('filesInServer:', nu.length);
+        }
+      }else{ // > 0
+        console.log('file index update');
+        console.log('from:', old.length, ' / to:', nu.length);
+      }
+    },
   },
   created() {
-    this.winSize.vw = window.innerWidth;
-    this.winSize.vh = window.innerHeight;
+    this.onResize();
+    this.setBBC({comp:-1, hue:-1});
+    this.INITIATE();
   },
   mounted() {
-    // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
+    this.onResize();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-
+    if(this.SEQ > 3){
+      document.querySelector( 'body' ).style['overflow-y'] = 'auto';
+      document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
+    }
+    // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
   },
   beforeDestroy() { 
     window.removeEventListener('resize', this.onResize); 
@@ -84,40 +106,33 @@ export default {
 
 
 <style lang="scss">
+  @import "assets/styles/animations.scss";
+  @import "assets/fonts/CoreGothicD/coregothicd.css";
+
+  $appHeight: 300vh;
+
   body {
-    position: fixed; top: 0; left: 0; 
-    padding: 0; margin: 0;
     overflow: hidden;
     background-color: black;
   }
-  #app {
+
+  .app {
     z-index: 0;
     position: absolute; top: 0; left: 0;
     margin: 0; padding: 0;
-    width: 100vw; height: 100vh;
+    width: 100vw; height: $appHeight;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: aliceblue;
-    background-color: black;
   }
-  #content {
+
+  #content{
     z-index: 0;
-    position: absolute; top: 0; left: 0;
+    position: relative; top: 0; left: 0;      
     margin: 0; padding: 0;
-    width: 100vw; height: 100vh;
+    width: 100%; height: 100%;
   }
-
-
-  #test {
-  position: absolute; top: 41%; left: 41%;
-  width: 100px; height: 100px;
-  background-color: black;
-  }#test:hover {
-    cursor: pointer;
-    background-color: darkviolet;
-  }
-
 
 
 </style>
