@@ -32,9 +32,8 @@ export default {
       'narrower', 'straight'
     ],
 
-    strokeWidth: 4,
-    Paths: [],
-
+    strokeWidth: 1,
+    simplifyVal: 1,
 
   }},
   computed: {
@@ -120,15 +119,15 @@ export default {
         this.canvasCoords.center.y
       )
       this.writer.width = this.W;
-      // if(this.VIEWTYPE === 'small'){
-      //   this.strokeWidth = this.W / 66;
-      // }else if(this.VIEWTYPE === 'narrow'){
-      //   this.strokeWidth = this.W / 66;
-      // }else if(this.VIEWTYPE === 'tablet'){
-      //   this.strokeWidth = this.W / 80;
-      // }else{
-      //   this.strokeWidth = this.W / 85;
-      // }
+      if(this.VIEWTYPE === 'small'){
+        this.strokeWidth = this.W / 66;
+      }else if(this.VIEWTYPE === 'narrow'){
+        this.strokeWidth = this.W / 66;
+      }else if(this.VIEWTYPE === 'tablet'){
+        this.strokeWidth = this.W / 80;
+      }else{
+        this.strokeWidth = this.W / 85;
+      }
     },
     getCoords(elem) { // crossbrowser version
       var box = elem.getBoundingClientRect();
@@ -164,94 +163,41 @@ export default {
     this.scope.setup(document.getElementById('maker'));
     this.onResize();
 
-  
-    let coords = { x:0, y:0 };
-    let last = null;
-    let curr = null;
-    let delta = null;
-    let path = [
-      // segments from pm.Stroke 
-    ];
-    let width = 8;
     let contact = 0;
+    let path;
 
-
+    // let coords = { x:0, y:0 };
+    // this.scope.view.onMouseMove = (event) => {
+    //   coords = {x:event.point.x, y:event.point.y};
+    // }
 
     this.scope.view.onMouseEnter = () => {
-      // console.log('enter');
-    }
-    this.scope.view.onMouseLeave = () => {
-      console.log('leave');
-      // inboard = 0; 
-      contact = 0;
-    }
-    this.scope.view.onMouseMove = (event) => {
-      console.log('move');
-      coords = {x:event.point.x, y:event.point.y};
-    }
-    this.scope.view.onMouseDown = (event) => {
-      console.log('down');
-      coords = {x:event.point.x, y:event.point.y};
-      last = pm.newPath(this.scope, coords);
       contact = 1;
     }
-    this.scope.view.onMouseUp = () => {
-      console.log('up');
+    this.scope.view.onMouseLeave = () => {
       contact = 0;
     }
 
+    this.scope.view.onMouseDown = (event) => {
+      contact = 1;
+      let firstPoint = pm.newPoint(this.scope, event);
+      console.log(this.strokeWidth);
+      path = pm.Stroke(this.scope, firstPoint, this.strokeWidth)
+    }
 
-    
-
-    this.onResize();
-    this.scope.view.onFrame = () => {
+    this.scope.view.onMouseDrag = (event) => {
       if(contact){
-        curr = pm.newPath(this.scope, coords);
-        delta = pm.getDelta(this.scope, last, curr);
-        let seg = pm.Stroke(
-          this.scope,{
-            width,
-            curr,
-            delta
-          }
-        );
-        path.push(seg);
-        last = curr;
+        let nextPoint = pm.newPoint(this.scope, event);
+        path.add(nextPoint);
+        path.smooth('continuous');
       }
     }
 
-
-
-
-
-
-
-    // setTimeout(setupFrameFunction, 1800, {
-    //   scope: this.scope, 
-    //   inboard: this.inboard,
-    //   contact: this.contact
-    //   });
-    // function setupFrameFunction(
-    //   {scope , inboard, contact}){
-    //   console.log('-- setupFrameFunction --');
-    //   scope.view.onFrame = (event) => {
-    //     console.log(inboard*contact);
-    //     if(inboard * contact){
-    //       curr = pm.newPath(scope, event);
-    //       delta = pm.getDelta(scope, last, curr);
-    //       let seg = pm.Stroke(
-    //         scope,{
-    //           width,
-    //           curr,
-    //           delta
-    //         }
-    //       );
-    //       path.push(seg);
-    //       last = curr;
-    //     }
-    //   }
-    // }
-
+    this.scope.view.onMouseUp = () => {
+      path.simplify(this.simplifyVal);
+      contact = 0;
+      this.writer.paths.push(path);
+    }
 
   },
 }

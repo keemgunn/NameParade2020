@@ -1,5 +1,8 @@
-function newPath(scope, {x,y}) {
-  return new scope.Point(x,y)
+function newPoint(scope, event) {
+  return new scope.Point(
+    event.point.x,
+    event.point.y
+  )
 }
 
 function getDelta(scope, last, curr){
@@ -9,42 +12,21 @@ function getDelta(scope, last, curr){
   )
 }
 
-// const cornerAmount = 0.05; 
-
-function Stroke(scope, {width, curr, delta}){
-  console.log(width);
-  let path = new scope.Path.Ellipse(
-    newRect(scope, {width, delta})
-  )
-  path.fillColor = 'white';
-  path.position = new scope.Point(
-    curr.x - delta.x,
-    curr.y - delta.y
-  );
-  path.rotate(delta.angle);
-  return path
-}
-
-const strokeConfig = {
-  length: 1.5 ,
-  width: 0.8
-}
-function newRect(scope, {width, delta}){
-  console.log(delta.length);
-  return new scope.Rectangle({ 
-    point: new scope.Point(0,0),
-    size: new scope.Size(
-      delta.length * strokeConfig.length , 
-      width - (delta.length * strokeConfig.width)
-    )
+function Stroke(scope, point, width){
+  console.log('width', width);
+  return new scope.Path({
+    segments: [ point ],
+    strokeColor: 'white',
+    strokeWidth: width,
+    strokeCap: 'round',
+    strokeJoin: 'round'
   })
 }
 
 
 
 export {
-  newPath,
+  newPoint,
   getDelta,
   Stroke
-
 }
