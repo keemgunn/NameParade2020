@@ -12,6 +12,7 @@ function boundCheck(scope){
     ], 10);
     circle.fillColor = 'cyan';
   }
+  console.log(coords);
 }
 // boundCheck(this.scope);
 

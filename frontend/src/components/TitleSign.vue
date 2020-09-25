@@ -27,30 +27,19 @@ export default {
     canvasEl: null,
     canvasCoords: {},
 
-
     renderReady: false,
     mySign: {
       scale:0, arr:[], offsetX:0, offSetY:0
     },
     renderProgress: {path:0, seg:0},
     renPath: [], RENDERED: [],
-    effect: [],
-    effectProp: [
-      {
-        center: null,
-        radius: 10,
-        fillColor: 'white'
-      },{
-        center: null,
-        radius: 15,
-        fillColor: 'pink'
-      }
-    ],
 
     strokeStyle: {
       color: 'white',
+      alpha: 0.76,
       width: 10
     },
+    opacity: 1
   }},
   computed: {
     ...mapState(['aniTiming']),
@@ -78,7 +67,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['renderTrigger']), 
+    ...mapMutations(['moveTo']), 
     onResize(){
       this.canvasCoords = this.getCoords(this.canvasEl);
       this.mySign.offsetX = this.canvasCoords.w * 0.02
@@ -116,9 +105,7 @@ export default {
           * this.mySign.scale + this.Y + this.mySign.offsetY)
       );
       if(segIndex===0){ 
-        console.log(this.effectProp[pathIndex]);
         // FIRST SEG ---------
-        this.effect.push(this.newEffect(this.scope, segPoint, pathIndex));
         this.renPath = new this.scope.Path({
           segments: [ segPoint ], // array
           strokeColor: this.strokeStyle.color,
@@ -132,12 +119,12 @@ export default {
         // LAST SEG ---------
         this.renPath.add(segPoint);
         this.RENDERED.push(this.renPath);
-        this.effect[pathIndex].position = segPoint;
         if(pathIndex === this.mySign.arr.length-1){
           // LAST PATH && LAST SEG ------
           console.log('-- RENDER DONE --');
           this.renderProgress.path = 0;
           this.renderProgress.seg = 0;
+          setTimeout(this.fadeOut, this.AT.before_seq12);
         }else{
           this.renderProgress.path += 1;
           this.renderProgress.seg = 0;
@@ -148,16 +135,24 @@ export default {
         this.renPath.add(segPoint);
         this.renPath.smooth('continuous');
         this.renderProgress.seg += 1;
-        this.effect[pathIndex].position = segPoint;
         setTimeout(this.stroke, this.AT.renderSpeed[pathIndex], this.proInfo);
       }
     },
-    newEffect(scope, point, i){
-      this.effectProp[i].center = [point.x, point.y];
-      console.log(this.effectProp[i]);
-      let eff = new scope.Path.Circle(this.effectProp[i]);
-      console.log(eff);
-      return eff
+
+    fadeOut(){
+      this.scope.view.onFrame = (event) => {
+        if(this.opacity > 0){
+          this.opacity = this.opacity - (event.count/this.AT.fadeOutVelo)
+          this.RENDERED[0].strokeColor.alpha = this.opacity;
+          this.RENDERED[1].strokeColor.alpha = this.opacity;
+        }else if(this.opacity < 0){
+          this.opacity = 0
+          this.RENDERED[0].strokeColor.alpha = this.opacity;
+          this.RENDERED[1].strokeColor.alpha = this.opacity;
+          this.scope.view.remove();
+          this.moveTo(2)
+        }
+      }
     }
 
 
@@ -187,6 +182,9 @@ export default {
     
   },
   beforeCreate() {
+    
+  },
+  beforeDestroy() {
     
   },
 }

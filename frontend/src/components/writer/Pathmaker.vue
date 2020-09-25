@@ -1,26 +1,12 @@
 <template>
 <div class="pathmaker">
-  <canvas 
-  id="maker" 
-  class="maker"
-  :class="byType"
-  :style="canvasLocation"
-  ></canvas>
-
-
-
-  <div class="btn-wrapper" :class="byType">
-
-  </div>
-
+  <canvas id="maker" class="maker"></canvas>
 </div>
 </template>
-
-
-
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
 const paper = require('paper');
+const pm = require('../../assets/javascripts/pathmaker');
 
 const name = 'Pathmaker';
 export default {
@@ -30,26 +16,20 @@ export default {
     scope: null,
     canvasEl: null,
     canvasCoords: {},
-
-    okToWrite: false,
-    simplifyVal: 8,
-    strokeWidth: 0,
-
-    visiblePath: [],
-    visibleCircle: [],
-    canvasLocation: {}, // style object
-    scopeSize: {width:0, height:0},
-    relocation: {x:0, y:0},
-
-    // _____ TEST _____
-    mouseX: -1,
-    mouseY: -1,
-
-
+    strokeWidth: 1,
+    simplifyVal: 1,
   }},
   computed: {
-    ...mapState(['winSize', 'writer']),
-    ...mapGetters(['byType', 'VIEWTYPE', 'NEW_PATHS']),
+    ...mapState([
+        'winSize',
+        'writer',
+        'writerUndo'
+      ]),
+    ...mapGetters([
+        'byType', 
+        'VIEWTYPE', 
+        'NEW_PATHS'
+      ]),
     AT: function(){
       return this['aniTiming'][name]
     },
@@ -68,25 +48,58 @@ export default {
   },
   watch: {
     NEW_PATHS(nu, old){
-      if(nu){
-        console.log('watcher: paths detecred', nu);
-
+      if(nu === 0){
+        console.log('watcher: nopaths');
+      }else if(nu > old){
+        console.log('watcher: paths ++', nu);
+        console.log(this.writer.paths);
       }else{
-        console.log('watcher: nopaths', old);
-
+        console.log('watcher: paths --', nu);
+        console.log(this.writer.paths);
+      }
+    },
+    writerUndo(nu, old){
+      if(nu){
+        this.writer.paths[nu].remove();
+        this.writer.paths.pop();
+        this.$store.state.writerUndo = null;
+      }else if(nu === 0){
+        this.writer.paths[nu].remove();
+        this.writer.paths.pop();
+        this.$store.state.writerUndo = null;
+      }else{
+        return old
       }
     }
   },
   methods: {
-    ...mapMutations(['SEND_PATHS']),
+    ...mapMutations([]),
     onResize(){
       this.canvasCoords = this.getCoords(this.canvasEl);
+      this.canvasCoords.center = {
+        x: this.canvasCoords.x + (this.canvasCoords.w/2),
+        y: this.canvasCoords.y + (this.canvasCoords.h/2)
+      };
+      this.scope.view.viewSize = new this.scope.Size(
+        this.canvasCoords.w , this.canvasCoords.h
+      );
+      this.scope.view.center = new this.scope.Point(
+        this.canvasCoords.center.x, 
+        this.canvasCoords.center.y
+      )
       this.writer.width = this.W;
-      this.strokeWidth = this.W / 85;
+      if(this.VIEWTYPE === 'small'){
+        this.strokeWidth = this.W / 66;
+      }else if(this.VIEWTYPE === 'narrow'){
+        this.strokeWidth = this.W / 66;
+      }else if(this.VIEWTYPE === 'tablet'){
+        this.strokeWidth = this.W / 80;
+      }else{
+        this.strokeWidth = this.W / 85;
+      }
     },
-    getCoords(elem) { // crossbrowser version
+    getCoords(elem) {
       var box = elem.getBoundingClientRect();
-      console.log(box);
       var body = document.body;
       var docEl = document.documentElement;
       var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
@@ -99,144 +112,78 @@ export default {
         x: Math.round(left),
         y: Math.round(top),
         w: box.width, 
-        h: box.height
+        h: box.height,
       };
     },
-
-
-    SEND(){
-      this.SEND_PATHS();
-      for(var i=0; i < this.visiblePath.length; i++){
-        this.visiblePath[i].remove();
-      }
-      this.writer.paths = [];
+    exportSvg(){
+      this.makeGroup();
+      console.log(this.writer.pathGroup);
+      this.makeSvg();
+      console.log(this.writer.svg);
     },
-  },
-  created() {
+    makeGroup(){
+      this.writer.pathGroup = new this.scope.Group({
+        children: this.writer.paths
+      })
+    },
+    makeSvg(){
+      this.writer.svg = this.writer.pathGroup.exportSVG({
+        asString: true,
+        bounds: 'content'
+      });
+    }
   },
   mounted() {
     this.canvasEl = document.getElementById('maker');
-    this.onResize();
     this.scope = new paper.PaperScope();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     });
     this.scope.setup(document.getElementById('maker'));
+    this.onResize();
 
-    this.scope.view.onMouseMove = (event) => {
-      this.mouseX = event.point.x;
-      this.mouseY = event.point.y;
-    }
-
-    var visible, segPoints;
-
+    let contact = 0;
+    let path;
     this.scope.view.onMouseEnter = () => {
-      this.okToWrite = true;
+      contact = 1;
     }
     this.scope.view.onMouseLeave = () => {
-      this.okToWrite = false;
+      contact = 0;
     }
-
     this.scope.view.onMouseDown = (event) => {
-      this.okToWrite = true;
-      segPoints = [];
-      var locatedPoint = new this.scope.Point(
-        event.point.x + this.X, 
-        event.point.y + this.Y
-      )
-      visible = new this.scope.Path({
-        segments: [ locatedPoint ], // array
-        strokeColor: 'white',
-        strokeWidth: this.strokeWidth,
-        strokeCap: 'round',
-        strokeJoin: 'round'
-        // fullySelected: true
-      });
-
-      var pointCore = {x: event.point.x, y: event.point.y};
-      segPoints.push(pointCore);
+      contact = 1;
+      let firstPoint = pm.newPoint(this.scope, event);
+      console.log(this.strokeWidth);
+      path = pm.Stroke(this.scope, firstPoint, this.strokeWidth)
     }
-
-
     this.scope.view.onMouseDrag = (event) => {
-      if(this.okToWrite){
-        var locatedPoint = new this.scope.Point(
-          event.point.x + this.X, 
-          event.point.y + this.Y
-        )
-        visible.add(locatedPoint);
-        visible.smooth('continuous');
-
-
-
-
-
-        var pointCore = {x: event.point.x, y: event.point.y};
-        segPoints.push(pointCore);
+      if(contact){
+        let nextPoint = pm.newPoint(this.scope, event);
+        path.add(nextPoint);
+        path.smooth('continuous');
       }
     }
-
-
-
     this.scope.view.onMouseUp = () => {
-      visible.simplify(this.simplifyVal);
-
-      console.log(visible.segments);
-
-      this.visiblePath.push(visible);
-      visible = [];
-      this.writer.paths.push(segPoints);
-      segPoints = [];
-        // it saves segPoints without SIMPLIFICATION
-        // SO ITS SEGMENTS ARE MUCH MORE THAN VISIBLEPATH's
+      path.simplify(this.simplifyVal);
+      contact = 0;
+      this.writer.paths.push(path);
     }
-
-
-
-
-
-  }
+  },
+  beforeDestroy() {
+    this.exportSvg();
+    this.writer.pathGroup.remove();
+    this.scope.view.remove();
+  },
 }
 </script>
-
-
-
 <style lang="scss" scoped> 
 .pathmaker{
   position: relative; top: 0; left: 0;
   width: 100%; height: 100%;
-  // background-color: rgba(255, 0, 0, 0.397);
 }
-
-.maker{
+#maker{
   z-index: 0;
   position: relative; top: 0; left: 0; 
-  width: calc(100% - 4px); height: calc(100% - 4px);
-  border: solid 2px white;
+  width: 100%; height: 100%;
 }
-
-.button-wrapper{
-  position: relative;
-  ._small { // ==============================
-    width: 100%; height: 21vw;
-
-  }
-
-  ._narrow { // ==============================
-    width: 100%; height: 21vw;
-
-  }
-
-  ._tablet { // ==============================
-    width: 100%; height: 19vw;
-
-  }
-
-  ._wide { // ==============================
-    width: 100%; height: 4.6vw;
-
-  }
-}
-
-
 </style>

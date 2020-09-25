@@ -27,16 +27,18 @@ export default new Vuex.Store({
     aniTiming: animation.timing,
 
     //__________________LOADER
-    loadedArr: [],
+    loadedArr: null,
     loading: {
       fakeOffset: 0,
       faker: 100 + 150,
-      filesInServer: 0
+      filesInServer: null
     }, 
     
     //__________________PATHMAKER
     writer:{
       paths:[],
+      pathGroup: null,
+      svg: '',
       width: 0,
       info: {
         userId: userId,
@@ -47,6 +49,11 @@ export default new Vuex.Store({
         writeTime: null,
         outTime: null
       }
+    },
+    writerUndo: null,
+    writerDone: false,
+    boundInfo: {
+      top: 0, bottom: 0
     },
     
     //__________________RENDERER
@@ -134,6 +141,19 @@ export default new Vuex.Store({
     NEW_PATHS(state){
       return state.writer.paths.length
     },
+
+    WRITER_DONE(state){
+      if(state.test.client.writerDone){
+        return true
+      }else{
+        return state.writerDone
+      }
+    },
+
+    USER_NAME(state){
+      return state.writer.info.name
+    }
+
   },
 
 
@@ -148,7 +168,10 @@ export default new Vuex.Store({
         state.loading.filesInServer = test.signs.length; 
       }else{
         const {data} = await axios.get('/load/file-count');
-        state.loading.filesInServer = data.jsonCount; 
+          // data === arrays of filenames
+        console.log(' - files in server:');
+        console.log(data);
+        state.loading.filesInServer = data; 
       }
     },
 
@@ -165,18 +188,6 @@ export default new Vuex.Store({
     },
 
     
-
-    async SEND_PATHS(state){
-      if(state.writer.paths.length){
-        state.writer.info.writeTime = Date.now();
-        const {data} = await axios.post('/push/paths', {writer: state.writer});
-        if(data.status === 200){
-          state.modal = 2;
-        }
-      }else{
-        console.log('draw signs first!');
-      }
-    },
 
     //__________________________ UI METHODS
 
@@ -204,21 +215,27 @@ export default new Vuex.Store({
       }
     },
 
-
-
-    
-
-    CHECK_FILES(){
-
-    },
-
-    LOAD_FILES(){
-
+    UNDO_PATH(state){
+      if(state.writer.paths.length){
+        state.writerUndo = state.writer.paths.length - 1;
+      }
     },
   
-    SEND_PATH(){
-
-    }
+    async SEND_PATHS(state){
+      if(state.writer.paths.length){
+        state.writer.info.writeTime = Date.now();
+        const newSign = {
+          svg: state.writer.svg,
+          info: state.writer.info
+        };
+        const {data} = await axios.post('/push/paths', newSign);
+        if(data.status === 200){
+          state.modal = 2;
+        }
+      }else{
+        console.log('draw signs first!');
+      }
+    },
 
 
 
@@ -233,7 +250,7 @@ export default new Vuex.Store({
       commit('fakeOff', 20);
       state.writer.info.inTime = Date.now();
       if(state.test.server.init){
-        commit('PUT_INITDATA', {ip: 'data.ip', uag: 'data.uag'});
+        commit('PUT_INITDATA', {ip: 'data.ip-test', uag: 'data.uag-test'});
       }else{
         const {data} = await axios.post('/init/enter', {userId});
         commit('PUT_INITDATA', {ip: data.ip, uag: data.uag});
@@ -247,7 +264,7 @@ export default new Vuex.Store({
         state.loadedArr = test.signs;
       }else{
         const {data} = await axios.get('/load/initial');
-        console.log('initial data recieved: ',data.length);
+        console.log('initial data recieved:', data.arg.length);
         state.loadedArr = data.arg;
       }
     }
