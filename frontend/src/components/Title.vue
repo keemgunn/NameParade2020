@@ -230,6 +230,8 @@ export default {
   width: 100vw; height: 100vh;
   transition: 500ms;
   transition-timing-function: cubic-bezier(0,0,.17,1);
+  user-select: none;
+  pointer-events: none;
   // background-color: rgba(230, 12, 56, 0.13);
 }
 .block-wrapper {

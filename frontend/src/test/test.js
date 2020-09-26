@@ -8,7 +8,7 @@ const configs = {
 
     
     loadingAmount: 100,
-    sequenceNow: ( 1 ),
+    sequenceNow: ( 0 ),
   },
   server: {
     init: true,
