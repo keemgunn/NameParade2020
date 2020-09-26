@@ -1,8 +1,8 @@
 const configs = {
   client: {
     // testSequence: true, 
-    signLoadDone: true,
-    titleSignRendered: true,
+    // signLoadDone: true,
+    // titleSignRendered: true,
     // writerDone: true,
 
 
@@ -11,10 +11,10 @@ const configs = {
     sequenceNow: ( 0 ),
   },
   server: {
-    init: true,
-    filesInServer: true,
-    signLoad: true,
-    sendPaths: true,
+    // init: true,
+    // filesInServer: true,
+    // signLoad: true,
+    // sendPaths: true,
 
     foo: 'bar',
   },
