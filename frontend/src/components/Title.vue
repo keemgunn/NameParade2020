@@ -6,11 +6,15 @@
       <Cell 
         :block="block" 
         :index="blocks.indexOf(block)"
-        :allMounted="CELL_TIMING.allMounted"
         @mounted='$store.state.cellTiming.mounted += 1'
       />
     </div>
   </div>
+  <transition name="titlesign-vanish">
+  <TitleSign v-if="blockrendered && (SEQ < 2)"/>
+  </transition>
+
+
 </div>
 </div>
 </template>
@@ -19,15 +23,15 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
-// import anime from 'animejs';
-// const an = require('../assets/javascripts/circleAnime');
 import Cell from './title/Cell';
+import TitleSign from './title/TitleSign';
 
 const name = "Title";
 export default {
   name,
-  components: { Cell, },
+  components: { Cell, TitleSign },
   data() { return {
+    blockrendered: false
   }},
   computed: {
     ...mapState([ 
@@ -46,68 +50,14 @@ export default {
         'hOff',
         'blockCounts',
         'CELL_TIMING',
-        'CELL_MOUNTED'
-
+        'CELL_MOUNTED',
+        'TYPO_RENDERED',
       ]),
       AT: function(){
         return this['aniTiming'][name]
       },
     space: function(){
-      if(this.SEQ === 0){
-        if(this.VIEWTYPE === 'small'){
-          return {
-            'height': '46vh',
-          }
-        }else if(this.VIEWTYPE === 'narrow'){
-          return {
-            'height': '46vh',
-          }
-        }else if(this.VIEWTYPE === 'tablet'){
-          return {
-            'height': '50vh',
-          }
-        }else{
-          return { // this.VIEWTYPE === 'wide'
-            'height': '50vh',
-          }
-        }
-      }else if(this.SEQ === 1){
-        if(this.VIEWTYPE === 'small'){
-          return {
-            'height': '38vh',
-          }
-        }else if(this.VIEWTYPE === 'narrow'){
-          return {
-            'height': '38vh',
-          }
-        }else if(this.VIEWTYPE === 'tablet'){
-          return {
-            'height': '40vh',
-          }
-        }else{
-          return { // this.VIEWTYPE === 'wide'
-            'height': '40vh',
-          }
-        }
-      }else if(this.SEQ === 2){
-        if(this.VIEWTYPE === 'small'){
-          return {
-            'height': '22vw',
-          }
-        }else if(this.VIEWTYPE === 'narrow'){
-          return {
-            'height': '22vw',
-          }
-        }else if(this.VIEWTYPE === 'tablet'){
-          return {
-            'height': '20vw',
-          }
-        }else{
-          return { // this.VIEWTYPE === 'wide'
-            'height': '5vw',
-          }
-        }
-      }else if(this.SEQ > 2){
+      if(this.SEQ > 2){
         if(this.VIEWTYPE === 'small'){
           return {
             'height': '12vw',
@@ -176,12 +126,11 @@ export default {
       this.$store.state.blocks = [];
       for(var i=0; i<this.blockCounts.r; i++){
         for(var j=0; j<this.blockCounts.c; j++){
-          this.$store.state.blocks.push('c' + j + 'r' + i);
+          this.$store.state.blocks.push(j + 'x' + i);
         }
       }
+      this.blockrendered = true;
     },
-
-
   },
   watch: {
     colCount(nu, old){
@@ -192,15 +141,12 @@ export default {
       this.getBlockArr();
       return {nu, old}
     },
-    CELL_MOUNTED(nu, old){
-      if(this.blocks.length === nu){
-        this.$store.state.cellTiming.allMounted = true
+    TYPO_RENDERED(nu, old){
+      if(nu){
+        this.moveTo(1);
       }
       return old
     }
-  },
-  created() {
-
   },
   mounted() {
     this.onResize();
@@ -208,16 +154,6 @@ export default {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     });
-
-
-
-
-  },
-  beforeUpdate() {
-    
-  },
-  beforeCreate() {
-    
   },
 }
 </script>
@@ -232,7 +168,7 @@ export default {
   transition-timing-function: cubic-bezier(0,0,.17,1);
   user-select: none;
   pointer-events: none;
-  // background-color: rgba(230, 12, 56, 0.13);
+  background-color: rgba(230, 12, 56, 0.13);
 }
 .block-wrapper {
   position: fixed; top: 0; left: 0;
@@ -242,12 +178,7 @@ export default {
 .cell {
   position: relative;
   float: left;
-  // background-color: rgb(0, 0, 128);
 }
-// .cell:hover{
-//   background-color: rgb(51, 51, 155);
-// }
-
 
 
 

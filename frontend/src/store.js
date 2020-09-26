@@ -36,14 +36,13 @@ export default new Vuex.Store({
       wOff: null, hOff: null,
     },
     blocks: [],
+
+    //___________________ ANIME TIMING
     cellTiming: {
       mounted: 0,
-      allMounted: false
+      typoRendered: 0,
     },
     
-
-
-
     //__________________PATHMAKER
     writer:{
       paths:[],
@@ -160,7 +159,18 @@ export default new Vuex.Store({
       return state.cellTiming
     },
     CELL_MOUNTED(state){
-      return state.cellTiming.mounted
+      if(state.blocks.length === state.cellTiming.mounted){
+        return true
+      }else{
+        return false
+      }
+    },
+    TYPO_RENDERED(state){
+      if(state.cellTiming.typoRendered === 22){
+        return true
+      }else{
+        return false
+      }
     },
 
 

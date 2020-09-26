@@ -1,9 +1,9 @@
 <template>
 <div id="cell-wrapper">
 
-
   <div class="back-circle">
     <svg 
+    :id="reacter"
     viewBox="0 0 52 52" version="1.1" 
     xmlns="http://www.w3.org/2000/svg" 
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -19,9 +19,9 @@
     </svg>
   </div>
 
-
-  <div class="circle-typo">
+  <div class="circle-typo" v-if="typoAlternater">
     <svg 
+    :id="reacter"
     viewBox="0 0 52 52" version="1.1" 
     xmlns="http://www.w3.org/2000/svg" 
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -37,9 +37,23 @@
     </svg>
   </div>
 
-
-
-
+  <div class="circle-typo" v-if="!typoAlternater">
+    <svg 
+    :id="reacter"
+    viewBox="0 0 52 52" version="1.1" 
+    xmlns="http://www.w3.org/2000/svg" 
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    fill="none">
+      <path 
+        class="typo"
+        :id="typoId"
+        d=""
+        fill-rule="evenodd"
+        transform="translate(1.000000, 1.000000)"
+        stroke-width="1.4">
+      </path>
+    </svg>
+  </div>
 
   <div class="index-marker">
     {{index}}
@@ -55,24 +69,25 @@ import anime from 'animejs';
 const {
   Timeline,
   keys,
+  positionMap,
   mountPosition,
-  typoArr
+  typoArr,
+  // circleLive
 } = require('../../assets/javascripts/circleAnime');
 
 
-const name ="Cell";
 export default {
-  name,
-  components: { },
-  props: [
-    'block', 'index', 'allMounted'
-  ],
+  name: "Cell",
+  props: [ 'block', 'index' ],
   data() { return {
     coord: [],
-    CircleAnimation: null,
-    TypoAnimation: null,
     typoIndex: -1,
     typoEl: null,
+    typoAlternater: true,
+    CircleAnimation: null,
+    TypoAnimation: null,
+    TypoRerender: null,
+    CircleLoop: null,
 
   }},
   computed: {
@@ -82,32 +97,120 @@ export default {
     ...mapGetters([
       'VIEWTYPE',
       'SEQ',
+      'CELL_MOUNTED'
     ]),
-    AT:function(){
-      return this['aniTiming'][name]
+    mpType: function(){
+      return positionMap[this.SEQ] // === number
     },
     circleId:function(){
       return 'circle'+this.index
     },
     typoId:function(){
       return 'typo'+this.typoIndex
+    },
+    reacter: function(){
+      return 'react_'+this.index
     }
   },
   watch: {
-    allMounted(nu, old){
-      console.log(nu);
+    CELL_MOUNTED(nu, old){
       this.CircleAnimation.play();
       return old
-    }
+    },
+    SEQ(nu, old){
+      if(
+        (nu === 2)
+      ){
+        this.CircleAnimation = null;
+        this.CircleAnimation = Timeline(anime)
+        .add({ targets: '#'+this.circleId,
+          stroke: [
+            keys('rgba(255, 255, 255, 0)', 0, 300, 0, "easeOutExpo")
+          ]
+        });
+        this.CircleAnimation.play();
+        this.TypoRerender = null;
+        this.TypoRerender = Timeline(anime)
+        .add({ targets: '#'+this.typoId,
+          strokeDashoffset: [
+            {
+              value: [0, anime.setDashoffset], 
+              delay: 0,
+              duration: 1800,
+              endDelay: 300,
+              direction: 'normal',
+              easing: "easeOutQuad",
+            }
+          ],
+        });
+        this.TypoRerender.finished.then(() => {
+          this.typoAlternater = !this.typoAlternater;
+          this.typoRelocate();
+        });
+        this.TypoRerender.play();
+      }
+      return old
+    },
   },
   methods: {
     ...mapMutations([]),
-    playTypoAnimation(){
+    //__________________RERENDER METHODS________
+    typoRelocate(){
+      this.typoIndex = mountPosition[this.mpType][this.VIEWTYPE].indexOf(this.index);
       if(this.typoIndex !== -1){
-        console.log('triggered');
+        setTimeout(this.setPath, 100);
+      }else{
+        this.afterRerender();
       }
-      // this.TypoAnimation.play();
-    }
+    },setPath(){
+      this.typoEl = document.querySelector('#'+this.typoId);
+      this.typoEl.setAttribute("d", typoArr[this.typoIndex]);
+      setTimeout(this.reRender, 100);
+    },
+    reRender(){
+      this.TypoRerender = null;
+      this.TypoRerender = Timeline(anime)
+      .add({ targets: '#'+this.typoId,
+        stroke: [
+          keys('#ffffff', 20, 400, 0, "easeOutExpo"),
+        ],
+        strokeDashoffset: [
+          {
+            value: [anime.setDashoffset, 0], 
+            delay: function() { return anime.random(0, 700); },
+            duration: function() { return anime.random(1000, 2000); },
+            endDelay: 0,
+            direction: 'normal',
+            easing: "easeOutQuad",
+          }
+        ],
+      });
+      this.TypoRerender.finished.then(() => {
+        this.afterRerender();
+      });
+      this.TypoRerender.play();
+    },
+    afterRerender(){
+      if(this.SEQ ===2){ 
+
+        // if(circleLive[0][this.VIEWTYPE].indexOf(this.index) !== -1){
+        // }
+          
+        this.CircleLoop.play();
+
+
+
+
+
+
+      }
+
+
+
+    },
+    //__________________OTHER ANIME METHODS________
+
+
 
 
   },
@@ -117,21 +220,16 @@ export default {
   },
   mounted() {
     const delayOffset = this.index * 40;
-    const backCircle = "#" + this.circleId;
-
     // ____________ INSERT TYPOGRAPHIES
-    let typography = 0;
     if(this.typoIndex !== -1){
-      typography = '#'+this.typoId;
-      this.typoEl = document.querySelector(typography);
+      this.typoEl = document.querySelector('#'+this.typoId);
       this.typoEl.setAttribute("d", typoArr[this.typoIndex]);
     }
 
-    
-
+  
     // _________________________ BACKCIRCLE ANIMATION
     const CircleAnimation = Timeline(anime)
-    .add({ targets: backCircle,
+    .add({ targets: "#" + this.circleId,
       stroke: [
         keys('#2C2A6A', delayOffset, 1000, 0, "easeOutExpo")
         ],
@@ -146,7 +244,7 @@ export default {
         }
       ]
     })
-    .add({ targets: backCircle,
+    .add({ targets: "#" + this.circleId,
       stroke: [
         keys('#ffffff', 0, 300, 0, "easeOutExpo"),
         keys('#3C3B57', 0, 1000, 0, "easeOutExpo")
@@ -154,15 +252,19 @@ export default {
       complete: function() {
         trigger('TypoAnimation');
       }
+    }).add({ targets: "#" + this.circleId,
+      stroke: [
+        keys('rgba(38, 0, 255, 0.14)', 0, 5000, 0, "easeOutCubic")
+      ]
     })
-
 
 
     // _________________________ TYPO ANIMATION
     const TypoAnimation = Timeline(anime)
-    .add({ targets: typography,
+    .add({ targets: '#'+this.typoId,
       stroke: [
-        keys('#ffffff', 0, 200, 0, "easeOutExpo")
+        keys('#ffffff', 0, 200, 0, "easeOutExpo"),
+        keys('rgba(255, 255, 255, 0.56)', 5000, 2600, 0, "easeOutExpo"),
         ],
       strokeDashoffset: [
         {
@@ -174,54 +276,61 @@ export default {
           easing: "easeInOutQuart",
         }
       ],
-      delay: 1000
+      delay: 400
     })
+    TypoAnimation.finished.then(() => {
+      this.$store.state.cellTiming.typoRendered += 1;
+    });
 
 
-
-
+    // _________________________ LOOP ANIMATION
+    this.CircleLoop = null;
+    this.CircleLoop = anime.timeline({
+      autoplay: false,
+      loop: true,
+      direction: 'normal',
+      delay: function() {return anime.random(5000, 15000)}
+    })
+    .add({ targets: "#" + this.circleId,
+      stroke: [
+        keys('rgba(255, 255, 255, 0)', 
+          function() { return anime.random(0, 1000); },
+          2, 50, "easeOutCubic"),
+        keys('rgba(255, 255, 255, 0.3)', 0, 100, 0, "easeOutSine"),
+        keys('rgba(255, 255, 255, 0)', 0, 4000, 50, "easeOutCubic"),
+      ],
+    });
 
 
     const conditions = {
       TypoAnimation: (this.typoIndex !== -1),
-
     }
     function trigger(target){
       if(conditions[target]){
         play(target);
       }
     }
-
     function play(target){
       if(target === 'TypoAnimation'){
         TypoAnimation.play();
       }
     }
 
-    // ________________________ TO USE IN COMPONENT SCOPE
     this.CircleAnimation = CircleAnimation;
-    this.TypoAnimation = TypoAnimation;
-
     this.$emit('mounted', this.index);
   }
 }
 </script>
-
-
-
 <style lang="scss" scoped> 
 #cell-wrapper{
   position: relative;
   top: 6%; left: 6%;
   width: 88%; height: 88%;
-  // color: dimgray;
-  // background-color: skyblue;
 }
 
 .back-circle{
   position: absolute;
   width: 100%; height: 100%;
-  // background-color: aqua;
 }
 .circle{
   stroke: #00000000;
@@ -230,11 +339,10 @@ export default {
 .circle-typo{
   position: absolute;
   width: 100%; height: 100%;
-  // background-color: aqua;
 }
 .typo{
-  stroke :#00000000;
-  stroke: red;
+  stroke :rgba(255, 255, 255, 0.315);
+  stroke :rgba(255, 255, 255, 0);
 }
 
 

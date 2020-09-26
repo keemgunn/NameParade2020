@@ -65,7 +65,6 @@ export default {
   watch: {
     SEQ(nu, old) {
       console.log('-- sequence changed :', old,'->',nu);
-      console.log('-- SEQ:', this.$store.state.seqName);
       if(nu > 3){
         document.querySelector( 'body' ).style['overflow-y'] = 'auto';
         document.querySelector( 'body' ).style['overflow-x'] = 'hidden';

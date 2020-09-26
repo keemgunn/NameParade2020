@@ -1,6 +1,6 @@
 const configs = {
   client: {
-    testSequence: true, 
+    // testSequence: true, 
     signLoadDone: true,
     titleSignRendered: true,
     // writerDone: true,
