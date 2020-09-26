@@ -36,6 +36,10 @@ export default new Vuex.Store({
       wOff: null, hOff: null,
     },
     blocks: [],
+    cellTiming: {
+      mounted: 0,
+      allMounted: false
+    },
     
 
 
@@ -76,7 +80,7 @@ export default new Vuex.Store({
 
   getters: { 
     allGetters(){
-      
+
     },
 
     TC(state){ // Test Client
@@ -151,6 +155,12 @@ export default new Vuex.Store({
         c: state.circleAnime.colCount,
         r: state.circleAnime.rowCount
       }
+    },
+    CELL_TIMING(state){
+      return state.cellTiming
+    },
+    CELL_MOUNTED(state){
+      return state.cellTiming.mounted
     },
 
 

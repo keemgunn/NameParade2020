@@ -6,6 +6,8 @@
       <Cell 
         :block="block" 
         :index="blocks.indexOf(block)"
+        :allMounted="CELL_TIMING.allMounted"
+        @mounted='$store.state.cellTiming.mounted += 1'
       />
     </div>
   </div>
@@ -26,7 +28,6 @@ export default {
   name,
   components: { Cell, },
   data() { return {
-
   }},
   computed: {
     ...mapState([ 
@@ -43,7 +44,9 @@ export default {
         'fh',
         'wOff',
         'hOff',
-        'blockCounts'
+        'blockCounts',
+        'CELL_TIMING',
+        'CELL_MOUNTED'
 
       ]),
       AT: function(){
@@ -189,6 +192,12 @@ export default {
       this.getBlockArr();
       return {nu, old}
     },
+    CELL_MOUNTED(nu, old){
+      if(this.blocks.length === nu){
+        this.$store.state.cellTiming.allMounted = true
+      }
+      return old
+    }
   },
   created() {
 

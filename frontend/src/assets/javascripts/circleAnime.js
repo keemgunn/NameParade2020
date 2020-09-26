@@ -1,18 +1,32 @@
 import anime from 'animejs'
 
-function TimeLine(){
+function Timeline(){
   return anime.timeline({
-    duration: 2000,
-    easing: "easeOutExpo"
+    autoplay: false,
   })
+}
+
+function keys(value, delay, duration, endDelay){
+  return {
+    value, delay, duration, endDelay
+  }
+}
+
+function backCircleDashOff(){
+  return [anime.setDashoffset, 0]
 }
 
 
 
-
-
 export {
-  TimeLine,
+  Timeline,
+  keys,
+
+
+
+  backCircleDashOff
+
+
 
 
 }
