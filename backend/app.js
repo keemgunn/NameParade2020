@@ -3,9 +3,7 @@ const path = require('path');
 
 
 // ---------------- ROUTES
-const init = require('./routes/init');
-const loader = require('./routes/loader');
-const pusher = require('./routes/pusher');
+const init = require('./routes/user');
 
 
 // ---------------- APP SETTING
@@ -21,9 +19,7 @@ app.use(express.text({
 
 // ---------------- SERVE
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/init', init);
-app.use('/load', loader);
-app.use('/push', pusher);
+app.use('/api', user);
 
 
 // ---------- PORT SETTING

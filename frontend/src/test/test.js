@@ -1,25 +1,35 @@
 const configs = {
   client: {
-    // loading: true, 
     // testSequence: true, 
+    // signLoadDone: true,
+    // titleSignRendered: true,
     // writerDone: true,
+
+
     
     loadingAmount: 100,
-    sequenceNow: ( 2 ),
+    sequenceNow: ( 0 ),
   },
   server: {
     // init: true,
-    // signLoad: true,
     // filesInServer: true,
+    // signLoad: true,
+    // sendPaths: true,
 
     foo: 'bar',
   },
   // modal: true,
 }
 
+import signTest0 from './signs/0.json';
+import signTest1 from './signs/1.json';
+const signsArr = [0 ,1];
+const signFiles = [signTest0, signTest1];
 
 
 
-
-import signs from './signs_test.json';
-export { configs, signs };
+export { 
+  configs, 
+  signsArr,
+  signFiles
+};

@@ -1,7 +1,5 @@
 <template>
 <div class="title-sign-wrapper">
-
-
   <svg id="my-sign" viewBox="0 0 395 98" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>Group</title>
     <g id="wrapper" stroke="none"  fill="none" fill-rule="evenodd">
@@ -145,10 +143,6 @@ export default {
         })
       }
     },
-
-
-
-
 
     async sendMySign(){
       console.log('sendMySign');

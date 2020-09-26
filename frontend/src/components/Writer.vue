@@ -64,18 +64,16 @@
   </div>
   </transition>
 
-  <transition name="writer-appear">
+  <transition name="writer-des-appear">
     <InfoGetter 
       v-if="(SEQ === 3)" 
       @toggle-submit-visibility="toggleSubmitVis"
     />
   </transition>
 
-  
-  
   <transition name="writer-appear">
   <div class="btn-wrapper" 
-  v-if="(submitBtn)">
+  v-if="(SEQ === 3)&&(submitBtn)">
     <div class="bw" :class="byType">
       <div class="btn one"
         @click="SEND_PATHS"
@@ -101,9 +99,6 @@ const name = 'Writer';
 export default {
   name,
   components: { Pathmaker, InfoGetter },
-  props: [
-    
-  ],
   data() { return {
     elSequence: 0,
     pathBtns: false,
@@ -111,7 +106,14 @@ export default {
   }},
   computed: {
     ...mapState(['aniTiming', 'boundInfo']),
-    ...mapGetters(['byType', 'VIEWTYPE', 'SEQ', 'NEW_PATHS', 'WRITER_DONE']),
+    ...mapGetters([
+        'TC',
+        'byType', 
+        'VIEWTYPE', 
+        'SEQ', 
+        'NEW_PATHS', 
+        'WRITER_DONE'
+      ]),
     AT: function(){
       return this['aniTiming'][name]
     },
@@ -159,7 +161,7 @@ export default {
         }
       }else{
         return {
-          'height': '5vh',
+          'height': '0',
           'transition': this.AT.susTransition,
           'transition-delay': this.AT.susDelay,
           'transition-timing-function': this.AT.susTiming
@@ -194,7 +196,11 @@ export default {
     },
     DONE(){
       this.$store.state.writerDone = true;
-      this.moveTo(3);
+      if(this.TC.testSequence){
+        this.$store.state.test.client.sequenceNow = 3;
+      }else{
+        this.moveTo(3);
+      }
     },
     toggleSubmitVis(bool){
       this.submitBtn = bool;

@@ -3,7 +3,8 @@ const seqStates = {
   1: 'loading-done',
   2: 'writer-des',
   3: 'writer-pm',
-  4: 'parade-'
+  4: 'parade-',
+
 };
 
 const timing = {
@@ -15,7 +16,7 @@ const timing = {
     hueVelocity: 0.5,
     levelVelocity: 0.1,
   },
-  Loader: {
+  Title: {
     loadSpeed : 60,
     loadingTransition: 300 +'ms',
     loadedDelay: 400 +'ms',
