@@ -11,18 +11,12 @@
   width: 100%; height: fit-content;
   // background-color: rgba(139, 128, 177, 0.363);
 }
-.height-suspension {
-  display: block;
-  position: relative; top: 0; left: 0;
-  width: 100%;
-  background-color: rgba(242, 255, 127, 0.274);
-}
 
 .des-wrapper{
   .description {
     position: relative; top: 0; left: 0;
     width: 100vw; height: fit-content;
-    user-select: none; -webkit-user-select: none;
+    user-select: none;
     // background-color: rgba(255, 192, 203, 0.473);
     .eng{
       font-family: 'Montserrat', sans-serif;
@@ -38,23 +32,23 @@
     }
   }
   ._small{
-    padding-top: 1.3vh;
+    padding-top: 1.2vh;
     .eng{
-      font-size: 4.0vw;
-      line-height: 5.0vw;
-      padding-bottom: 1.0vw;
+      font-size: 4vw;
+      line-height: 4.8vw;
+      padding-bottom: 1.8vw;
     }
     .kor{
-      font-size: 3.6vw;
+      font-size: 3.5vw;
       line-height: 5vw;
     }
   }
   ._narrow{
-    padding-top: 1.6vh;
+    padding-top: 1vh;
     .eng{
       font-size: 4.0vw;
       line-height: 5.0vw;
-      padding-bottom: 1.6vw;
+      padding-bottom: 1.2vw;
     }
     .kor{
       font-size: 3.6vw;
@@ -62,11 +56,11 @@
     }
   }
   ._tablet{
-    padding-top: 1.6vh;
+    padding-top: 1.0vh;
     .eng{
       font-size: 3.2vw;
       line-height: 4vw;
-      padding-bottom: 1.4vw;
+      padding-bottom: 1.0vw;
     }
     .kor{
       font-size: 2.8vw;
@@ -74,7 +68,7 @@
     }
   }
   ._wide{
-    padding-top: 1.6vh;
+    padding-top: 1.4vh;
     .eng{
       font-size: 1.8vw;
       line-height: 2.5vw;
@@ -100,22 +94,22 @@
     }
   }
   ._small{
-    padding-top: 0.5vh;
-    padding-bottom: 1.2vh;
+    padding-top: 0.8vh;
+    padding-bottom: 0.4vh;
     .title{
       font-size: 5.0vw;
     }
   }
   ._narrow{
     padding-top: 1vh;
-    padding-bottom: 1.4vh;
+    padding-bottom: 0.8vh;
     .title{
       font-size: 5.2vw;
     }
   }
   ._tablet{
-    padding-top: 1.2vh;
-    padding-bottom: 1.2vh;
+    padding-top: 1vh;
+    padding-bottom: 0.8vh;
     .title{
       font-size: 4.3vw;
     }
@@ -130,6 +124,7 @@
 }
 
 .names-wrapper{
+  user-select: none;
   .names{
     position: relative; top: 0;
     height: fit-content;
@@ -149,7 +144,7 @@
   ._tablet{
     left: 8vw;
     width: 84vw; 
-    padding-bottom: 3vh;
+    padding-bottom: 2.8vh;
   }
   ._wide{
     left: 20vw;

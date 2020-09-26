@@ -2,24 +2,24 @@
 <div  class="writer-wrapper" :style="wrapper">
 <div class="aligner">
 
-  <div class="height-suspension" :style="suspension">
-    <div class="des-wrapper">
-    <div class="description" :class="byType">
-      <transition name="writer-appear">
-        <div class="eng" 
-        v-if="(elSequence > 0) && !WRITER_DONE">
-          Please write my name for NAMEPARADE. <br>
-          The Parade will be proceed with your touch.
-        </div>
-      </transition>
-      <transition name="writer-appear">
-        <div class="kor" 
-        v-if="(elSequence > 1) && !WRITER_DONE">
-          이름행진을 위해 제 이름을 써주세요. <br>
-          당신이 써 주신 제 이름으로 행진합니다.
-        </div>
-      </transition>
-    </div></div>
+  <div class="des-wrapper">
+  <div class="description" :class="byType">
+    <transition name="writer-appear">
+      <div class="eng" 
+      v-if="(elSequence > 0) && !WRITER_DONE">
+        Please write my name for NAMEPARADE. <br>
+        The Parade will be proceed with your touch.
+      </div>
+    </transition>
+    <transition name="writer-appear">
+      <div class="kor" 
+      v-if="(elSequence > 1) && !WRITER_DONE">
+        이름행진을 위해 제 이름을 써주세요. <br>
+        당신이 써 주신 제 이름으로 행진합니다.
+      </div>
+    </transition>
+  </div>
+
 
     <div class="my-wrapper">
     <div class="my-name-is" :class="byType">
@@ -81,10 +81,7 @@
     </div>
   </div>
   </transition>
-
-
-
-
+  
 </div></div>
 </template>
 
@@ -100,17 +97,20 @@ export default {
   name,
   components: { Pathmaker, InfoGetter },
   data() { return {
+    suspension: null,
     elSequence: 0,
     pathBtns: false,
     submitBtn: false
   }},
   computed: {
-    ...mapState(['aniTiming', 'boundInfo']),
+    ...mapState(['aniTiming', 'blocks']),
     ...mapGetters([
         'TC',
         'byType', 
         'VIEWTYPE', 
         'SEQ', 
+        'bs',
+        'wOff',
         'NEW_PATHS', 
         'WRITER_DONE'
       ]),
@@ -140,34 +140,7 @@ export default {
         return { 'height': 0 }
       }
     },
-    suspension: function(){
-      if(!this.WRITER_DONE){
-        if(this.VIEWTYPE === 'small'){
-          return {
-            'height': 'calc(8vh + 28vw)',
-          }
-        }else if(this.VIEWTYPE === 'narrow'){
-          return {
-            'height': 'calc(8vh + 30vw)',
-          }
-        }else if(this.VIEWTYPE === 'tablet'){
-          return {
-            'height': 'calc(6vh + 28vw)',
-          }
-        }else{
-          return { // this.VIEWTYPE === 'wide'
-            'height': 'calc(10vh + 15vw)',
-          }
-        }
-      }else{
-        return {
-          'height': '0',
-          'transition': this.AT.susTransition,
-          'transition-delay': this.AT.susDelay,
-          'transition-timing-function': this.AT.susTiming
-        }
-      }
-    }
+
   },
   watch: {
     NEW_PATHS(nu, old){

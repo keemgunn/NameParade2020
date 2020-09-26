@@ -177,7 +177,7 @@ export default {
   width: 100%; height: 100%;
 }
 #maker{
-  z-index: 0;
+  z-index: 50;
   position: relative; top: 0; left: 0; 
   width: 100%; height: 100%;
 }

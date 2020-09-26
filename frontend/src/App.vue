@@ -3,12 +3,19 @@
     <Background/>
     <div id="content">
       <Title/>
-      <Writer v-if="(SEQ === 2) || (SEQ === 3)"/>
-      <Parade v-if="SEQ > 3" />
+      <div v-if="blockRendered">
+
+        <transition name="writer-appear">
+          <Writer v-if="(SEQ === 2) || (SEQ === 3)"/>
+        </transition>
+        
+        <Parade v-if="SEQ > 3" />
+
     
 
 
-      <test v-if="test.modal"/>
+        <test v-if="test.modal"/>
+      </div>
     </div>
   </div>
 </template>
@@ -38,6 +45,7 @@ export default {
     ...mapState([
         'test', 
         'winSize',
+        'blockRendered'
       ]),
     ...mapGetters([
         'TC', 'TS',

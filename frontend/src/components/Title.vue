@@ -11,7 +11,7 @@
     </div>
   </div>
   <transition name="titlesign-vanish">
-  <TitleSign v-if="blockrendered && (SEQ < 2)"/>
+  <TitleSign v-if="blockRendered && (SEQ < 2)"/>
   </transition>
 
 
@@ -31,13 +31,13 @@ export default {
   name,
   components: { Cell, TitleSign },
   data() { return {
-    blockrendered: false
   }},
   computed: {
     ...mapState([ 
         'winSize',
         'aniTiming',
-        'blocks'
+        'blocks',
+        'blockRendered'
       ]),
     ...mapGetters([ 
         'VIEWTYPE', 
@@ -72,7 +72,7 @@ export default {
           }
         }else{
           return { // this.VIEWTYPE === 'wide'
-            'height': '5vw',
+            'height': '20vw',
           }
         }
       }else{
@@ -112,7 +112,7 @@ export default {
     sizeCalc(){
       if((this.VIEWTYPE === 'small') || (this.VIEWTYPE === 'narrow')){
         this.$store.state.circleAnime.blockSize = parseInt(this.winSize.vw/(this.blockCounts.c-1));
-        this.$store.state.circleAnime.rowCount = parseInt(this.winSize.vh/this.bs) + 1
+        this.$store.state.circleAnime.rowCount = parseInt(this.winSize.vh/this.bs) + 3
       }else{
         this.$store.state.circleAnime.blockSize = parseInt(this.winSize.vw/(this.blockCounts.c-3));
         this.$store.state.circleAnime.rowCount = parseInt(this.winSize.vh/this.bs) + 2
@@ -129,7 +129,7 @@ export default {
           this.$store.state.blocks.push(j + 'x' + i);
         }
       }
-      this.blockrendered = true;
+      this.$store.state.blockRendered = true;
     },
   },
   watch: {
@@ -164,11 +164,11 @@ export default {
 .title-space{
   position: relative; top: 0; left: 0;
   width: 100vw; height: 100vh;
-  transition: 500ms;
-  transition-timing-function: cubic-bezier(0,0,.17,1);
+  transition: 1000ms;
+  transition-timing-function: cubic-bezier(.28,.46,.62,1);
   user-select: none;
   pointer-events: none;
-  background-color: rgba(230, 12, 56, 0.13);
+  // background-color: rgba(230, 12, 56, 0.13);
 }
 .block-wrapper {
   position: fixed; top: 0; left: 0;

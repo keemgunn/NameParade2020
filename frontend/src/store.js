@@ -35,7 +35,7 @@ export default new Vuex.Store({
       fieldWidth: null, fieldHeight: null,
       wOff: null, hOff: null,
     },
-    blocks: [],
+    blocks: [], blockRendered: false,
 
     //___________________ ANIME TIMING
     cellTiming: {
@@ -125,7 +125,6 @@ export default new Vuex.Store({
         return state.sequence
       }
     },
-
     bs(state){
       return state.circleAnime.blockSize;
     },
