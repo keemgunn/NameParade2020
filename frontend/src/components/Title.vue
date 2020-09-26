@@ -1,11 +1,11 @@
 <template>
 <div class="title-space" :style="space">
-<div class="block-wrapper" :style="wrapperStyle">
+<div class="block-wrapper" :style="FIELD">
   <div v-for="block in blocks" :key="block">
     <div class="cell" :style="cellStyle">
       <Cell 
         :block="block" 
-        :index="blocks.indexOf(block)" 
+        :index="blocks.indexOf(block)"
       />
     </div>
   </div>
@@ -17,29 +17,34 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
-import Cell from './title/Cell'
+// import anime from 'animejs';
+// const an = require('../assets/javascripts/circleAnime');
+import Cell from './title/Cell';
 
 const name = "Title";
 export default {
   name,
   components: { Cell, },
   data() { return {
-    blockSize: null,
-    rowCount: null,
-    colCount: null,
-    rw: null, rh: null,
-    wOff: null, hOff: null,
-    blocks: []
+
   }},
   computed: {
     ...mapState([ 
         'winSize',
         'aniTiming',
+        'blocks'
       ]),
     ...mapGetters([ 
         'VIEWTYPE', 
         'byType', 
         'SEQ',
+        'bs',
+        'fw',
+        'fh',
+        'wOff',
+        'hOff',
+        'blockCounts'
+
       ]),
       AT: function(){
         return this['aniTiming'][name]
@@ -121,20 +126,21 @@ export default {
         return {'height': '0vh'}
       }
     },
-    wrapperStyle: function(){
+    FIELD: function(){
       return {
-        'width': this.rw +'px',
-        'height': this.rh +'px',
-        'top': this.hOff +'px',
-        'left': this.wOff +'px'
+        'width': this.fw +'px',
+        'height': this.fh +'px',
+        'left': this.wOff +'px',
+        'top': this.hOff +'px'
       }
     },
     cellStyle: function(){
       return{
-        'width': this.blockSize +'px',
-        'height': this.blockSize +'px'
+        'width': this.bs +'px',
+        'height': this.bs +'px'
       }
     }
+
   },
   methods: {
     ...mapMutations([
@@ -142,35 +148,37 @@ export default {
     ]),
     onResize(){
       if((this.VIEWTYPE === 'small') || (this.VIEWTYPE === 'narrow')){
-        this.colCount = 7; // 0.5, 6, 0.5
+        this.$store.state.circleAnime.colCount = 7; // 0.5, 6, 0.5
       }else if(this.VIEWTYPE === 'tablet'){
-        this.colCount = 10; // 1.5, 7, 1.5
+        this.$store.state.circleAnime.colCount = 10; // 1.5, 7, 1.5
       }else{
-        this.colCount = 15; // 1.5, 12, 1.5
+        this.$store.state.circleAnime.colCount = 15; // 1.5, 12, 1.5
       }
       this.sizeCalc();
     },
     sizeCalc(){
       if((this.VIEWTYPE === 'small') || (this.VIEWTYPE === 'narrow')){
-        this.blockSize = parseInt(this.winSize.vw/(this.colCount-1));
-        this.rowCount = parseInt(this.winSize.vh/this.blockSize) + 1
+        this.$store.state.circleAnime.blockSize = parseInt(this.winSize.vw/(this.blockCounts.c-1));
+        this.$store.state.circleAnime.rowCount = parseInt(this.winSize.vh/this.bs) + 1
       }else{
-        this.blockSize = parseInt(this.winSize.vw/(this.colCount-3));
-        this.rowCount = parseInt(this.winSize.vh/this.blockSize) + 2
+        this.$store.state.circleAnime.blockSize = parseInt(this.winSize.vw/(this.blockCounts.c-3));
+        this.$store.state.circleAnime.rowCount = parseInt(this.winSize.vh/this.bs) + 2
       }
-      this.rw = this.blockSize * this.colCount;
-      this.rh = this.rowCount * this.blockSize;
-      this.wOff = (this.winSize.vw-this.rw)/2;
-      this.hOff = (this.winSize.vh-this.rh)/2;
+      this.$store.state.circleAnime.fieldWidth = this.bs * this.blockCounts.c;
+      this.$store.state.circleAnime.fieldHeight = this.blockCounts.r * this.bs;
+      this.$store.state.circleAnime.wOff = (this.winSize.vw-this.fw)/2;
+      this.$store.state.circleAnime.hOff = (this.winSize.vh-this.fh)/2;
     },
     getBlockArr(){
-      this.blocks = [];
-      for(var i=0; i<this.rowCount; i++){
-        for(var j=0; j<this.colCount; j++){
-          this.blocks.push('c' + j + 'r' + i);
+      this.$store.state.blocks = [];
+      for(var i=0; i<this.blockCounts.r; i++){
+        for(var j=0; j<this.blockCounts.c; j++){
+          this.$store.state.blocks.push('c' + j + 'r' + i);
         }
       }
-    }
+    },
+
+
   },
   watch: {
     colCount(nu, old){
@@ -181,7 +189,6 @@ export default {
       this.getBlockArr();
       return {nu, old}
     },
-
   },
   created() {
 
@@ -192,8 +199,10 @@ export default {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     });
-    console.log(this.blocks);
-    console.log(this.wrapperStyle);
+
+
+
+
   },
   beforeUpdate() {
     
@@ -217,15 +226,17 @@ export default {
 .block-wrapper {
   position: fixed; top: 0; left: 0;
   width: 100vw; height: 100vh;
-  background-color: rgba(10, 53, 53, 0.733);
+  // background-color: rgba(10, 53, 53, 0.733);
 }
 .cell {
   position: relative;
   float: left;
-  background-color: rgb(0, 0, 128);
-}.cell:hover{
-  background-color: rgb(51, 51, 155);
+  // background-color: rgb(0, 0, 128);
 }
+// .cell:hover{
+//   background-color: rgb(51, 51, 155);
+// }
+
 
 
 

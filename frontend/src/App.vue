@@ -15,13 +15,14 @@
 
 <script> 
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
+// let State, Getters, Mutations, Actions;
 import test from './test/test.vue'
 import Background from './components/Background';
 import Title from './components/Title';
 import Writer from './components/Writer';
 import Parade from './components/Parade';
 
-
+// console.log(Reflect.ownKeys(this.$store.getters));
 
 export default {
   name: 'App',

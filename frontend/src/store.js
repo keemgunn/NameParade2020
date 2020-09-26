@@ -29,7 +29,17 @@ export default new Vuex.Store({
     //__________________UI
     desColor: [],
     aniTiming: animation.timing,
+    circleAnime: {
+      blockSize: null,
+      colCount: null, rowCount: null, 
+      fieldWidth: null, fieldHeight: null,
+      wOff: null, hOff: null,
+    },
+    blocks: [],
     
+
+
+
     //__________________PATHMAKER
     writer:{
       paths:[],
@@ -65,6 +75,9 @@ export default new Vuex.Store({
 
 
   getters: { 
+    allGetters(){
+      
+    },
 
     TC(state){ // Test Client
       return state.test.client
@@ -109,6 +122,40 @@ export default new Vuex.Store({
         return state.sequence
       }
     },
+
+    bs(state){
+      return state.circleAnime.blockSize;
+    },
+    fw(state){
+      return state.circleAnime.fieldWidth;
+    },
+    fh(state){
+      return state.circleAnime.fieldHeight;
+    },
+    FIELD(state){
+      return {
+        'width': state.circleAnime.fieldWidth +'px',
+        'height': state.circleAnime.fieldHeight +'px',
+        'top': state.circleAnime.wOff +'px',
+        'left': state.circleAnime.hOff +'px'
+      }
+    },
+    wOff(state){
+      return state.circleAnime.wOff
+    },
+    hOff(state){
+      return state.circleAnime.hOff
+    },
+    blockCounts(state){
+      return {
+        c: state.circleAnime.colCount,
+        r: state.circleAnime.rowCount
+      }
+    },
+
+
+
+
 
     FILES_IN_SERVER(state){
       return state.filesInServer
