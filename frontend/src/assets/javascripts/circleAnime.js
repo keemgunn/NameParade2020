@@ -1,32 +1,18 @@
-import anime from 'animejs'
-
-function Timeline(){
+function Timeline(anime){
   return anime.timeline({
     autoplay: false,
   })
 }
-
-function keys(value, delay, duration, endDelay){
+function keys(value, delay, duration, endDelay, easing){
   return {
-    value, delay, duration, endDelay
+    value, delay, duration, endDelay, easing
   }
 }
-
-function backCircleDashOff(){
-  return [anime.setDashoffset, 0]
-}
-
 
 
 export {
   Timeline,
   keys,
-
-
-
-  backCircleDashOff
-
-
 
 
 }

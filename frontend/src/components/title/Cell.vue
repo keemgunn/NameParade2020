@@ -33,6 +33,10 @@
 <script>
 import{ mapState, mapGetters, mapMutations } from 'vuex';
 import anime from 'animejs';
+const {
+  Timeline,
+  keys
+} = require('../../assets/javascripts/circleAnime');
 
 
 const name ="Cell";
@@ -45,9 +49,6 @@ export default {
   data() { return {
     coord: [],
     CT: null,
-
-
-
   }},
   computed: {
     ...mapState(['aniTiming']),
@@ -75,48 +76,37 @@ export default {
     this.coord = [this.block[1],this.block[2]]
   },
   mounted() {
-    const delayOffset = this.index * 150;
-    this.CT = anime.timeline({
-      autoplay: false,
-    });
-    function keys(value, delay, duration, endDelay){
-      return {
-        value, delay, duration, endDelay
-      }
-    }
+    const delayOffset = this.index * 70;
+    const backCircle = "#" + this.circleId;
 
-    const circleTargetMapping = "#" + this.circleId;
-    this.CT.add({
-      targets: circleTargetMapping,
+    this.CT = Timeline(anime)
+    .add({ targets: backCircle,
       strokeDashoffset: [anime.setDashoffset, 0], 
       delay: delayOffset,
-      duration: 1500,
+      duration: 800,
       endDelay: 0,
       direction: 'normal',
-      easing: "easeInOutSine",
-    }).add({
-      targets: circleTargetMapping,
+      easing: "easeInOutQuart",
+    })
+    .add({ targets: backCircle,
       stroke: [
-        keys('#ffffff', 1000, 1000, 0)
+        keys('#ffffff', 0, 1000, 0, "easeOutExpo")
       ],
-      easing: "easeOutExpo"
-    }).add({
-      targets: circleTargetMapping,
+    })
+    .add({ targets: backCircle,
       stroke: [
-        { value:'#00ff00' , delay:500 , duration: 2000 },
+        keys('#00ff00', 500, 2000, 0, "easeOutExpo")
       ],
-      easing: "easeOutExpo"
     })
 
 
+
+
+
+
+
     this.$emit('mounted', this.index);
-  },
-  beforeUpdate() {
-    
-  },
-  beforeCreate() {
-    
-  },
+  }
 }
 </script>
 
