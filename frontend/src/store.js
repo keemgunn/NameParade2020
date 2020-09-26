@@ -29,6 +29,19 @@ export default new Vuex.Store({
     //__________________UI
     desColor: [],
     aniTiming: animation.timing,
+    circleAnime: {
+      blockSize: null,
+      colCount: null, rowCount: null, 
+      fieldWidth: null, fieldHeight: null,
+      wOff: null, hOff: null,
+    },
+    blocks: [],
+
+    //___________________ ANIME TIMING
+    cellTiming: {
+      mounted: 0,
+      typoRendered: 0,
+    },
     
     //__________________PATHMAKER
     writer:{
@@ -65,6 +78,9 @@ export default new Vuex.Store({
 
 
   getters: { 
+    allGetters(){
+
+    },
 
     TC(state){ // Test Client
       return state.test.client
@@ -109,6 +125,57 @@ export default new Vuex.Store({
         return state.sequence
       }
     },
+
+    bs(state){
+      return state.circleAnime.blockSize;
+    },
+    fw(state){
+      return state.circleAnime.fieldWidth;
+    },
+    fh(state){
+      return state.circleAnime.fieldHeight;
+    },
+    FIELD(state){
+      return {
+        'width': state.circleAnime.fieldWidth +'px',
+        'height': state.circleAnime.fieldHeight +'px',
+        'top': state.circleAnime.wOff +'px',
+        'left': state.circleAnime.hOff +'px'
+      }
+    },
+    wOff(state){
+      return state.circleAnime.wOff
+    },
+    hOff(state){
+      return state.circleAnime.hOff
+    },
+    blockCounts(state){
+      return {
+        c: state.circleAnime.colCount,
+        r: state.circleAnime.rowCount
+      }
+    },
+    CELL_TIMING(state){
+      return state.cellTiming
+    },
+    CELL_MOUNTED(state){
+      if(state.blocks.length === state.cellTiming.mounted){
+        return true
+      }else{
+        return false
+      }
+    },
+    TYPO_RENDERED(state){
+      if(state.cellTiming.typoRendered === 22){
+        return true
+      }else{
+        return false
+      }
+    },
+
+
+
+
 
     FILES_IN_SERVER(state){
       return state.filesInServer

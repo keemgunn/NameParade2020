@@ -5,8 +5,6 @@ const seqStates = {
   3: 'writer-pm',
   4: 'parade-',
 
-
-
 };
 
 const timing = {
