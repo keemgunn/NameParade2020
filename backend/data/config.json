@@ -1,6 +1,7 @@
 {
-  "connectionRequests": 259,
+  "connectionRequests": 263,
   "signs": [
+    0,
     1,
     3,
     4,
@@ -38,7 +39,6 @@
     14,
     12,
     11,
-    2,
-    0
+    2
   ]
 }

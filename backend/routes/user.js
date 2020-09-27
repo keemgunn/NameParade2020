@@ -28,25 +28,16 @@ router.post('/init', (req, res) => {
 })
 
 
-router.get('/file-count', (req, res) => {
-  console.log('$request ... /load/file-count');
-  res.json(dm.config.signs);
-})
-
-router.get('/initial', (req, res) => {
+router.get('/signs', (req, res) => {
   console.log('$request ... /load/initial');
   dm.getAllSigns(res);
 })
 
-router.post('/mysign', (req, res) => {
-  console.log('$request ... /load/sendMySign');
-  dm.writeSync(req.body.signPackage, dm.SignPath(999));
-})
 
 
 
 
-router.post('/paths', (req, res) => {
+router.post('/push', (req, res) => {
   const newSign = req.body;
   dm.newSign(newSign);
   res.json({status: 200});

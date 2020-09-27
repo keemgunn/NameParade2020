@@ -9,6 +9,13 @@
     </svg>
   </div>
 
+  <div id="content">
+    <PathView 
+    v-if="path0.length !== 0" 
+    :data="path0"
+    />
+  </div>
+
 
 
 
@@ -22,16 +29,24 @@
 import { mapState, mapGetters, mapMutations } from 'vuex';
 import anime from 'animejs';
 const { keys, Timeline } = require('../../assets/javascripts/circleAnime');
+import PathView from './display/PathView';
 
 export default {
   name: "Display",
-  components: { },
+  components: { PathView,  },
   props: [
 
   ],
   data() { return {
-    BorderIn: null,
-    BorderOut: null,
+    BorderIn: null, BorderOut: null,
+    path0: [],
+
+
+
+
+
+
+
   }},
   computed: {
     ...mapState([
@@ -103,6 +118,7 @@ export default {
     },
     renderStatusTest(){
       this.$store.state.renderStatus += 1;
+      this.path0 = [0, 'asdfasdfasdfsadf']
     }
   },
   created() {

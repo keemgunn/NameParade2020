@@ -60,7 +60,10 @@ export default new Vuex.Store({
       paths:[],
       pathGroup: null,
       svg: '',
-      width: 0,
+      bounds: {
+        width: 0,
+        height: 0
+      },
       info: {
         userId: userId,
         name: userId,
@@ -266,7 +269,7 @@ export default new Vuex.Store({
           svg: state.writer.svg,
           info: state.writer.info
         };
-        const {data} = await axios.post('/push/paths', newSign);
+        const {data} = await axios.post('api/push', newSign);
         if(data.status === 200){
           state.signSent = true;
         }
@@ -302,7 +305,7 @@ export default new Vuex.Store({
       if(state.test.server.signLoad){
         state.signsArr = test.signFiles;
       }else{
-        const {data} = await axios.get('/load/initial');
+        const {data} = await axios.get('/api/signs');
         console.log('initial data recieved:', data.arg.length);
         state.signsArr = data.arg;
       }

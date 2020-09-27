@@ -125,7 +125,7 @@ export default {
     makeSvg(){
       this.writer.svg = this.writer.pathGroup.exportSVG({
         asString: true,
-        bounds: 'content'
+        // bounds: 'content'
       });
     }
   },
@@ -162,6 +162,8 @@ export default {
       path.simplify(this.simplifyVal);
       contact = 0;
       this.writer.paths.push(path);
+      this.$store.state.writer.bounds.width = this.scope.view.bounds.width;
+      this.$store.state.writer.bounds.height = this.scope.view.bounds.height;
     }
   },
   beforeDestroy() {

@@ -1,7 +1,7 @@
 <template>
-<div id="">
+<div id="path-view">
 
-
+{{data}}
 
 
 </div>
@@ -10,25 +10,31 @@
 
 
 <script>
+import{ mapState, mapGetters, mapMutations} from 'vuex';
 
 
 export default {
-  name: "",
+  name: "PathView",
   components: { },
   props: [
-
+    'data'
   ],
   data() { return {
 
   }},
   computed: {
+    ...mapState([]),
+    ...mapGetters([]),
+
 
   },
   methods: {
+    ...mapMutations([]),
 
+    
   },
   created() {
-
+    console.log(this.data);
   },
   mounted() {
     
