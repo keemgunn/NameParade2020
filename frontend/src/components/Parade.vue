@@ -38,7 +38,6 @@ import { mapState, mapGetters, mapMutations } from 'vuex';
 import TitleCell from './parade/TitleCell';
 
 
-
 export default {
   name: "Parade",
   components: { TitleCell,  },
@@ -173,6 +172,7 @@ export default {
     this.$store.state.cellTiming.paradeTitleCellCount = this.titleBlocks.length;
   },
   mounted() {
+
 
     
 

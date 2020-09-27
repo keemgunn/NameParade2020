@@ -3,7 +3,7 @@ const path = require('path');
 
 
 // ---------------- ROUTES
-const init = require('./routes/user');
+const user = require('./routes/user');
 
 
 // ---------------- APP SETTING
