@@ -21,15 +21,10 @@
   </div>
 </div>
 </template>
-
-
-
 <script>
-import{ mapState, mapGetters, mapMutations} from 'vuex';
-const { mountPosition, typoArr, Timeline } = require('../../assets/javascripts/circleAnime');
+import{ mapGetters } from 'vuex';
+const { mountPosition, typoArr, Timeline, keys } = require('../../assets/javascripts/circleAnime');
 import anime from 'animejs';
-
-
 export default {
   name: "TitleCell",
   components: { },
@@ -41,22 +36,14 @@ export default {
     typoIndex: -1,
     typoEl: null,
     MountAnimation: null,
-
   }},
   computed: {
-    ...mapState([
-
-    ]),
     ...mapGetters([
       'VIEWTYPE',
       'PARADE_TITLE_MOUNTED',
-      
-
     ]),
-
-
     titleTypo:function(){
-      return 'typo'+this.typoIndex
+      return 'title-typo-'+this.typoIndex
     },
     reacter: function(){
       return 'react_'+this.index
@@ -70,54 +57,42 @@ export default {
     }
   },
   methods: {
-    ...mapMutations([]),
-
-    
+    startAnimation(idSource){
+      let id = '#'+ idSource;
+      this.MountAnimation = Timeline(anime);
+      this.MountAnimation.add({ targets: id,
+        stroke: [
+          keys('rgba(255, 255, 255, 0)', 0, 1, 0, "easeOutCubic"),
+          keys('rgba(255, 255, 255, 0.76)', 1, 2, 0, "easeOutCubic")
+        ],
+        strokeDashoffset: [
+          {
+            value: [anime.setDashoffset, 0], 
+            delay: 1000 + function() { return anime.random(200, 1000); },
+            duration: function() { return anime.random(3800, 5000); },
+            endDelay: 0,
+            direction: 'alternate',
+            easing: "easeInOutQuart",
+          }
+        ],
+        delay: 400
+      })
+      this.MountAnimation.play();
+    }
   },
   created() {
     this.typoPositions = mountPosition[2][this.VIEWTYPE];
     this.typoIndex = this.typoPositions.indexOf(this.index);
   },
   mounted() {
-    // const delayOffset = this.index * 100;
-    // ____________ INSERT TYPOGRAPHIES
     if(this.typoIndex !== -1){
       this.typoEl = document.querySelector('#'+this.titleTypo);
       this.typoEl.setAttribute("d", typoArr[this.typoIndex]);
-      console.log(this.typoEl);
-      console.log(typoArr[this.typoIndex]);
-      console.log(this.MountAnimation);
     }
-
-        // _________________________ TYPO ANIMATION
-    this.MountAnimation = Timeline(anime)
-    .add({ targets: '#'+this.titleTypo,
-      strokeDashoffset: [
-        {
-          value: [anime.setDashoffset, 0], 
-          delay: 1000 + function() { return anime.random(200, 1000); },
-          duration: function() { return anime.random(3800, 5000); },
-          endDelay: 0,
-          direction: 'alternate',
-          easing: "easeInOutQuart",
-        }
-      ],
-      delay: 400
-    })
-    console.log(this.MountAnimation);
-    this.$emit('mounted');
-  },
-  beforeUpdate() {
-    
-  },
-  beforeCreate() {
-    
+    setTimeout(this.startAnimation, 200 , this.titleTypo )
   },
 }
 </script>
-
-
-
 <style lang="scss" scoped> 
 #title-cell-wrapper{
   position: relative;
@@ -135,7 +110,6 @@ export default {
   font-family: sans-serif;
 }
 .typo{
-  stroke :rgba(255, 255, 255, 0.76);
-//   // stroke :rgba(255, 255, 255, 0);
+  stroke :rgba(255, 255, 255, 0);
 }
 </style>

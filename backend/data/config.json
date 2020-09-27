@@ -1,5 +1,5 @@
 {
-  "connectionRequests": 286,
+  "connectionRequests": 287,
   "signs": [
     0,
     1,
@@ -16,7 +16,8 @@
     12,
     13,
     14,
-    15
+    15,
+    16
   ],
   "emptySeats": []
 }

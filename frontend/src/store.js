@@ -73,14 +73,9 @@ export default new Vuex.Store({
     
     //__________________RENDERER
     renderStatus: 0, 
-      // 1: mounted 2: rendered
+      // 1:mounted 2:rendered 3:pending
     signsArr: null,
-    renderSign: {
-      target: -1,
-      scale: 0,
-      arr: [],
-      name: null
-    },
+
 
   },
 
@@ -184,16 +179,16 @@ export default new Vuex.Store({
       }
     },
 
-
-
-
-
     FILES_IN_SERVER(state){
       return state.filesInServer
     },
 
     SIGNS(state){
       return state.signsArr
+    },
+
+    SIGNS_COUNT(state){
+      return state.signsArr.length
     },
 
     RENDER_Q(state){

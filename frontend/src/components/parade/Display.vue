@@ -1,5 +1,5 @@
 <template>
-<div id="display" @click="renderStatusTest()">
+<div id="display">
   <div id="border-box">
     <svg 
     viewBox="0 0 710 710" 
@@ -33,17 +33,19 @@
 import { mapState, mapGetters, mapMutations } from 'vuex';
 import anime from 'animejs';
 const { keys, Timeline } = require('../../assets/javascripts/circleAnime');
+const { randomInt } = require('../../assets/javascripts/uiAction');
 import PathView from './display/PathView';
 
 export default {
   name: "Display",
   components: { PathView,  },
-  props: [
-
-  ],
   data() { return {
     BorderIn: null, BorderOut: null,
-    pathLoaded:[[],[]]
+    pathLoaded:[[],[]],
+    decider: false,
+    pending: []
+
+
 
 
 
@@ -54,11 +56,11 @@ export default {
   }},
   computed: {
     ...mapState([
-      'signsArr',
       'renderStatus'
     ]),
     ...mapGetters([
-
+      'SIGNS',
+      'SIGNS_COUNT'
     ]),
 
 
@@ -66,12 +68,18 @@ export default {
   watch: {
     renderStatus(nu, old){
       if(nu === 1){
+        // when mounted
         this.aIn();
+        this.pending = this.GET_SIGN();
       }else if(nu === 2){
+        // when rendered
         this.aOut();
+      }else if(nu ===3){
+        // when destroyed
+        
         this.$store.state.renderStatus = 0;
       }
-      return old
+        return old
     }
   },
   methods: {
@@ -96,7 +104,7 @@ export default {
       strokeDashoffset: [{
           value: [0, anime.setDashoffset], 
           delay: 0,
-          duration: 3200,
+          duration: 3200, // HOW LONG WOULD BE THE PATH DISPLAYED
           endDelay: 0,
           direction: 'normal',
           easing: "easeInOutQuart",
@@ -118,13 +126,29 @@ export default {
           direction: 'normal',
           easing: "easeInOutQuart",
         }],
-      })
+      });
+      this.BorderOut.finished.then(() => {
+        this.store.state.cellTiming.typoRendered += 1;
+      });
       this.BorderOut.play();
     },
-    renderStatusTest(){
-      this.$store.state.renderStatus += 1;
-      this.path0 = [0, 'asdfasdfasdfsadf']
+    GET_SIGN(){
+      const num = randomInt(0, this.SIGNS_COUNT);
+      return this.SIGNS[num]
+    },
+    MOUNT(pathData){
+      if(this.decider){
+        this.pathLoaded[0] = pathData;
+      }else{
+        this.pathLoaded[1] = pathData;
+      }
+      this.decider = !this.decider;
     }
+
+
+
+
+
   },
   created() {
 

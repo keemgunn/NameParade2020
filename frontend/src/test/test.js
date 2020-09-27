@@ -15,7 +15,7 @@ const configs = {
 
 
     
-    sequenceNow: ( 5 ),
+    sequenceNow: ( 3 ),
   },
   server: {
     // init: true,
