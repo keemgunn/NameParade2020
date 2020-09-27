@@ -70,8 +70,7 @@ export default new Vuex.Store({
         ip: null,
         uag: null,
         inTime: null,
-        writeTime: null,
-        outTime: null
+        writeTime: null
       }
     },
     writerUndo: null,
