@@ -44,6 +44,11 @@ export default new Vuex.Store({
       paradeTitleCellCount: 0,
       paradeTitleMounted: 0,
     },
+    displayTiming: {
+      titleGraphicStart: false,
+      
+
+    },
     
     //__________________PATHMAKER
     writer:{

@@ -1,5 +1,6 @@
 <template>
-<div id="title-graphic-sign-wrapper">
+<div id="title-graphic-sign-wrapper"
+@click="mountTrigger()">
   <svg
   class="whole-sign"
   viewBox="0 0 400 200" 
@@ -8,7 +9,6 @@
   xmlns="http://www.w3.org/2000/svg" 
   xmlns:xlink="http://www.w3.org/1999/xlink">
     <g
-    v-if="0"
     id="software"
     class="sign"
     transform="translate(7.000000, 73.000000) rotate(-2)" 
@@ -32,7 +32,6 @@
       <path d="M352,26.5608466 C359.111111,24.4608466 384,23.5608466 384,23.5608466" id="software-14"></path>
     </g>
     <g 
-    v-if="0"
     id="graphic"
     class="sign"
     transform="translate(10.000000, 69.763808) rotate(-2)" 
@@ -53,7 +52,6 @@
       <path d="M379,3.23619221 C364.04927,4.83692653 338.283642,17.9634687 330.967364,39.0936825 C326.133965,53.052919 339.237733,67.2673009 374.228683,56.3819604" id="graphic-11"></path>
     </g>
     <g 
-    v-if="0"
     id="system"
     class="sign"
     transform="translate(8.000000, 72.000000) rotate(-3)" 
@@ -73,7 +71,6 @@
       <path d="M326,11.4923077 C329.919094,38.3818316 332.662559,52.4111269 342.459298,52.021603 C352.257033,51.6320791 357.742967,46.5657934 368.324123,30.1978698 C378.905775,13.8304411 381.648743,14.6099839 384,11.8818316 C383.60829,28.6392792 381.648743,56.3083459 383.60829,64.4923077" id="system-10"></path>
     </g>
     <g 
-    v-if="0"
     id="interactive"
     class="sign"
     transform="translate(7.000000, 80.274565) rotate(-2)" 
@@ -101,7 +98,6 @@
       <path d="M359,21.7254346 C370.793103,18.5825775 386,17.7254346 386,17.7254346" id="interactive-18"></path>
     </g>
     <g 
-    v-if="1"
     id="motion"
     class="sign"
     transform="translate(9.000000, 82.000000) rotate(-3)" 
@@ -119,7 +115,6 @@
       <path d="M330,12.5853168 C336.186668,35.0174769 348.147559,48.2364284 359.696006,46.6341312 C371.244452,45.0318341 381.555565,35.8186255 381.96801,18.5939311 C382.380454,8.9801482 378.668454,9.78129678 378.668454,9.78129678" id="motion-8"></path>
     </g>
     <g 
-    v-if="0"
     id="ux"
     class="sign"
     transform="translate(100.000000, 45.000000) rotate(2)" 
@@ -138,46 +133,106 @@
 
 <script>
 import{ mapState, mapGetters, mapMutations} from 'vuex';
-const software = require('../../assets/data/software.json');
-const graphic = require('../../assets/data/graphic.json');
-const system = require('../../assets/data/system.json');
-const interactive = require('../../assets/data/interactive.json');
-const motion = require('../../assets/data/motion.json');
-const ux = require('../../assets/data/ux.json');
-console.log('../../assets/data/software.json',software.length);
-console.log('../../assets/data/graphic.json',graphic.length);
-console.log('../../assets/data/system.json',system.length);
-console.log('../../assets/data/interactive.json',interactive.length);
-console.log('../../assets/data/motion.json',motion.length);
-console.log('../../assets/data/ux.json',ux.length);
+import { randomInt } from '../../assets/javascripts/uiAction';
+import anime from 'animejs';
+import { Timeline, keys } from '../../assets/javascripts/circleAnime';
+const t = {
+  beforeStartAnimation: 2000,
 
-
-
+}
 export default {
   name: "TitleGraphicSign",
-  components: { },
-  props: [
-
-  ],
   data() { return {
-
-
+    amounts: {
+      software: 15,
+      graphic: 12,
+      system: 11,
+      interactive: 19,
+      motion: 9,
+      ux: 3,
+    },
+    names: [],
+    mounted: '',
+    SoftwareAnimation: null,
+    GraphicAnimation: null,
+    SystemAnimation: null,
+    InteractiveAnimation: null,
+    MotionAnimation: null,
+    UxAnimation: null,
+    
   }},
   computed: {
-    ...mapState([]),
+    ...mapState(['displayTiming']),
     ...mapGetters([
       'VIEWTYPE'
     ]),
-
-
+    namesCounter: function(){
+      return this.names.length
+    },
+    startReq: function(){
+      return this.displayTiming.titleGraphicStart;
+    }
+  },
+  watch: {
+    namesCounter(nu, old){
+      if(nu === 1){
+        console.log('sadfasdfasdf');
+        this.refreshNamesArr();
+      }
+      return old
+    },
+    startReq(nu, old){
+      if(nu){
+        this.mountTrigger();
+      }
+      return old
+    }
   },
   methods: {
     ...mapMutations([]),
-
-    
+    refreshNamesArr(){
+      console.log('refresh names array');
+      const arr = ['software', 'graphic', 'system', 'interactive', 'motion', 'ux'];
+      let result = [];
+      for(var i=0; i<6; i++){
+        let now = randomInt(0, arr.length);
+        let str = arr[now];
+        result.push(str);
+        arr.splice(now, 1);
+      }
+      this.names = result;
+    },
+    mountTrigger(){
+      console.log(this.names);
+      let newEl = this.names.pop();
+      console.log(newEl);
+      this.mounted = newEl;
+      setTimeout(this.animationStart, t.beforeStartAnimation);
+      this.displayTiming.titleGraphicStart = false;
+    },
+    animationStart(){
+      if(this.mounted === 'software' ){
+        this.SoftwareAnimation.play();
+      }
+      else if(this.mounted === 'graphic'){
+        this.GraphicAnimation.play();
+      }
+      else if(this.mounted === 'system'){
+        this.SystemAnimation.play();
+      }
+      else if(this.mounted === 'interactive'){
+        this.InteractiveAnimation.play();
+      }
+      else if(this.mounted === 'motion'){
+        this.MotionAnimation.play();
+      }
+      else{
+        this.UxAnimation.play();
+      }
+    }
   },
   created() {
-
+    this.refreshNamesArr();
   },
   mounted() {
     const uxEl = document.querySelector('#ux');
@@ -185,7 +240,41 @@ export default {
       uxEl.setAttribute("transform","translate(80.000000, 40.000000) rotate(2)")
     }
 
+    const strokeKeys= [
+      keys('#ffffff', 0, t.strokeColorAppear, 0, "easeOutExpo"),
+      keys('#2C2A6A', t.strokeColorAppear, 2000, 0, "easeOutExpo")
+    ]
 
+
+    this.SoftwareAnimation = Timeline(anime)
+    .add({ targets: "#software path",
+      stroke: strokeKeys
+    })
+
+    this.GraphicAnimation = Timeline(anime)
+    .add({ targets: "#graphic path",
+      stroke: strokeKeys
+    })
+
+    this.SystemAnimation = Timeline(anime)
+    .add({ targets: "#system path",
+      stroke: strokeKeys
+    })
+
+    this.InteractiveAnimation = Timeline(anime)
+    .add({ targets: "#interactive path",
+      stroke: strokeKeys
+    })
+
+    this.MotionAnimation = Timeline(anime)
+    .add({ targets: "#motion path",
+      stroke: strokeKeys
+    })
+
+    this.UxAnimation = Timeline(anime)
+    .add({ targets: "#ux path",
+      stroke: strokeKeys
+    })
 
     
   },
@@ -209,9 +298,9 @@ export default {
   position: relative; top: 0; left: 0;
   width: 100%; height: 100%;
 }
-.sign{
-  stroke: #ffffff;
-}
+// .sign{
+//   // stroke: #ffffff;
+// }
 
 
 
