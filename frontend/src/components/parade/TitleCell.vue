@@ -79,7 +79,7 @@ export default {
     this.typoIndex = this.typoPositions.indexOf(this.index);
   },
   mounted() {
-    const delayOffset = 500 + this.index * 40;
+    // const delayOffset = this.index * 100;
     // ____________ INSERT TYPOGRAPHIES
     if(this.typoIndex !== -1){
       this.typoEl = document.querySelector('#'+this.typoId);
@@ -92,7 +92,7 @@ export default {
       strokeDashoffset: [
         {
           value: [anime.setDashoffset, 0], 
-          delay: delayOffset + function() { return anime.random(200, 1000); },
+          delay: 1000 + function() { return anime.random(200, 1000); },
           duration: function() { return anime.random(3800, 5000); },
           endDelay: 0,
           direction: 'alternate',

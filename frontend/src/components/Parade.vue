@@ -1,5 +1,6 @@
 <template>
 <div class="parade-wrapper">
+
   <div class="top-space" :style="topSpace"></div>
   <div class="title-wrapper" :style="title">
     <div v-for="block in titleBlocks" :key="block">
@@ -12,6 +13,15 @@
     </div>
   </div>
 
+  <div class="graphic-sign-wrapper" :style="GSstyle">
+
+  </div>
+
+  <div class="content-wrapper" :style="contentStyle">
+    <div class="display-wrapper" :style="displayStyle">
+
+    </div>
+  </div>
 
 
 
@@ -42,6 +52,12 @@ export default {
     title: {
       left: "0px", width: "0px", height: "0px"
     },
+    contentStyle:{
+      left: "0px", width: "0px"
+    },
+    displaySize: {
+      small: 5, narrow: 5, tablet: 6, wide: 5
+    },
     titleBlocks: [],
 
 
@@ -55,7 +71,8 @@ export default {
       
     ]),
     ...mapGetters([
-      'VIEWTYPE'
+      'VIEWTYPE',
+      'bs'
     ]),
     gridType: function(){
       if((this.VIEWTYPE === 'small')||(this.VIEWTYPE === 'narrow')){
@@ -77,8 +94,47 @@ export default {
     },
     cellStyle: function(){
       return{
-        'width': this.circleAnime.blockSize +'px',
-        'height': this.circleAnime.blockSize +'px'
+        'width': this.bs +'px',
+        'height': this.bs +'px'
+      }
+    },
+    GSstyle: function(){
+      if((this.VIEWTYPE === 'small')||(this.VIEWTYPE === 'narrow')){
+        return {
+          'top': '4vw', 'left': '4vw',
+          'width': '70vw', 'height': '35vw'
+        }
+      }else if(this.VIEWTYPE === 'tablet'){
+        return {
+          'top': '2vw', 'left': '2vw',
+          'width': '60vw', 'height': '30vw'
+        }
+      }else{
+        return {
+          'top': '5vw', 'left': '7vw',
+          'width': '44vw', 'height': '22vw'
+        }
+      }
+    },
+    contentSize: function(){
+      if((this.VIEWTYPE === 'small')||(this.VIEWTYPE === 'narrow')){
+        return {
+          column: 5
+        }
+      }else if(this.VIEWTYPE === 'tablet'){
+        return {
+          column: 6
+        }
+      }else{
+        return {
+          column: 11
+        }
+      }
+    },
+    displayStyle: function(){
+      return {
+        width: this.displaySize[this.VIEWTYPE] * this.bs + 'px',
+        height: this.displaySize[this.VIEWTYPE] * this.bs + 'px',
       }
     }
   },
@@ -106,7 +162,10 @@ export default {
     this.title.left = left;
     this.title.width = width;
     this.title.height = height;
-    // this['title']['padding-bottom'] = 0.5 * this.blockSize;
+    this.contentStyle.left = left;
+    this.contentStyle.width = this.bs * this.contentSize.column +'px';
+
+
     let blockCount = this.gridType.wCount * this.gridType.hCount;
     for(var i=0; i < blockCount; i++){
       this.titleBlocks.push(i);
@@ -151,6 +210,21 @@ export default {
 .cell {
   position: relative;
   float: left;
+}
+.graphic-sign-wrapper{
+  position: absolute; 
+  background-color: rgba(20, 255, 224, 0.452);
+}
+.content-wrapper{
+  position: relative; 
+  top: 0;
+  height: fit-content;
+  background-color: rgba(231, 211, 33, 0.219);
+}
+.display-wrapper{
+  position: relative;
+  top: 0; left: 0;
+  background-color: rgba(0, 0, 139, 0.384);
 }
 
 
