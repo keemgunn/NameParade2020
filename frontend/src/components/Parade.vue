@@ -14,7 +14,7 @@
   </div>
 
   <div class="graphic-sign-wrapper" :style="GSstyle">
-
+    <TitleGraphicSign />
   </div>
 
   <div class="content-wrapper" :style="contentStyle">
@@ -36,11 +36,12 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
 import TitleCell from './parade/TitleCell';
+import TitleGraphicSign from './parade/TitleGraphicSign';
 
 
 export default {
   name: "Parade",
-  components: { TitleCell,  },
+  components: { TitleCell, TitleGraphicSign,  },
   props: [
 
   ],
@@ -110,7 +111,7 @@ export default {
         }
       }else{
         return {
-          'top': '5vw', 'left': '7vw',
+          'top': '10vw', 'left': '7vw',
           'width': '44vw', 'height': '22vw'
         }
       }
@@ -195,8 +196,8 @@ export default {
 <style lang="scss" scoped> 
 .parade-wrapper{
   position: relative;
-  width: 100%; height: 100%;
-  background-color: rgba(127, 255, 212, 0.349);
+  width: 100%; height: fit-content;
+  // background-color: rgba(127, 255, 212, 0.349);
 }
 .top-space{
   position: relative;
@@ -205,7 +206,7 @@ export default {
 }
 .title-wrapper{
   position: relative; top: 0;
-  background-color: rgba(207, 35, 35, 0.322);
+  // background-color: rgba(207, 35, 35, 0.322);
 }
 .cell {
   position: relative;
@@ -213,7 +214,7 @@ export default {
 }
 .graphic-sign-wrapper{
   position: absolute; 
-  background-color: rgba(20, 255, 224, 0.452);
+  // background-color: rgba(20, 255, 224, 0.452);
 }
 .content-wrapper{
   position: relative; 

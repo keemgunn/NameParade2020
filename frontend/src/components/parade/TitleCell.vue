@@ -17,7 +17,7 @@
       </path>
     </svg>
   </div>
-  <div class="index-marker" v-if="1">
+  <div class="index-marker" v-if="0">
     {{index}}
   </div>
 </div>
