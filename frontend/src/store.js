@@ -41,6 +41,8 @@ export default new Vuex.Store({
     cellTiming: {
       mounted: 0,
       typoRendered: 0,
+      paradeTitleCellCount: 0,
+      paradeTitleMounted: 0,
     },
     
     //__________________PATHMAKER
@@ -166,6 +168,13 @@ export default new Vuex.Store({
     },
     TYPO_RENDERED(state){
       if(state.cellTiming.typoRendered === 22){
+        return true
+      }else{
+        return false
+      }
+    },
+    PARADE_TITLE_MOUNTED(state){
+      if(state.cellTiming.paradeTitleMounted === state.cellTiming.paradeTitleCellCount){
         return true
       }else{
         return false

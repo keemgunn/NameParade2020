@@ -55,7 +55,7 @@
     </svg>
   </div>
 
-  <div class="index-marker" v-if="1">
+  <div class="index-marker" v-if="0">
     {{index}}
   </div>
 </div>
@@ -89,7 +89,6 @@ export default {
     TypoAnimation: null,
     TypoRerender: null,
     CircleLoop: null,
-
     pathFadeTrigger: -1,
     TypoReact_fadeout: null,
     TypoReact_fadein: null,
@@ -224,7 +223,7 @@ export default {
       if(this.SEQ ===2){ 
         this.CircleLoop.play();
       }
-
+      
     },
     //__________________OTHER ANIME METHODS________
 
@@ -234,7 +233,9 @@ export default {
   },
   created() {
     this.coord = [this.block[1],this.block[2]]
-    this.typoIndex = mountPosition[this.mpType][this.VIEWTYPE].indexOf(this.index);
+    if(this.SEQ < 4){
+      this.typoIndex = mountPosition[this.mpType][this.VIEWTYPE].indexOf(this.index);
+    }
   },
   mounted() {
     const delayOffset = this.index * 40;

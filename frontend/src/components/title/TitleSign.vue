@@ -40,12 +40,7 @@ export default {
     ...mapState(['aniTiming', 'circleAnime', 'blocks']),
     ...mapGetters(['VIEWTYPE', 'SEQ']),
     locateInfo: function(){
-      if(this.VIEWTYPE === 'small'){
-        return {
-          index: 35, xAdd: 0.5, yAdd: 0.5,
-          wCount: 6, hCount: 1.5
-        }
-      }else if(this.VIEWTYPE === 'narrow'){
+      if((this.VIEWTYPE === 'small')||(this.VIEWTYPE === 'narrow')){
         return {
           index: 35, xAdd: 0.5, yAdd: 0.5,
           wCount: 6, hCount: 1.5

@@ -9,14 +9,12 @@ const seqStates = {
 
 const configs = {
   client: {
-    // testSequence: true, 
-    // signLoadDone: true,
-    // titleSignRendered: true,
+    testSequence: true, 
     // writerDone: true,
 
 
     
-    sequenceNow: ( 2 ),
+    sequenceNow: ( 4 ),
   },
   server: {
     init: true,

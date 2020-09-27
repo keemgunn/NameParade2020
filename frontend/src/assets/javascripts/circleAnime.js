@@ -137,6 +137,16 @@ const mountPosition = [
       77, 92, 107, 122, 
       125, 126, 127, 128, 129, 130, 131, 132
     ]
+  },
+  { // ______________________ SEQ >= 4
+    small: [
+    ],
+    narrow: [
+    ],
+    tablet: [
+    ],
+    wide: [
+    ]
   }
 ];
 
@@ -144,6 +154,17 @@ addNum(mountPosition[1]['tablet'], 74, 77);
 addNum(mountPosition[1]['tablet'], 82, 87);
 addNum(mountPosition[1]['tablet'], 94, 97);
 addNum(mountPosition[1]['tablet'], 1001, 1008);
+addNum(mountPosition[2]['small'], 1001, 1014);
+addNum(mountPosition[2]['small'], 2, 9);
+addNum(mountPosition[2]['narrow'], 1001, 1014);
+addNum(mountPosition[2]['narrow'], 2, 9);
+addNum(mountPosition[2]['tablet'], 1001, 1014);
+addNum(mountPosition[2]['tablet'], 3, 5);
+addNum(mountPosition[2]['tablet'], 7, 11);
+addNum(mountPosition[2]['wide'], 1, 10);
+addNum(mountPosition[2]['wide'], 18, 21);
+addNum(mountPosition[2]['wide'], 25, 32);
+
 
 
 const pathReaction = {

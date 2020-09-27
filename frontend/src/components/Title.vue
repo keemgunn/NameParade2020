@@ -31,6 +31,7 @@ export default {
   name,
   components: { Cell, TitleSign },
   data() { return {
+
   }},
   computed: {
     ...mapState([ 
@@ -57,7 +58,7 @@ export default {
         return this['aniTiming'][name]
       },
     space: function(){
-      if(this.SEQ > 2){
+      if(this.SEQ === 3){
         if(this.VIEWTYPE === 'small'){
           return {
             'height': '12vw',
