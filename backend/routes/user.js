@@ -39,7 +39,9 @@ router.get('/signs', (req, res) => {
 
 router.post('/push', (req, res) => {
   const newSign = req.body;
-  dm.newSign(newSign);
+  const signData = newSign.pathArr;
+  signData.unshift(newSign.info.name, newSign.info.writeTime, newSign.bounds.width, newSign.bounds.height);
+  dm.newSign(signData);
   res.json({status: 200});
 })
 

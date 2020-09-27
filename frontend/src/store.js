@@ -265,9 +265,17 @@ export default new Vuex.Store({
         state.signSent = true;
       }else{
         state.writer.info.writeTime = Date.now();
+        let pathArr = [];
+        let paths = state.writer.svg.split('<path d="');
+        for(var i=1; i < paths.length; i++){
+          const eachPath = paths[i].split('"');
+          pathArr.push(eachPath[0]);
+        }
+        console.log(pathArr);
         const newSign = {
-          svg: state.writer.svg,
-          info: state.writer.info
+          info: state.writer.info,
+          bounds: state.writer.bounds,
+          pathArr,
         };
         const {data} = await axios.post('api/push', newSign);
         if(data.status === 200){

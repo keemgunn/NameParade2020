@@ -37,6 +37,8 @@ export default {
     console.log(this.data);
   },
   mounted() {
+
+
     
   },
   beforeUpdate() {

@@ -64,7 +64,9 @@ function getSignsArrAsc() {
   let intArr = [];
   for(var i=0; i < result.length; i++){
     const names = result[i].split('.');
-    intArr.push(parseInt(names[0]));
+    if(names[1] === 'json'){
+      intArr.push(parseInt(names[0]));
+    }
   }
   // _____ SORT ASCENDING
   intArr = intArr.sort((a,b)=>{
@@ -132,7 +134,6 @@ function ResponseMonitor(monitor, res) {
 
 function newSign(data){
   let newSeat = findSeat()
-  console.log(newSeat);
   let path = SignPath(newSeat);
   writeSync(data, path);
     console.log(' -- sign saved:', path);
