@@ -13,13 +13,9 @@
     </div>
   </div>
 
-  <div class="graphic-sign-wrapper" :style="GSstyle">
-    <TitleGraphicSign />
-  </div>
-
   <div class="content-wrapper" :style="contentStyle">
     <div class="display-wrapper" :style="displayStyle">
-
+      <Display />
     </div>
   </div>
 
@@ -36,12 +32,12 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
 import TitleCell from './parade/TitleCell';
-import TitleGraphicSign from './parade/TitleGraphicSign';
+import Display from './parade/Display';
 
 
 export default {
   name: "Parade",
-  components: { TitleCell, TitleGraphicSign,  },
+  components: { TitleCell, Display,  },
   props: [
 
   ],
@@ -220,7 +216,7 @@ export default {
   position: relative; 
   top: 0;
   height: fit-content;
-  background-color: rgba(231, 211, 33, 0.219);
+  // background-color: rgba(231, 211, 33, 0.219);
 }
 .display-wrapper{
   position: relative;

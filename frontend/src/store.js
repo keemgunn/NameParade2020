@@ -44,10 +44,15 @@ export default new Vuex.Store({
       paradeTitleCellCount: 0,
       paradeTitleMounted: 0,
     },
-    displayTiming: {
-      titleGraphicStart: false,
-      
-
+    // displayTiming: {
+    //   titleGraphicStart: false,
+    // }, // ... DEPRECATED 
+    renderStatus: 0,
+    renderSign: {
+      target: -1,
+      scale: 0,
+      arr: [],
+      name: null
     },
     
     //__________________PATHMAKER
@@ -72,15 +77,8 @@ export default new Vuex.Store({
 
     
     //__________________RENDERER
-    displayConfig: {
-      x:0, y:0, w:0
-    },
-    renderSign: {
-      target: -1,
-      scale: 0,
-      arr: [],
-      name: null
-    },
+
+
   },
 
 
