@@ -10,9 +10,13 @@
   </div>
 
   <div id="content">
-    <PathView 
-    v-if="path0.length !== 0" 
-    :data="path0"
+    <PathView id="pv0"
+    v-if="pathLoaded[0].length !== 0" 
+    :pathData="pathLoaded[0]"
+    />
+    <PathView id="pv1"
+    v-if="pathLoaded[1].length !== 0" 
+    :pathData="pathLoaded[1]"
     />
   </div>
 
@@ -39,7 +43,7 @@ export default {
   ],
   data() { return {
     BorderIn: null, BorderOut: null,
-    path0: [],
+    pathLoaded:[[],[]]
 
 
 
@@ -50,6 +54,7 @@ export default {
   }},
   computed: {
     ...mapState([
+      'signsArr',
       'renderStatus'
     ]),
     ...mapGetters([

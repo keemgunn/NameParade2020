@@ -2,14 +2,13 @@
 <div id="title-cell-wrapper">
   <div class="circle-typo">
     <svg 
-    :id="reacter"
     viewBox="0 0 52 52" version="1.1" 
     xmlns="http://www.w3.org/2000/svg" 
     xmlns:xlink="http://www.w3.org/1999/xlink"
     fill="none">
       <path 
         class="typo"
-        :id="typoId"
+        :id="titleTypo"
         d=""
         fill-rule="evenodd"
         transform="translate(1.000000, 1.000000)"
@@ -56,7 +55,7 @@ export default {
     ]),
 
 
-    typoId:function(){
+    titleTypo:function(){
       return 'typo'+this.typoIndex
     },
     reacter: function(){
@@ -65,6 +64,7 @@ export default {
   },
   watch: {
     PARADE_TITLE_MOUNTED(nu, old){
+      console.log('true!');
       this.MountAnimation.play();
       return old
     }
@@ -82,13 +82,16 @@ export default {
     // const delayOffset = this.index * 100;
     // ____________ INSERT TYPOGRAPHIES
     if(this.typoIndex !== -1){
-      this.typoEl = document.querySelector('#'+this.typoId);
+      this.typoEl = document.querySelector('#'+this.titleTypo);
       this.typoEl.setAttribute("d", typoArr[this.typoIndex]);
+      console.log(this.typoEl);
+      console.log(typoArr[this.typoIndex]);
+      console.log(this.MountAnimation);
     }
 
         // _________________________ TYPO ANIMATION
     this.MountAnimation = Timeline(anime)
-    .add({ targets: '#'+this.typoId,
+    .add({ targets: '#'+this.titleTypo,
       strokeDashoffset: [
         {
           value: [anime.setDashoffset, 0], 
@@ -101,17 +104,8 @@ export default {
       ],
       delay: 400
     })
-    this.MountAnimation.finished.then(() => {
-
-    });
-
-
-
-
-
-
-
-    this.$emit('mounted', this.index);
+    console.log(this.MountAnimation);
+    this.$emit('mounted');
   },
   beforeUpdate() {
     
@@ -142,6 +136,6 @@ export default {
 }
 .typo{
   stroke :rgba(255, 255, 255, 0.76);
-  // stroke :rgba(255, 255, 255, 0);
+//   // stroke :rgba(255, 255, 255, 0);
 }
 </style>

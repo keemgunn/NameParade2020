@@ -24,7 +24,6 @@ export default new Vuex.Store({
     
     connections: 0,
     filesInServer: null,
-    signsArr: null,
     
     //__________________UI
     desColor: [],
@@ -47,14 +46,8 @@ export default new Vuex.Store({
     // displayTiming: {
     //   titleGraphicStart: false,
     // }, // ... DEPRECATED 
-    renderStatus: 0,
-    renderSign: {
-      target: -1,
-      scale: 0,
-      arr: [],
-      name: null
-    },
-    
+
+
     //__________________PATHMAKER
     writer:{
       paths:[],
@@ -79,15 +72,20 @@ export default new Vuex.Store({
 
     
     //__________________RENDERER
-
+    renderStatus: 0, 
+      // 1: mounted 2: rendered
+    signsArr: null,
+    renderSign: {
+      target: -1,
+      scale: 0,
+      arr: [],
+      name: null
+    },
 
   },
 
 
   getters: { 
-    allGetters(){
-
-    },
 
     TC(state){ // Test Client
       return state.test.client

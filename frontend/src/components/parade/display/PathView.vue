@@ -1,8 +1,7 @@
 <template>
 <div id="path-view">
 
-{{data}}
-
+{{pathData}}
 
 </div>
 </template>
@@ -17,9 +16,10 @@ export default {
   name: "PathView",
   components: { },
   props: [
-    'data'
+    'pathData'
   ],
   data() { return {
+    signsCount: 0,
 
   }},
   computed: {
@@ -34,7 +34,7 @@ export default {
     
   },
   created() {
-    console.log(this.data);
+
   },
   mounted() {
 

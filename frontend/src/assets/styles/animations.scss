@@ -60,6 +60,29 @@
 }
 
 
+// _____________________ TITLE TYPO
+.title-typo-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+} 
+.title-typo-enter-to {
+  opacity: 1;
+}
+.title-typo-enter-active{
+  transition: all 400ms;
+  // transition-delay: 300ms;
+}
+.title-typo-leave {
+  opacity: 1;
+}
+.title-typo-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+.title-typo-leave-active {
+  transition: all 500ms;
+}
+
 
 
 

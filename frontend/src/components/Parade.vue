@@ -7,7 +7,7 @@
       <div class="cell" :style="cellStyle">
         <TitleCell 
           :index="block" 
-          @mounted='$store.state.cellTiming.paradeTitleMounted += 1'
+          @mounted='titleCellMounted'
         />
       </div>
     </div>
@@ -147,6 +147,9 @@ export default {
       let width = wCount*circleAnime.blockSize +'px';
       let height = hCount*circleAnime.blockSize +'px';
       return { left, top, width, height }
+    },
+    titleCellMounted(){
+      this.$store.state.cellTiming.paradeTitleMounted += 1;
     }
 
 
@@ -167,6 +170,9 @@ export default {
       this.titleBlocks.push(i);
     }
     this.$store.state.cellTiming.paradeTitleCellCount = this.titleBlocks.length;
+    console.log(this.$store.state.cellTiming.paradeTitleCellCount);
+    this.titleBlocks;
+
   },
   mounted() {
 
