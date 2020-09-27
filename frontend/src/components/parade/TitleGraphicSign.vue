@@ -136,10 +136,8 @@ import{ mapState, mapGetters, mapMutations} from 'vuex';
 import { randomInt } from '../../assets/javascripts/uiAction';
 import anime from 'animejs';
 import { Timeline, keys } from '../../assets/javascripts/circleAnime';
-const t = {
-  beforeStartAnimation: 2000,
 
-}
+
 export default {
   name: "TitleGraphicSign",
   data() { return {
@@ -159,7 +157,12 @@ export default {
     InteractiveAnimation: null,
     MotionAnimation: null,
     UxAnimation: null,
-    
+    SoftwareFadeOut: null,
+    GraphicFadeOut: null,
+    SystemFadeOut: null,
+    InteractiveFadeOut: null,
+    MotionFadeOut: null,
+    UxFadeOut: null,
   }},
   computed: {
     ...mapState(['displayTiming']),
@@ -207,7 +210,7 @@ export default {
       let newEl = this.names.pop();
       console.log(newEl);
       this.mounted = newEl;
-      setTimeout(this.animationStart, t.beforeStartAnimation);
+      setTimeout(this.animationStart, 100);
       this.displayTiming.titleGraphicStart = false;
     },
     animationStart(){
@@ -240,50 +243,161 @@ export default {
       uxEl.setAttribute("transform","translate(80.000000, 40.000000) rotate(2)")
     }
 
-    const strokeKeys= [
-      keys('#ffffff', 0, t.strokeColorAppear, 0, "easeOutExpo"),
-      keys('#2C2A6A', t.strokeColorAppear, 2000, 0, "easeOutExpo")
+    const strokeKeys = [
+      keys('#ffffff', 0, 1, 0, "easeOutExpo"),
+      // keys('#cecece', 1, 600, 0, "easeOutExpo"),
     ]
 
+    const SDO = [{
+      value: [anime.setDashoffset, 0], 
+      delay: 30,
+      duration: 200,
+      endDelay: 30,
+      direction: 'normal',
+      easing: "linear",
+    }]
 
-    this.SoftwareAnimation = Timeline(anime)
-    .add({ targets: "#software path",
-      stroke: strokeKeys
-    })
+    const strokeFadeOut = [
+      // keys('#ffffff', 0, 1, 0, "easeOutExpo"),
+      keys('rgba(255, 255, 255, 0)', 3000, 800, 0, "easeInQuint"),
+    ];
 
-    this.GraphicAnimation = Timeline(anime)
-    .add({ targets: "#graphic path",
-      stroke: strokeKeys
-    })
+    this.SoftwareAnimation = Timeline(anime);
+    this.GraphicAnimation = Timeline(anime);
+    this.SystemAnimation = Timeline(anime);
+    this.InteractiveAnimation = Timeline(anime);
+    this.MotionAnimation = Timeline(anime);
+    this.UxAnimation = Timeline(anime);
+    this.SoftwareFadeOut = Timeline(anime);
+    this.GraphicFadeOut = Timeline(anime);
+    this.SystemFadeOut = Timeline(anime);
+    this.InteractiveFadeOut = Timeline(anime);
+    this.MotionFadeOut = Timeline(anime);
+    this.UxFadeOut = Timeline(anime);
 
-    this.SystemAnimation = Timeline(anime)
-    .add({ targets: "#system path",
-      stroke: strokeKeys
-    })
+    function assignValues(
+      name, i,
+      SoftwareAnimation,
+      GraphicAnimation,
+      SystemAnimation,
+      InteractiveAnimation,
+      MotionAnimation,
+      UxAnimation,
+      SoftwareFadeOut,
+      GraphicFadeOut,
+      SystemFadeOut,
+      InteractiveFadeOut,
+      MotionFadeOut,
+      UxFadeOut
+    ){
+      let el = '#' + name + '-' + i;
+      let bigEl = '#' + name + ' path';
+      if(name === 'software' ){
+        SoftwareFadeOut.add({ 
+          targets: bigEl,
+          stroke: strokeFadeOut
+        });
+        SoftwareAnimation.add({ 
+          targets: el,
+          stroke: strokeKeys,
+          strokeDashoffset: SDO,
+        });
+        SoftwareAnimation.finished.then(()=>{
+          SoftwareFadeOut.play();
+        })
+      }
+      else if(name === 'graphic'){
+        GraphicFadeOut.add({ 
+          targets: bigEl,
+          stroke: strokeFadeOut
+        });
+        GraphicAnimation.add({ 
+          targets: el,
+          stroke: strokeKeys,
+          strokeDashoffset: SDO,
+        });
+        GraphicAnimation.finished.then(()=>{
+          GraphicFadeOut.play();
+        })
+      }
+      else if(name === 'system'){
+        SystemFadeOut.add({ 
+          targets: bigEl,
+          stroke: strokeFadeOut
+        });
+        SystemAnimation.add({ 
+          targets: el,
+          stroke: strokeKeys,
+          strokeDashoffset: SDO,
+        });
+        SystemAnimation.finished.then(()=>{
+          SystemFadeOut.play();
+        })
+      }
+      else if(name === 'interactive'){
+        InteractiveFadeOut.add({ 
+          targets: bigEl,
+          stroke: strokeFadeOut
+        });
+        InteractiveAnimation.add({ 
+          targets: el,
+          stroke: strokeKeys,
+          strokeDashoffset: SDO,
+        });
+        InteractiveAnimation.finished.then(()=>{
+          InteractiveFadeOut.play();
+        })
+      }
+      else if(name === 'motion'){
+        MotionFadeOut.add({ 
+          targets: bigEl,
+          stroke: strokeFadeOut
+        });
+        MotionAnimation.add({ 
+          targets: el,
+          stroke: strokeKeys,
+          strokeDashoffset: SDO,
+        });
+        MotionAnimation.finished.then(()=>{
+          MotionFadeOut.play();
+        })
+      }
+      else{
+        UxFadeOut.add({ 
+          targets: bigEl,
+          stroke: strokeFadeOut
+        });
+        UxAnimation.add({ 
+          targets: el,
+          stroke: strokeKeys,
+          strokeDashoffset: SDO,
+        });
+        UxAnimation.finished.then(()=>{
+          UxFadeOut.play();
+        })
+      }
+    }
 
-    this.InteractiveAnimation = Timeline(anime)
-    .add({ targets: "#interactive path",
-      stroke: strokeKeys
-    })
-
-    this.MotionAnimation = Timeline(anime)
-    .add({ targets: "#motion path",
-      stroke: strokeKeys
-    })
-
-    this.UxAnimation = Timeline(anime)
-    .add({ targets: "#ux path",
-      stroke: strokeKeys
-    })
-
-    
-  },
-  beforeUpdate() {
-    
-  },
-  beforeCreate() {
-    
-  },
+    for(var i=0; i<this.names.length; i++){
+      for(var j=0; j<this.amounts[this.names[i]]; j++){
+        assignValues(
+          this.names[i], j,
+          this.SoftwareAnimation,
+          this.GraphicAnimation,
+          this.SystemAnimation,
+          this.InteractiveAnimation,
+          this.MotionAnimation,
+          this.UxAnimation,
+          this.SoftwareFadeOut,
+          this.GraphicFadeOut,
+          this.SystemFadeOut,
+          this.InteractiveFadeOut,
+          this.MotionFadeOut,
+          this.UxFadeOut,
+        );
+      }
+    }
+  }
 }
 </script>
 
@@ -298,9 +412,10 @@ export default {
   position: relative; top: 0; left: 0;
   width: 100%; height: 100%;
 }
-// .sign{
-//   // stroke: #ffffff;
-// }
+.sign{
+  // stroke: rgba(255, 255, 255, 0);
+  stroke: #ffffff;
+}
 
 
 
