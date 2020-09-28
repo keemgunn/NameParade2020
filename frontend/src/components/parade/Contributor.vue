@@ -16,12 +16,34 @@
     </div>
   </div>
 
-  <div class="list-box" :class="{'lighten':header20}">
+  <div class="list-box">
     <div class="list-item"
       :class="byType"
+      :style="listOp"
       v-for="pathData in SIGNS" 
       :key="pathData[1]">
       <List :pathData="pathData"/>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <div class="info" :class="byType">
+      <div class="para">
+      Web Application for NAMEPARADE2020:______DESIGNER <br>
+      Software development and graphic design by <br>
+      Keem Gunn
+      </div>
+      <div class="para">
+        CONTACTS <br>
+        gunnkeem@icloud.com <br>
+        github.com/keemgunn <br>
+
+      </div>
+      <div class="para">
+        ⓒ 2020. Keem Gunn. all rights reserved.
+      </div>
+    
+
     </div>
   </div>
 
@@ -55,6 +77,21 @@ export default {
 
     HEADER_SCROLL: function(){
       return this.SCROLL / this.headerTop
+    },
+
+    listOp: function(){
+      if(this.header20){
+        return {  
+          'transition': '600ms',
+          'transition-timing-function': 'cubic-bezier(.71,.19,.66,.97)',
+          opacity: '0.88'
+        }
+      }else{
+        return {
+          transition: '300ms',
+          opacity: '0.46'
+        }
+      }
     }
 
 
@@ -65,13 +102,11 @@ export default {
     HEADER_SCROLL(nu, old){
       if(this.VIEWTYPE !== 'wide'){
         if(nu > 0.8){
-          return old
+          this.header20 = true
         }else if(nu > 0.2){
           this.header20 = true
-  
         }else{
           this.header20 = false
-  
         }
       }else{
         return old
@@ -130,7 +165,8 @@ export default {
   // background-color: rgba(0, 191, 255, 0.445);
 }
 .header-wrapper{
-  opacity: 0.56;
+  opacity: 0.43;
+  transition: 300ms;
   .header{
     position: relative; top: 0; left: 0;
     width: 100%; 
@@ -156,8 +192,6 @@ export default {
     padding-top: 5%;
     padding-bottom: 5%;
   }
-
-
 }
 .text{
   position: relative; top: 0; left: 0;
@@ -170,13 +204,11 @@ export default {
   transition-timing-function: cubic-bezier(.71,.19,.66,.97);
   opacity: 1;
 }
-
 .list-box{
   position: relative; top: 0; left: 0;
-  opacity: 0.56;
   .list-item{
     position: relative; top: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.562);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.699);
     // background-color: rgba(230, 15, 147, 0.514);
   }._small{
     width: 100%; height: 20vw;
@@ -194,6 +226,34 @@ export default {
   }
 }
 
+.info-box{
+  position: relative; top: 0; left: 0;
+  font-family: 'Montserrat', sans-serif;
+  color: rgba(255, 255, 255, 0.568);
+  ._info{
+    position: relative; top: 0; left: 0;
+  }._small{
+    padding-top: 60vh;
+    padding-bottom: 8vh;
+    font-size: 2.8vw;
+    line-height: 3.9vw;
+    .para{
+      margin-bottom: 1.3vh;
+    }
+  }._narrow{
+    padding-top: 60vh;
+    padding-bottom: 8vh;
+    font-size: 2.8vw;
+    line-height: 3.9vw;
+    .para{
+      margin-bottom: 1.3vh;
+    }
+  }._tablet{
+
+  }._wide{
+
+  }
+}
 
 
 

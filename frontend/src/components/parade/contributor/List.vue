@@ -68,8 +68,6 @@ export default {
   },
   methods: {
     ...mapMutations([]),
-
-    
   },
   created() {
 
@@ -99,15 +97,6 @@ export default {
       // pathNode.style.stroke = ""
       this.pathBox.appendChild( pathNode );
     }
-
-
-    
-  },
-  beforeUpdate() {
-    
-  },
-  beforeCreate() {
-    
   },
 }
 </script>
@@ -118,6 +107,8 @@ export default {
 #list-wrapper{
   position: relative; top: 0; left: 0;
   width: 100%; height: 100%;
+  user-select: none;
+  opacity: 1;
   // background-color: wheat;
 }
 #path-wrapper{

@@ -246,6 +246,7 @@ export default {
   position: relative; 
   top: 0;
   height: fit-content;
+  margin-top: 5vh;
   // background-color: rgba(231, 211, 33, 0.219);
 }
 .display-wrapper{
@@ -259,7 +260,7 @@ export default {
   margin-top: 2%;
   width: 100%; height: fit-content;
   overflow: hidden;
-  padding-bottom: 60vw;
+  // padding-bottom: 10vw;
 }
 
 

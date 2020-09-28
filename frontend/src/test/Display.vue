@@ -8,14 +8,8 @@
       <rect id="border" stroke-width="1.5" x="0.6" y="0.6" width="708.8" height="708.8"></rect>
     </svg>
   </div>
-
-
-
-
-
 </div>
 </template>
-
 
 
 <script>
