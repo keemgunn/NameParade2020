@@ -76,9 +76,9 @@ export default {
           }
         ],
         delay: 400
-      })
+      });
       this.MountAnimation.play();
-    }
+    },
   },
   created() {
     this.typoPositions = mountPosition[2][this.VIEWTYPE];

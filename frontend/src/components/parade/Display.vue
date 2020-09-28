@@ -2,7 +2,7 @@
 <div id="display">
   <div id="border-box">
     <svg 
-    viewBox="0 0 500 400" 
+    viewBox="-4 -4 508 408" 
     version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
     fill="none">
       <rect id="border" stroke-width="3" x="0" y="0" width="500" height="400"></rect>
@@ -141,7 +141,6 @@ export default {
     },
 
     refreshSignSeq(count){
-      console.log('refresh sign sequence');
       let counter = [];
       for(var j=0; j < count; j++){
         counter[j] = j;
@@ -203,6 +202,7 @@ export default {
 #border-box{
   position: absolute;
   pointer-events: none;
+  // top: 1%; left: 1%;
   width: 100%; height: 100%;
   // stroke: rgba(255, 255, 255, 0);
 }

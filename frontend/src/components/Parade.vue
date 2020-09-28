@@ -14,7 +14,9 @@
   </div>
 
   <div class="content-wrapper" :style="contentStyle">
-    <div class="display-wrapper" :style="displayStyle">
+    <div v-if="displayOn"
+    class="display-wrapper" 
+    :style="displayStyle">
       <Display />
     </div>
   </div>
@@ -54,10 +56,9 @@ export default {
     displaySize: {
       small: 5, narrow: 5, tablet: 6, wide: 5
     },
+    blockCount: 0,
     titleBlocks: [],
-
-
-
+    displayOn: false,
   }},
   computed: {
     ...mapState([
@@ -74,12 +75,12 @@ export default {
       if((this.VIEWTYPE === 'small')||(this.VIEWTYPE === 'narrow')){
         return {
           index: 15, xAdd: 0, yAdd: 0,
-          wCount: 5, hCount: 2
+          wCount: 5, hCount: 5
         }
       }else if(this.VIEWTYPE === 'tablet'){
         return {
           index: 12, xAdd: 0, yAdd: 0,
-          wCount: 6, hCount: 2
+          wCount: 6, hCount: 5
         }
       }else{
         return {
@@ -134,6 +135,9 @@ export default {
       }
     }
   },
+  watch: {
+
+  },
   methods: {
     ...mapMutations([
       'bbcTrigger'
@@ -150,10 +154,10 @@ export default {
     },
     titleCellMounted(){
       this.$store.state.cellTiming.paradeTitleMounted += 1;
+    },
+    triggerDisplay(){
+      this.displayOn = true;
     }
-
-
-
   },
   created() {
     let { left, top, width, height } = this.getGridHeight(this.blocks, this.circleAnime, this.gridType);
@@ -163,19 +167,16 @@ export default {
     this.title.height = height;
     this.contentStyle.left = left;
     this.contentStyle.width = this.bs * this.contentSize.column +'px';
-
-
-    let blockCount = this.gridType.wCount * this.gridType.hCount;
-    for(var i=0; i < blockCount; i++){
+    this.blockCount = this.gridType.wCount * this.gridType.hCount;
+    for(var i=0; i < this.blockCount; i++){
       this.titleBlocks.push(i);
     }
     this.$store.state.cellTiming.paradeTitleCellCount = this.titleBlocks.length;
-    console.log(this.$store.state.cellTiming.paradeTitleCellCount);
     this.titleBlocks;
-
   },
   mounted() {
     this.bbcTrigger(false);
+    setTimeout(this.triggerDisplay, 3500, true);
   },
   beforeUpdate() {
     
