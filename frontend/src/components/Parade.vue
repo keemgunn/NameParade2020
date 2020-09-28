@@ -136,7 +136,7 @@ export default {
   },
   methods: {
     ...mapMutations([
-
+      'bbcTrigger'
     ]),
     getGridHeight(blocks, circleAnime, {index, xAdd, yAdd, wCount, hCount}){
       let coords = blocks[index].split('x');
@@ -175,14 +175,7 @@ export default {
 
   },
   mounted() {
-
-
-    
-
-
-
-
-    
+    this.bbcTrigger(false);
   },
   beforeUpdate() {
     

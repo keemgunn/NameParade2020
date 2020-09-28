@@ -51,7 +51,7 @@ export default {
 
   },
   methods: {
-    ...mapMutations([]),
+    ...mapMutations(['bbcTrigger']),
     startAnimation(pathId){
     //________________________REMOVE ANIMATION___________
       this.RemoveAnimation = Timeline(anime)
@@ -73,6 +73,7 @@ export default {
         ],
       });
       this.RemoveAnimation.finished.then(()=>{
+        this.bbcTrigger(false);
         for(var i=0; i < this.childs.length; i++){
           this.pathBox.removeChild(this.childs[i]);
         }
@@ -87,6 +88,9 @@ export default {
         this.RemoveAnimation.play();
         this.WritingAnimation = null;
       })
+      this.$store.state.desColor = this.pathData[6];
+      console.log(this.pathData[6]);
+      this.bbcTrigger(true);
       this.WritingAnimation.play();
       this.progress(); // trigger border in
     },
@@ -119,10 +123,10 @@ export default {
     }
   },
   created() {
-    this.dataLength = this.pathData.length;
-    for(var i=6; i<this.pathData.length; i++){
+    const pathDataIndex = 7;
+    for(var i=pathDataIndex; i<this.pathData.length; i++){
       this.paths.push(this.pathData[i]);
-      this.pathId.push(rand+'-p-'+(i-6));
+      this.pathId.push(rand+'-p-'+(i-pathDataIndex));
     }
     this.bounds = "0 0 " + this.pathData[2] + ' ' + this.pathData[3];
     this.trans = "translate( -" + (this.pathData[4]) + ", -" + this.pathData[5] + ")";

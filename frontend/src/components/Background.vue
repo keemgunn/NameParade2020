@@ -17,36 +17,49 @@ export default {
   name,
   data() { return {
     scope: null,
-    bbcApear: false,
     h: [], // [a, b, c, d, e, f]
     hueVector: [], // -1 , 0, 1
     l: [0, 0], // [start, end]
     desLev: [ 42 , 38 ],
     size: 0.66, amount: 6,
+    AT: {
+      loadingTransition: 300 +'ms',
+      loadedTransition: 400 + 'ms',
+      fadeBlackTransition: 800 +'ms',
+      circleVelocity: 0.4,
+      levelVelocity: 0.1,
+    }
   }},
   computed: {
     ...mapState([
-        'aniTiming',
+        'bbcAppear',
+        'backBlue',
         'winSize',
         'desColor'
       ]),
     ...mapGetters([
         'VIEWTYPE', 
-        'NEW_PATHS'
+        'NEW_PATHS',
+        'SEQ'
       ]),
-    AT: function(){
-      return this['aniTiming'][name]
-    },
     bgLoading: function(){
-      if(this.NEW_PATHS){
-        return {
-          'transition': this.AT.fadeBlackTransition,
-          'background-color': 'black',
-          'opacity': '100%'
+      if(this.backBlue){
+        if(this.bbcAppear){
+          return {
+            'transition': this.AT.fadeBlackTransition,
+            'background-color': 'black',
+            'opacity': '100%'
+          }
+        }else{
+          return {
+            'transition': this.AT.loadedTransition,
+            'opacity': '100%'
+          }
         }
       }else{
         return {
           'transition': this.AT.loadedTransition,
+          'background-color': 'black',
           'opacity': '100%'
         }
       }
@@ -63,10 +76,17 @@ export default {
           max: this.winSize.vh * this.size
         }
       }
+    },
+    hueVelocity: function(){
+      if(this.SEQ > 3){
+        return 1
+      }else{
+        return 0.5
+      }
     }
   },
   methods: {
-    ...mapMutations(['setBBC']),
+    ...mapMutations(['setBBC', 'bbcTrigger']),
     onResize() {
       this.scope.view.viewSize.width = window.innerWidth;
       this.scope.view.viewSize.height = window.innerHeight;
@@ -104,12 +124,12 @@ export default {
       }
       //__ hue Change
       if(this.hueVector[i] !==0){
-        this.h[i] += (this.AT.hueVelocity*this.hueVector[i]);
+        this.h[i] += (this.hueVelocity*this.hueVector[i]);
         this.h[i] = bbc.hueModify(this.h[i]);
       }
       //__ level Change
       let lcGo = false;
-      if(this.bbcApear){
+      if(this.bbcAppear){
         if(this.l[0] < this.desLev[0]){
           lcGo = true;
           this.l[0] += this.AT.levelVelocity;
@@ -138,15 +158,22 @@ export default {
     }
   },
   watch: {
-    NEW_PATHS(nu, old){ // 0 or something
+    // _______________________TRIGGERS
+    NEW_PATHS(nu, old){
       if(nu === 0){
-        this.bbcApear = false;
-        this.desLev = [0, 0];
+        this.bbcTrigger(false);
       }else if(nu > old){
-        this.bbcApear = true;
-        this.desLev = [42, 38];
+        this.bbcTrigger(true);
         this.setBBC({comp:-1, hue:-1});
       }
+    },
+    bbcAppear(nu, old){
+      if(nu){
+        this.desLev = [42, 38];
+      }else{
+        this.desLev = [0, 0];
+      }
+      return old
     }
   },
   created() {

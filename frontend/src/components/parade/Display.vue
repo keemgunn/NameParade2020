@@ -55,7 +55,7 @@ export default {
   }},
   computed: {
     ...mapState([
-      'renderStatus'
+      'renderStatus',
     ]),
     ...mapGetters([
       'SIGNS',
@@ -179,7 +179,9 @@ export default {
     }
     this.refreshSignSeq(this.SIGNS_COUNT);
     this.pending = this.PULL(this.SIGNS);
+        // ________ SET DELAY BEFOR RENDER SIGNS ________
     setTimeout(this.MOUNT, 2000, this.pending);
+    this.$store.state.backBlue = false;
   },
   beforeUpdate() {
     

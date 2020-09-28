@@ -28,9 +28,6 @@ import Background from './components/Background';
 import Title from './components/Title';
 import Writer from './components/Writer';
 import Parade from './components/Parade';
-
-const { signFiles } = require('./test/test');
-
 // console.log(Reflect.ownKeys(this.$store.getters));
 
 export default {
@@ -126,9 +123,7 @@ export default {
       document.querySelector( 'body' ).style['overflow-y'] = 'auto';
       document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
     }
-    if(this.$store.state.test.server.signLoad){
-      this.$store.state.signsArr = signFiles;
-    }
+
     // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
   },
   beforeDestroy() { 

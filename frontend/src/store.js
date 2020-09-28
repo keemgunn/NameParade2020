@@ -26,6 +26,8 @@ export default new Vuex.Store({
     filesInServer: null,
     
     //__________________UI
+    bbcAppear: false,
+    backBlue: true,
     desColor: [],
     aniTiming: animation.timing,
     circleAnime: {
@@ -37,6 +39,14 @@ export default new Vuex.Store({
     blocks: [], blockRendered: false,
 
     //___________________ ANIME TIMING
+    bbcTiming: {
+      loadingTransition: 300 +'ms',
+      loadedTransition: 400 + 'ms',
+      fadeBlackTransition: 800 +'ms',
+      circleVelocity: 0.4,
+      hueVelocity: 0.5,
+      levelVelocity: 0.1,
+    },
     cellTiming: {
       mounted: 0,
       typoRendered: 0,
@@ -57,6 +67,7 @@ export default new Vuex.Store({
         width: 0, height: 0,
         x: 0, y: 0
       },
+      bbc:[0, 0, 0, 0, 0, 0],
       info: {
         userId: userId,
         name: userId,
@@ -226,8 +237,14 @@ export default new Vuex.Store({
 
   mutations: {
 
+    bbcTrigger(state, bool){
+      this.state.bbcAppear = bool;
+    },
     setBBC(state, {comp, hue}){
       state.desColor = ui.newBBC({comp, hue});
+      if(!state.writerDone){
+        state.writer.bbc = state.desColor;
+      }
     },
 
     async PUT_INITDATA(state, recieved){
@@ -263,10 +280,10 @@ export default new Vuex.Store({
           const eachPath = paths[i].split('"');
           pathArr.push(eachPath[0]);
         }
-        console.log(pathArr);
         const newSign = {
           info: state.writer.info,
           bounds: state.writer.bounds,
+          bbc: state.writer.bbc,
           pathArr,
         };
         const {data} = await axios.post('api/push', newSign);

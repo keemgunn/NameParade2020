@@ -3,7 +3,9 @@ const seqStates = {
   1: 'loading-done',
   2: 'writer-des',
   3: 'writer-pm',
-  4: 'parade-',
+  4: 'thank=you-',
+  5: 'parade-intro',
+  6: 'parade-display',
 
 };
 
