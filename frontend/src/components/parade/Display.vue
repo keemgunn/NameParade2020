@@ -10,13 +10,9 @@
   </div>
 
   <div id="content">
-    <PathView id="pv0"
-    v-if="pathLoaded[0].length !== 0" 
-    :pathData="pathLoaded[0]"
-    />
-    <PathView id="pv1"
-    v-if="pathLoaded[1].length !== 0" 
-    :pathData="pathLoaded[1]"
+    <PathView
+    v-if="viewOn" 
+    :pathData="pathData"
     />
   </div>
 
@@ -36,15 +32,18 @@ const { keys, Timeline } = require('../../assets/javascripts/circleAnime');
 const { randomInt } = require('../../assets/javascripts/uiAction');
 import PathView from './display/PathView';
 
+const { signFiles } = require('../../test/test')
+
 export default {
   name: "Display",
   components: { PathView,  },
   data() { return {
     BorderIn: null, BorderOut: null,
-    pathLoaded:[[],[]],
-    decider: false,
-    pending: []
+    pathData: [],
+    viewOn: false,
 
+    signSeq: [],
+    pending: []
 
 
 
@@ -62,25 +61,33 @@ export default {
       'SIGNS',
       'SIGNS_COUNT'
     ]),
+    SIGN_SEQ_ARR: function(){
+      return this.signSeq.length
+    }
 
 
   },
   watch: {
     renderStatus(nu, old){
-      if(nu === 1){
-        // when mounted
+      if(nu === 1){//___when render starts
         this.aIn();
-        this.pending = this.GET_SIGN();
-      }else if(nu === 2){
-        // when rendered
+        this.pending = this.PULL(this.SIGNS);
+      }else if(nu === 2){//___when rendered
         this.aOut();
-      }else if(nu ===3){
-        // when destroyed
-        
+      }else if(nu ===3){//___when destroyed
+        this.viewOn = false;
+        setTimeout(this.MOUNT, 100, this.pending);
         this.$store.state.renderStatus = 0;
       }
         return old
-    }
+    },
+    SIGN_SEQ_ARR(nu, old){
+      if(nu === 1){
+        this.refreshSignSeq(this.SIGNS_COUNT);
+      }else{
+        return old
+      }
+    },
   },
   methods: {
     ...mapMutations([]),
@@ -103,7 +110,7 @@ export default {
       targets: '#border',
       strokeDashoffset: [{
           value: [0, anime.setDashoffset], 
-          delay: 0,
+          delay: 1300,
           duration: 3200, // HOW LONG WOULD BE THE PATH DISPLAYED
           endDelay: 0,
           direction: 'normal',
@@ -128,21 +135,35 @@ export default {
         }],
       });
       this.BorderOut.finished.then(() => {
-        this.store.state.cellTiming.typoRendered += 1;
+        this.$store.state.renderStatus += 1;
       });
       this.BorderOut.play();
     },
-    GET_SIGN(){
-      const num = randomInt(0, this.SIGNS_COUNT);
-      return this.SIGNS[num]
-    },
-    MOUNT(pathData){
-      if(this.decider){
-        this.pathLoaded[0] = pathData;
-      }else{
-        this.pathLoaded[1] = pathData;
+
+    refreshSignSeq(count){
+      console.log('refresh sign sequence');
+      let counter = [];
+      for(var j=0; j < count; j++){
+        counter[j] = j;
       }
-      this.decider = !this.decider;
+      let result = [];
+      for(var i=0; i < count; i++){
+        let now = randomInt(0, counter.length);
+        result.push(counter[now]);
+        counter.splice(now, 1);
+      }
+      this.signSeq = result;
+    },
+
+    PULL(arr){
+      const num = this.signSeq.pop();
+      return arr[num]
+    },
+
+    MOUNT(data){
+      this.pathData = null;
+      this.pathData = data;
+      this.viewOn = true;
     }
 
 
@@ -151,11 +172,14 @@ export default {
 
   },
   created() {
-
-  },
+    },
   mounted() {
-
-
+    if(this.$store.state.test.server.signLoad){
+      this.$store.state.signsArr = signFiles;
+    }
+    this.refreshSignSeq(this.SIGNS_COUNT);
+    this.pending = this.PULL(this.SIGNS);
+    setTimeout(this.MOUNT, 2000, this.pending);
   },
   beforeUpdate() {
     

@@ -54,8 +54,8 @@ export default new Vuex.Store({
       pathGroup: null,
       svg: '',
       bounds: {
-        width: 0,
-        height: 0
+        width: 0, height: 0,
+        x: 0, y: 0
       },
       info: {
         userId: userId,

@@ -10,18 +10,18 @@ const seqStates = {
 
 const configs = {
   client: {
-    // testSequence: true, 
-    // writerDone: true,
+    testSequence: true, 
+    writerDone: true,
 
 
     
-    sequenceNow: ( 3 ),
+    sequenceNow: ( 5 ),
   },
   server: {
-    // init: true,
-    // filesInServer: true,
-    // signLoad: true,
-    // sendPaths: true,
+    init: true,
+    filesInServer: true,
+    signLoad: true,
+    sendPaths: true,
 
     foo: 'bar',
   },

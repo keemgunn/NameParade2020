@@ -164,6 +164,9 @@ export default {
       this.writer.paths.push(path);
       this.$store.state.writer.bounds.width = this.scope.view.bounds.width;
       this.$store.state.writer.bounds.height = this.scope.view.bounds.height;
+      this.$store.state.writer.bounds.x = this.scope.view.bounds.x;
+      this.$store.state.writer.bounds.y = this.scope.view.bounds.y;
+      console.log(this.scope.view.bounds);
     }
   },
   beforeDestroy() {

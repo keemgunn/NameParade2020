@@ -130,7 +130,7 @@ export default {
     displayStyle: function(){
       return {
         width: this.displaySize[this.VIEWTYPE] * this.bs + 'px',
-        height: this.displaySize[this.VIEWTYPE] * this.bs + 'px',
+        height: (this.displaySize[this.VIEWTYPE]-1) * this.bs + 'px',
       }
     }
   },
@@ -227,7 +227,7 @@ export default {
 .display-wrapper{
   position: relative;
   top: 0; left: 0;
-  background-color: rgba(0, 0, 139, 0.384);
+  // background-color: rgba(0, 0, 139, 0.384);
 }
 
 
