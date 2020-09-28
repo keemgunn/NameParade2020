@@ -2,14 +2,13 @@
 <div id="title-cell-wrapper">
   <div class="circle-typo">
     <svg 
-    :id="reacter"
     viewBox="0 0 52 52" version="1.1" 
     xmlns="http://www.w3.org/2000/svg" 
     xmlns:xlink="http://www.w3.org/1999/xlink"
     fill="none">
       <path 
         class="typo"
-        :id="typoId"
+        :id="titleTypo"
         d=""
         fill-rule="evenodd"
         transform="translate(1.000000, 1.000000)"
@@ -17,20 +16,15 @@
       </path>
     </svg>
   </div>
-  <div class="index-marker" v-if="1">
+  <div class="index-marker" v-if="0">
     {{index}}
   </div>
 </div>
 </template>
-
-
-
 <script>
-import{ mapState, mapGetters, mapMutations} from 'vuex';
-const { mountPosition, typoArr, Timeline } = require('../../assets/javascripts/circleAnime');
+import{ mapGetters } from 'vuex';
+const { mountPosition, typoArr, Timeline, keys } = require('../../assets/javascripts/circleAnime');
 import anime from 'animejs';
-
-
 export default {
   name: "TitleCell",
   components: { },
@@ -42,22 +36,14 @@ export default {
     typoIndex: -1,
     typoEl: null,
     MountAnimation: null,
-
   }},
   computed: {
-    ...mapState([
-
-    ]),
     ...mapGetters([
       'VIEWTYPE',
       'PARADE_TITLE_MOUNTED',
-      
-
     ]),
-
-
-    typoId:function(){
-      return 'typo'+this.typoIndex
+    titleTypo:function(){
+      return 'title-typo-'+this.typoIndex
     },
     reacter: function(){
       return 'react_'+this.index
@@ -65,65 +51,48 @@ export default {
   },
   watch: {
     PARADE_TITLE_MOUNTED(nu, old){
+      console.log('true!');
       this.MountAnimation.play();
       return old
     }
   },
   methods: {
-    ...mapMutations([]),
-
-    
+    startAnimation(idSource){
+      let id = '#'+ idSource;
+      this.MountAnimation = Timeline(anime);
+      this.MountAnimation.add({ targets: id,
+        stroke: [
+          keys('rgba(255, 255, 255, 0)', 0, 1, 0, "easeOutCubic"),
+          keys('rgba(255, 255, 255, 0.76)', 1, 2, 0, "easeOutCubic")
+        ],
+        strokeDashoffset: [
+          {
+            value: [anime.setDashoffset, 0], 
+            delay: 1000 + function() { return anime.random(200, 1000); },
+            duration: function() { return anime.random(3800, 5000); },
+            endDelay: 0,
+            direction: 'alternate',
+            easing: "easeInOutQuart",
+          }
+        ],
+        delay: 400
+      });
+      this.MountAnimation.play();
+    },
   },
   created() {
     this.typoPositions = mountPosition[2][this.VIEWTYPE];
     this.typoIndex = this.typoPositions.indexOf(this.index);
   },
   mounted() {
-    const delayOffset = 500 + this.index * 40;
-    // ____________ INSERT TYPOGRAPHIES
     if(this.typoIndex !== -1){
-      this.typoEl = document.querySelector('#'+this.typoId);
+      this.typoEl = document.querySelector('#'+this.titleTypo);
       this.typoEl.setAttribute("d", typoArr[this.typoIndex]);
     }
-
-        // _________________________ TYPO ANIMATION
-    this.MountAnimation = Timeline(anime)
-    .add({ targets: '#'+this.typoId,
-      strokeDashoffset: [
-        {
-          value: [anime.setDashoffset, 0], 
-          delay: delayOffset + function() { return anime.random(200, 1000); },
-          duration: function() { return anime.random(3800, 5000); },
-          endDelay: 0,
-          direction: 'alternate',
-          easing: "easeInOutQuart",
-        }
-      ],
-      delay: 400
-    })
-    this.MountAnimation.finished.then(() => {
-
-    });
-
-
-
-
-
-
-
-    this.$emit('mounted', this.index);
-  },
-  beforeUpdate() {
-    
-  },
-  beforeCreate() {
-    
+    setTimeout(this.startAnimation, 200 , this.titleTypo )
   },
 }
 </script>
-
-
-
 <style lang="scss" scoped> 
 #title-cell-wrapper{
   position: relative;
@@ -141,7 +110,6 @@ export default {
   font-family: sans-serif;
 }
 .typo{
-  stroke :rgba(255, 255, 255, 0.76);
-  // stroke :rgba(255, 255, 255, 0);
+  stroke :rgba(255, 255, 255, 0);
 }
 </style>

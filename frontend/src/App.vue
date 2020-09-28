@@ -28,7 +28,6 @@ import Background from './components/Background';
 import Title from './components/Title';
 import Writer from './components/Writer';
 import Parade from './components/Parade';
-
 // console.log(Reflect.ownKeys(this.$store.getters));
 
 export default {
@@ -49,6 +48,7 @@ export default {
       ]),
     ...mapGetters([
         'TC', 'TS',
+        'VIEWTYPE',
         'byType', 
         'SEQ', 
         'FILES_IN_SERVER',
@@ -57,27 +57,26 @@ export default {
       ])
   },
   methods: {
-    ...mapMutations([
-        'moveTo', 
-        'setBBC', 
-      ]),
-    ...mapActions([
-        'INITIATE', 
-        'startSignLoad'
-      ]),
+    ...mapMutations([ 'moveTo', 'setBBC', ]),
+    ...mapActions([ 'INITIATE', 'startSignLoad']),
+
     onResize() {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
     },
+
   },
   watch: {
+
     SEQ(nu, old) {
       console.log('-- sequence changed :', old,'->',nu);
-      if(nu > 3){
+      if((nu > 4)&&(this.VIEWTYPE !== 'wide')){
         document.querySelector( 'body' ).style['overflow-y'] = 'auto';
         document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
+        document.querySelector( '.app').style['height'] = 'fit-content';
       }
     },
+
     FILES_IN_SERVER(nu, old){
       if(this.TC.signLoadDone){
         console.log('--- test: start loading signs ---');
@@ -98,6 +97,7 @@ export default {
         }
       }
     },
+
     SIGN_SENT(nu, old){
       if(nu === true){
         if(this.TC.testSequence){
@@ -109,21 +109,27 @@ export default {
         return old
       }
     }
+
   },
   created() {
+
     this.onResize();
     this.setBBC({comp:-1, hue:-1});
     this.INITIATE();
+
   },
   mounted() {
+
     this.onResize();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    if(this.SEQ > 3){
+    if( (this.SEQ>4) && (this.VIEWTYPE !== 'wide') ){
       document.querySelector( 'body' ).style['overflow-y'] = 'auto';
       document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
+      document.querySelector( '.app').style['height'] = 'fit-content';
     }
+
     // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
   },
   beforeDestroy() { 
@@ -136,9 +142,6 @@ export default {
 <style lang="scss">
   @import "assets/styles/animations.scss";
   @import "assets/fonts/CoreGothicD/coregothicd.css";
-
-  $appHeight: 300vh;
-
   body {
     overflow: hidden;
     background-color: black;
@@ -148,7 +151,8 @@ export default {
     z-index: 0;
     position: absolute; top: 0; left: 0;
     margin: 0; padding: 0;
-    width: 100vw; height: $appHeight;
+    width: 100vw; 
+    height: 300vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;

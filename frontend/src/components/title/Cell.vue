@@ -19,7 +19,9 @@
     </svg>
   </div>
 
-  <div class="circle-typo" v-if="typoAlternater">
+  <transition name="title-typo">
+  <div v-if="SEQ<4">
+  <div class="circle-typo" v-if="(typoAlternater)&&(SEQ<4)">
     <svg 
     :id="reacter"
     viewBox="0 0 52 52" version="1.1" 
@@ -36,8 +38,7 @@
       </path>
     </svg>
   </div>
-
-  <div class="circle-typo" v-if="!typoAlternater">
+  <div class="circle-typo" v-if="(!typoAlternater)&&(SEQ<4)">
     <svg 
     :id="reacter"
     viewBox="0 0 52 52" version="1.1" 
@@ -54,6 +55,8 @@
       </path>
     </svg>
   </div>
+  </div>
+  </transition>
 
   <div class="index-marker" v-if="0">
     {{index}}

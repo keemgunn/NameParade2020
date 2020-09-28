@@ -64,7 +64,9 @@ function getSignsArrAsc() {
   let intArr = [];
   for(var i=0; i < result.length; i++){
     const names = result[i].split('.');
-    intArr.push(parseInt(names[0]));
+    if(names[1] === 'json'){
+      intArr.push(parseInt(names[0]));
+    }
   }
   // _____ SORT ASCENDING
   intArr = intArr.sort((a,b)=>{
@@ -80,11 +82,10 @@ let monitor = new EventEmitter();
 function getAllSigns(res) {
   const queryID = ResponseMonitor(monitor, res);
   let result = []; let readCount = 0
-  let fileNames = fs.readdirSync(signsPath, (err, files) => {
-    if(err){
-      return console.log('something wrong ...@dataManager/getAllFiles');
-    }
-  });
+  let fileNames = [];
+  for(var i=0; i<config.signs.length; i++){
+    fileNames.push(config.signs[i]+'.json');
+  }
   monitor.on('read-done', () => {
     readCount += 1;
     if(readCount < fileNames.length){
@@ -132,7 +133,6 @@ function ResponseMonitor(monitor, res) {
 
 function newSign(data){
   let newSeat = findSeat()
-  console.log(newSeat);
   let path = SignPath(newSeat);
   writeSync(data, path);
     console.log(' -- sign saved:', path);
@@ -153,6 +153,14 @@ function findSeat(){
   }else{
     return config.signs.length
   }
+}
+
+
+function wholeSign(data) {
+  let savePath = path.join(__dirname, '../data/comInfo/');
+  const fileName = 'path_' + data.info.writeTime + '_' + data.info.userId + '.json';
+  savePath = savePath + fileName;
+  writeSync(data, savePath);
 }
 
 
@@ -179,9 +187,19 @@ monitor.on('delete-listener', (name) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
 module.exports = { 
   configPath, signsPath, config,
   readSync, writeSync, update,
   syncConfig, updateConfigs,
-  getAllSigns, newSign
+  getAllSigns, newSign, wholeSign
 }
