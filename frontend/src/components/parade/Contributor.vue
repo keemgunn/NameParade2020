@@ -249,9 +249,21 @@ export default {
       margin-bottom: 1.3vh;
     }
   }._tablet{
-
+    padding-top: 60vh;
+    padding-bottom: 8vh;
+    font-size: 2.4vw;
+    line-height: 3.5vw;
+    .para{
+      margin-bottom: 1.3vh;
+    }
   }._wide{
-
+    padding-top: 60vh;
+    padding-bottom: 8.8vh;
+    font-size: 1.8vh;
+    line-height: 2.4vh;
+    .para{
+      margin-bottom: 1.3vh;
+    }
   }
 }
 
