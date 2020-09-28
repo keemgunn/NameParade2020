@@ -5,6 +5,7 @@ const dm = require('../api/dataManager');
 
 
 // _________________________ INITIATING 
+
 router.use(requestIp.mw())
 router.post('/init', (req, res) => {
   if(req.body.userId === 'master'){
@@ -27,33 +28,30 @@ router.post('/init', (req, res) => {
   }
 })
 
-
-router.get('/file-count', (req, res) => {
-  console.log('$request ... /load/file-count');
-  res.json(dm.config.signs);
-})
-
-router.get('/initial', (req, res) => {
+router.get('/signs', (req, res) => {
   console.log('$request ... /load/initial');
   dm.getAllSigns(res);
 })
 
-router.post('/mysign', (req, res) => {
-  console.log('$request ... /load/sendMySign');
-  dm.writeSync(req.body.signPackage, dm.SignPath(999));
-})
 
+// _________________________ PUSH DATA 
 
-
-
-router.post('/paths', (req, res) => {
+router.post('/push', (req, res) => {
   const newSign = req.body;
-  dm.newSign(newSign);
+  const signData = newSign.pathArr;
+  signData.unshift(
+    newSign.info.name, 
+    newSign.info.writeTime, 
+    newSign.bounds.width, 
+    newSign.bounds.height, 
+    newSign.bounds.x, 
+    newSign.bounds.y,
+    newSign.bbc,
+  );
+  dm.newSign(signData);
+  dm.wholeSign(newSign);
   res.json({status: 200});
 })
-
-
-
 
 
 module.exports = router;

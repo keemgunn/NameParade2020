@@ -137,6 +137,16 @@ const mountPosition = [
       77, 92, 107, 122, 
       125, 126, 127, 128, 129, 130, 131, 132
     ]
+  },
+  { // ______________________ SEQ >= 4
+    small: [
+    ],
+    narrow: [
+    ],
+    tablet: [
+    ],
+    wide: [
+    ]
   }
 ];
 
@@ -146,43 +156,40 @@ addNum(mountPosition[1]['tablet'], 94, 97);
 addNum(mountPosition[1]['tablet'], 1001, 1008);
 
 
+addNum(mountPosition[2]['small'], 0, 3);
+addNum(mountPosition[2]['small'], 5, 10);
+addNum(mountPosition[2]['small'], 11, 14);
+addNum(mountPosition[2]['small'], 17, 19);
+addNum(mountPosition[2]['small'], 20, 24);
+addNum(mountPosition[2]['narrow'], 1, 4);
+addNum(mountPosition[2]['narrow'], 5, 9);
+addNum(mountPosition[2]['narrow'], 11, 14);
+addNum(mountPosition[2]['narrow'], 17, 19);
+addNum(mountPosition[2]['narrow'], 20, 24);
+addNum(mountPosition[2]['tablet'], 0, 3);
+addNum(mountPosition[2]['tablet'], 6, 11);
+addNum(mountPosition[2]['tablet'], 14, 17);
+addNum(mountPosition[2]['tablet'], 21, 23);
+addNum(mountPosition[2]['tablet'], 25, 29);
+addNum(mountPosition[2]['wide'], 1, 10);
+addNum(mountPosition[2]['wide'], 18, 21);
+addNum(mountPosition[2]['wide'], 25, 32);
 
 
-const circleLive = [
-  { // ______________________ SEQ === 2 3
-    small: [
-    ],
-    narrow: [
-    ],
-    tablet: [
-      34, 35, 36, 37,
-      42, 43, 44, 45, 46, 47,
-      52, 53, 54, 55,
-      65, 66, 67,
-      73, 74, 75, 76, 77
-    ],
-    wide: [
-      39, 40, 41, 42,
-      52, 53, 54, 55, 56, 57,
-      69, 70, 71, 72,
-      80, 81, 82, 83, 84, 85, 86, 87
-    ]
-  },
-  
-];
-addNum(circleLive[0]['small'], 1, 48);
-addNum(circleLive[0]['narrow'], 1, 48);
-addNum(circleLive[0]['tablet'], 1, 68);
-addNum(circleLive[0]['wide'], 17, 26);
-addNum(circleLive[0]['wide'], 34, 41);
-addNum(circleLive[0]['wide'], 46, 56);
-addNum(circleLive[0]['wide'], 62, 71);
-addNum(circleLive[0]['wide'], 78, 86);
-addNum(circleLive[0]['wide'], 93, 101);
-addNum(circleLive[0]['wide'], 108, 116);
-addNum(circleLive[0]['wide'], 123, 124);
-addNum(circleLive[0]['wide'], 137, 147);
 
+const pathReaction = {
+  small: [
+    50, 51, 52, 53, 54
+  ],
+  narrow: [
+    50, 51, 52, 53, 54,
+  ],
+  tablet: [
+  ],
+  wide: [
+
+  ]
+}
 
 
 
@@ -202,7 +209,8 @@ export {
   circle,
   positionMap,
   mountPosition,
-  circleLive,
+  pathReaction,
+
 
 
 

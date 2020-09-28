@@ -21,12 +21,12 @@ export default new Vuex.Store({
     viewtype: null,
     sequence: 0,
     seqName: null,
-    
     connections: 0,
     filesInServer: null,
-    signsArr: null,
     
     //__________________UI
+    bbcAppear: false,
+    backBlue: true,
     desColor: [],
     aniTiming: animation.timing,
     circleAnime: {
@@ -35,57 +35,63 @@ export default new Vuex.Store({
       fieldWidth: null, fieldHeight: null,
       wOff: null, hOff: null,
     },
-    blocks: [],
+    blocks: [], blockRendered: false,
 
     //___________________ ANIME TIMING
+    bbcTiming: {
+      loadingTransition: 300 +'ms',
+      loadedTransition: 400 + 'ms',
+      fadeBlackTransition: 800 +'ms',
+      circleVelocity: 0.4,
+      hueVelocity: 0.5,
+      levelVelocity: 0.1,
+    },
     cellTiming: {
       mounted: 0,
       typoRendered: 0,
+      paradeTitleCellCount: 0,
+      paradeTitleMounted: 0,
     },
-    
+    // displayTiming: {
+    //   titleGraphicStart: false,
+    // }, // ... DEPRECATED 
+
     //__________________PATHMAKER
     writer:{
       paths:[],
       pathGroup: null,
       svg: '',
-      width: 0,
+      bounds: {
+        width: 0, height: 0,
+        x: 0, y: 0
+      },
+      bbc:[0, 0, 0, 0, 0, 0],
       info: {
         userId: userId,
         name: userId,
         ip: null,
         uag: null,
         inTime: null,
-        writeTime: null,
-        outTime: null
+        writeTime: null
       }
     },
     writerUndo: null,
     writerDone: false,
     signSent: false,
 
-    
+
     //__________________RENDERER
-    displayConfig: {
-      x:0, y:0, w:0
-    },
-    renderSign: {
-      target: -1,
-      scale: 0,
-      arr: [],
-      name: null
-    },
+    renderStatus: 0, 
+      // 1:mounted 2:rendered 3:pending
+    signsArr: null,
   },
 
-
   getters: { 
-    allGetters(){
-
-    },
 
     TC(state){ // Test Client
       return state.test.client
     },
-    TS(state){
+    TS(state){ // Test Server
       return state.stest.server
     },
 
@@ -155,6 +161,7 @@ export default new Vuex.Store({
         r: state.circleAnime.rowCount
       }
     },
+
     CELL_TIMING(state){
       return state.cellTiming
     },
@@ -165,6 +172,7 @@ export default new Vuex.Store({
         return false
       }
     },
+
     TYPO_RENDERED(state){
       if(state.cellTiming.typoRendered === 22){
         return true
@@ -173,9 +181,13 @@ export default new Vuex.Store({
       }
     },
 
-
-
-
+    PARADE_TITLE_MOUNTED(state){
+      if(state.cellTiming.paradeTitleMounted === state.cellTiming.paradeTitleCellCount){
+        return true
+      }else{
+        return false
+      }
+    },
 
     FILES_IN_SERVER(state){
       return state.filesInServer
@@ -183,6 +195,10 @@ export default new Vuex.Store({
 
     SIGNS(state){
       return state.signsArr
+    },
+
+    SIGNS_COUNT(state){
+      return state.signsArr.length
     },
 
     RENDER_Q(state){
@@ -213,15 +229,18 @@ export default new Vuex.Store({
       return state.signSent
     }
 
-
-
   },
-
 
   mutations: {
 
+    bbcTrigger(state, bool){
+      this.state.bbcAppear = bool;
+    },
     setBBC(state, {comp, hue}){
       state.desColor = ui.newBBC({comp, hue});
+      if(!state.writerDone){
+        state.writer.bbc = state.desColor;
+      }
     },
 
     async PUT_INITDATA(state, recieved){
@@ -251,22 +270,24 @@ export default new Vuex.Store({
         state.signSent = true;
       }else{
         state.writer.info.writeTime = Date.now();
+        let pathArr = [];
+        let paths = state.writer.svg.split('<path d="');
+        for(var i=1; i < paths.length; i++){
+          const eachPath = paths[i].split('"');
+          pathArr.push(eachPath[0]);
+        }
         const newSign = {
-          svg: state.writer.svg,
-          info: state.writer.info
+          info: state.writer.info,
+          bounds: state.writer.bounds,
+          bbc: state.writer.bbc,
+          pathArr,
         };
-        const {data} = await axios.post('/push/paths', newSign);
+        const {data} = await axios.post('api/push', newSign);
         if(data.status === 200){
           state.signSent = true;
         }
       }
     },
-
-
-
-
-    
-    
 
   },
   actions: { //==============================
@@ -289,11 +310,15 @@ export default new Vuex.Store({
     async startSignLoad({state}){
       console.log('initiating_SIGNLOAD ...$a/startSignLoad');
       if(state.test.server.signLoad){
-        state.signsArr = test.signFiles;
+        state.signsArr = test.signFiles.sort(() => {
+          return Math.random() - Math.random();
+        });
       }else{
-        const {data} = await axios.get('/load/initial');
+        const {data} = await axios.get('/api/signs');
         console.log('initial data recieved:', data.arg.length);
-        state.signsArr = data.arg;
+        state.signsArr = data.arg.sort(() => {
+          return Math.random() - Math.random();
+        });
       }
     }
   }

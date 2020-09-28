@@ -19,7 +19,9 @@
     </svg>
   </div>
 
-  <div class="circle-typo" v-if="typoAlternater">
+  <transition name="title-typo">
+  <div v-if="SEQ<4">
+  <div class="circle-typo" v-if="(typoAlternater)&&(SEQ<4)">
     <svg 
     :id="reacter"
     viewBox="0 0 52 52" version="1.1" 
@@ -36,8 +38,7 @@
       </path>
     </svg>
   </div>
-
-  <div class="circle-typo" v-if="!typoAlternater">
+  <div class="circle-typo" v-if="(!typoAlternater)&&(SEQ<4)">
     <svg 
     :id="reacter"
     viewBox="0 0 52 52" version="1.1" 
@@ -54,8 +55,10 @@
       </path>
     </svg>
   </div>
+  </div>
+  </transition>
 
-  <div class="index-marker">
+  <div class="index-marker" v-if="0">
     {{index}}
   </div>
 </div>
@@ -72,7 +75,8 @@ const {
   positionMap,
   mountPosition,
   typoArr,
-  // circleLive
+  pathReaction,
+  
 } = require('../../assets/javascripts/circleAnime');
 
 
@@ -88,7 +92,9 @@ export default {
     TypoAnimation: null,
     TypoRerender: null,
     CircleLoop: null,
-
+    pathFadeTrigger: -1,
+    TypoReact_fadeout: null,
+    TypoReact_fadein: null,
   }},
   computed: {
     ...mapState([
@@ -97,7 +103,8 @@ export default {
     ...mapGetters([
       'VIEWTYPE',
       'SEQ',
-      'CELL_MOUNTED'
+      'CELL_MOUNTED',
+      'NEW_PATHS'
     ]),
     mpType: function(){
       return positionMap[this.SEQ] // === number
@@ -118,17 +125,14 @@ export default {
       return old
     },
     SEQ(nu, old){
-      if(
-        (nu === 2)
-      ){
+      if(nu === 2){
         this.CircleAnimation = null;
         this.CircleAnimation = Timeline(anime)
         .add({ targets: '#'+this.circleId,
           stroke: [
             keys('rgba(255, 255, 255, 0)', 0, 300, 0, "easeOutExpo")
           ]
-        });
-        this.CircleAnimation.play();
+        }); this.CircleAnimation.play();
         this.TypoRerender = null;
         this.TypoRerender = Timeline(anime)
         .add({ targets: '#'+this.typoId,
@@ -151,6 +155,15 @@ export default {
       }
       return old
     },
+    NEW_PATHS(nu, old){
+      if(this.pathFadeTrigger !== -1){
+        if(nu === 1){
+          this.TypoReact_fadeout.play();
+        }else if(nu === 0){
+          this.TypoReact_fadein.play();
+        }
+      }return old
+    }
   },
   methods: {
     ...mapMutations([]),
@@ -170,7 +183,7 @@ export default {
     reRender(){
       this.TypoRerender = null;
       this.TypoRerender = Timeline(anime)
-      .add({ targets: '#'+this.typoId,
+      .add({ targets: '#' + this.typoId,
         stroke: [
           keys('#ffffff', 20, 400, 0, "easeOutExpo"),
         ],
@@ -189,24 +202,31 @@ export default {
         this.afterRerender();
       });
       this.TypoRerender.play();
+      this.pathFadeTrigger = pathReaction[this.VIEWTYPE].indexOf(this.index);
+      if(this.SEQ === 2){
+        if(this.pathFadeTrigger!==-1){
+          this.TypoReact_fadeout = null;
+          this.TypoReact_fadeout = Timeline(anime)
+          .add({ targets: '#' + this.typoId, 
+            stroke: [
+              keys('rgba(255, 255, 255, 0)', 0, 1000, 0, "easeOutCubic")
+            ]
+          });
+          this.TypoReact_fadein = null;
+          this.TypoReact_fadein = Timeline(anime)
+          .add({ targets: '#' + this.typoId, 
+            stroke: [
+              keys('#ffffff', 0, 600, 0, "easeInQuart")
+            ]
+          });
+        }
+      }
     },
     afterRerender(){
       if(this.SEQ ===2){ 
-
-        // if(circleLive[0][this.VIEWTYPE].indexOf(this.index) !== -1){
-        // }
-          
         this.CircleLoop.play();
-
-
-
-
-
-
       }
-
-
-
+      
     },
     //__________________OTHER ANIME METHODS________
 
@@ -216,7 +236,9 @@ export default {
   },
   created() {
     this.coord = [this.block[1],this.block[2]]
-    this.typoIndex = mountPosition[this.SEQ][this.VIEWTYPE].indexOf(this.index);
+    if(this.SEQ < 4){
+      this.typoIndex = mountPosition[this.mpType][this.VIEWTYPE].indexOf(this.index);
+    }
   },
   mounted() {
     const delayOffset = this.index * 40;
@@ -289,12 +311,12 @@ export default {
       autoplay: false,
       loop: true,
       direction: 'normal',
-      delay: function() {return anime.random(5000, 15000)}
+      delay: function() {return anime.random(0, 15000)}
     })
     .add({ targets: "#" + this.circleId,
       stroke: [
         keys('rgba(255, 255, 255, 0)', 
-          function() { return anime.random(0, 1000); },
+          function() { return anime.random(0, 2000); },
           2, 50, "easeOutCubic"),
         keys('rgba(255, 255, 255, 0.3)', 0, 100, 0, "easeOutSine"),
         keys('rgba(255, 255, 255, 0)', 0, 4000, 50, "easeOutCubic"),

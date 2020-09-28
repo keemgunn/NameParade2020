@@ -47,15 +47,7 @@ export default {
     },
   },
   watch: {
-    NEW_PATHS(nu, old){
-      if(nu === 0){
-        console.log('watcher: nopaths');
-      }else if(nu > old){
-        console.log('watcher: paths ++', nu);
-      }else{
-        console.log('watcher: paths --', nu);
-      }
-    },
+
     writerUndo(nu, old){
       if(nu){
         this.writer.paths[nu].remove();
@@ -125,7 +117,7 @@ export default {
     makeSvg(){
       this.writer.svg = this.writer.pathGroup.exportSVG({
         asString: true,
-        bounds: 'content'
+        // bounds: 'content'
       });
     }
   },
@@ -162,6 +154,10 @@ export default {
       path.simplify(this.simplifyVal);
       contact = 0;
       this.writer.paths.push(path);
+      this.$store.state.writer.bounds.width = this.scope.view.bounds.width;
+      this.$store.state.writer.bounds.height = this.scope.view.bounds.height;
+      this.$store.state.writer.bounds.x = this.scope.view.bounds.x;
+      this.$store.state.writer.bounds.y = this.scope.view.bounds.y;
     }
   },
   beforeDestroy() {
@@ -177,7 +173,7 @@ export default {
   width: 100%; height: 100%;
 }
 #maker{
-  z-index: 0;
+  z-index: 50;
   position: relative; top: 0; left: 0; 
   width: 100%; height: 100%;
 }
