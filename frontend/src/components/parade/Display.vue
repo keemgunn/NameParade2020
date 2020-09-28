@@ -2,10 +2,10 @@
 <div id="display">
   <div id="border-box">
     <svg 
-    viewBox="0 0 710 710" 
+    viewBox="0 0 500 400" 
     version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
     fill="none">
-      <rect id="border" stroke-width="1.5" x="0.6" y="0.6" width="708.8" height="708.8"></rect>
+      <rect id="border" stroke-width="3" x="0" y="0" width="500" height="400"></rect>
     </svg>
   </div>
 
@@ -76,7 +76,7 @@ export default {
         this.aOut();
       }else if(nu ===3){//___when destroyed
         this.viewOn = false;
-        setTimeout(this.MOUNT, 100, this.pending);
+        setTimeout(this.MOUNT, 400, this.pending);
         this.$store.state.renderStatus = 0;
       }
         return old
@@ -110,8 +110,8 @@ export default {
       targets: '#border',
       strokeDashoffset: [{
           value: [0, anime.setDashoffset], 
-          delay: 1300,
-          duration: 3200, // HOW LONG WOULD BE THE PATH DISPLAYED
+          delay: 1800,
+          duration: 3500, // HOW LONG WOULD BE THE PATH DISPLAYED
           endDelay: 0,
           direction: 'normal',
           easing: "easeInOutQuart",
