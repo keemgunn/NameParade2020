@@ -152,7 +152,9 @@ export default {
 
   mounted() {
     if(this.$store.state.test.server.signLoad){
-      this.$store.state.signsArr = signFiles;
+      this.$store.state.signsArr = signFiles.sort(() => {
+        return Math.random() - Math.random();
+      });
     }
     this.refreshSignSeq(this.SIGNS_COUNT);
     this.pending = this.PULL(this.SIGNS);

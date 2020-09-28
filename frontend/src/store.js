@@ -320,11 +320,15 @@ export default new Vuex.Store({
     async startSignLoad({state}){
       console.log('initiating_SIGNLOAD ...$a/startSignLoad');
       if(state.test.server.signLoad){
-        state.signsArr = test.signFiles;
+        state.signsArr = test.signFiles.sort(() => {
+          return Math.random() - Math.random();
+        });
       }else{
         const {data} = await axios.get('/api/signs');
         console.log('initial data recieved:', data.arg.length);
-        state.signsArr = data.arg;
+        state.signsArr = data.arg.sort(() => {
+          return Math.random() - Math.random();
+        });
       }
     }
   }
