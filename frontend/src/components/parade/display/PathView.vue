@@ -59,7 +59,7 @@ export default {
       this.WritingAnimation.add({ // __ CLOSING ANIMATION
         targets: '.path-box path',
         stroke: [
-          keys('rgba(255, 255, 255, 0)', 1000, 2000, 0, "easeOutCubic"),
+          keys('rgba(255, 255, 255, 0)', 2000, 1000, 0, "easeOutCubic"),
         ],
         strokeDashoffset: [
           {
@@ -73,15 +73,14 @@ export default {
         ],
       });
       this.WritingAnimation.finished.then(() => {
-        this.removeAnime(pathId);
+        this.progress();
         this.WritingAnimation = null;
         for(var i=0; i < this.childs.length; i++){
           this.pathBox.removeChild(this.childs[i]);
         }
-        this.$store.state.renderStatus += 1;
       })
       this.WritingAnimation.play();
-      this.$store.state.renderStatus += 1;
+      this.progress();
     },
     addAnime(Ani, i){
       let id = '#' + rand + '-p-' + i;
@@ -106,6 +105,9 @@ export default {
       for(var i=0; i<pathId.length; i++){
         anime.remove('#'+pathId[i])
       }
+    },
+    progress(){
+      this.$store.state.renderStatus += 1;
     }
   },
   created() {
