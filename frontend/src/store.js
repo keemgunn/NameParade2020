@@ -21,7 +21,6 @@ export default new Vuex.Store({
     viewtype: null,
     sequence: 0,
     seqName: null,
-    
     connections: 0,
     filesInServer: null,
     
@@ -57,7 +56,6 @@ export default new Vuex.Store({
     //   titleGraphicStart: false,
     // }, // ... DEPRECATED 
 
-
     //__________________PATHMAKER
     writer:{
       paths:[],
@@ -81,22 +79,19 @@ export default new Vuex.Store({
     writerDone: false,
     signSent: false,
 
-    
+
     //__________________RENDERER
     renderStatus: 0, 
       // 1:mounted 2:rendered 3:pending
     signsArr: null,
-
-
   },
-
 
   getters: { 
 
     TC(state){ // Test Client
       return state.test.client
     },
-    TS(state){
+    TS(state){ // Test Server
       return state.stest.server
     },
 
@@ -136,6 +131,7 @@ export default new Vuex.Store({
         return state.sequence
       }
     },
+
     bs(state){
       return state.circleAnime.blockSize;
     },
@@ -165,6 +161,7 @@ export default new Vuex.Store({
         r: state.circleAnime.rowCount
       }
     },
+
     CELL_TIMING(state){
       return state.cellTiming
     },
@@ -175,6 +172,7 @@ export default new Vuex.Store({
         return false
       }
     },
+
     TYPO_RENDERED(state){
       if(state.cellTiming.typoRendered === 22){
         return true
@@ -182,6 +180,7 @@ export default new Vuex.Store({
         return false
       }
     },
+
     PARADE_TITLE_MOUNTED(state){
       if(state.cellTiming.paradeTitleMounted === state.cellTiming.paradeTitleCellCount){
         return true
@@ -230,10 +229,7 @@ export default new Vuex.Store({
       return state.signSent
     }
 
-
-
   },
-
 
   mutations: {
 
@@ -292,12 +288,6 @@ export default new Vuex.Store({
         }
       }
     },
-
-
-
-
-    
-    
 
   },
   actions: { //==============================

@@ -11,9 +11,6 @@
         
         <Parade v-if="SEQ > 3" />
 
-    
-
-
         <test v-if="test.modal"/>
       </div>
     </div>
@@ -38,7 +35,6 @@ export default {
     Title,
     Writer,
     Parade
-
   },
   computed: {
     ...mapState([
@@ -53,7 +49,6 @@ export default {
         'SEQ', 
         'FILES_IN_SERVER',
         'SIGN_SENT',
-
       ])
   },
   methods: {
@@ -70,7 +65,7 @@ export default {
 
     SEQ(nu, old) {
       console.log('-- sequence changed :', old,'->',nu);
-      if((nu > 4)&&(this.VIEWTYPE !== 'wide')){
+      if((nu > 3)&&(this.VIEWTYPE !== 'wide')){
         document.querySelector( 'body' ).style['overflow-y'] = 'auto';
         document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
         document.querySelector( '.app').style['height'] = 'fit-content';
@@ -124,7 +119,7 @@ export default {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    if( (this.SEQ>4) && (this.VIEWTYPE !== 'wide') ){
+    if( (this.SEQ>3) && (this.VIEWTYPE !== 'wide') ){
       document.querySelector( 'body' ).style['overflow-y'] = 'auto';
       document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
       document.querySelector( '.app').style['height'] = 'fit-content';

@@ -47,15 +47,7 @@ export default {
     },
   },
   watch: {
-    NEW_PATHS(nu, old){
-      if(nu === 0){
-        console.log('watcher: nopaths');
-      }else if(nu > old){
-        console.log('watcher: paths ++', nu);
-      }else{
-        console.log('watcher: paths --', nu);
-      }
-    },
+
     writerUndo(nu, old){
       if(nu){
         this.writer.paths[nu].remove();
@@ -166,7 +158,6 @@ export default {
       this.$store.state.writer.bounds.height = this.scope.view.bounds.height;
       this.$store.state.writer.bounds.x = this.scope.view.bounds.x;
       this.$store.state.writer.bounds.y = this.scope.view.bounds.y;
-      console.log(this.scope.view.bounds);
     }
   },
   beforeDestroy() {

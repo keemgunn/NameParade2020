@@ -5,6 +5,7 @@ const dm = require('../api/dataManager');
 
 
 // _________________________ INITIATING 
+
 router.use(requestIp.mw())
 router.post('/init', (req, res) => {
   if(req.body.userId === 'master'){
@@ -27,15 +28,13 @@ router.post('/init', (req, res) => {
   }
 })
 
-
 router.get('/signs', (req, res) => {
   console.log('$request ... /load/initial');
   dm.getAllSigns(res);
 })
 
 
-
-
+// _________________________ PUSH DATA 
 
 router.post('/push', (req, res) => {
   const newSign = req.body;
@@ -53,9 +52,6 @@ router.post('/push', (req, res) => {
   dm.wholeSign(newSign);
   res.json({status: 200});
 })
-
-
-
 
 
 module.exports = router;

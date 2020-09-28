@@ -3,26 +3,20 @@ const seqStates = {
   1: 'loading-done',
   2: 'writer-pm',
   3: 'writer-ig',
-  4: 'thank-you',
-  5: 'parade-intro',
-
+  // 4: 'thank-you',
+  4: 'parade-intro',
 };
 
 const configs = {
-  client: {
+  client: { sequenceNow: ( 4 ),
     // testSequence: true, 
     // writerDone: true,
-
-
-    
-    sequenceNow: ( 5 ),
   },
   server: {
     // init: true,
     // filesInServer: true,
     // signLoad: true,
     // sendPaths: true,
-
     foo: 'bar',
   },
   // modal: true,
@@ -44,12 +38,9 @@ const signFiles = [
   signTest5
 ];
 
-
-
 export { 
   seqStates,
   configs, 
   signsArr,
   signFiles,
-
 };

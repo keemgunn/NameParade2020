@@ -24,22 +24,15 @@
     <div class="info-box" :class="byType">
       <div class="name">{{userName}}</div>
       <div class="time">{{userTime}}</div>
-
-
     </div>
   </div>
-
-
-
-
 
 </div>
 </template>
 
 
-
 <script>
-import{ mapState, mapGetters, mapMutations} from 'vuex';
+import{ mapState, mapGetters } from 'vuex';
 import randomstring from 'randomstring';
 const rand = randomstring.generate(6);
 
@@ -57,17 +50,15 @@ export default {
     pathId: [],
     pathBox: null, 
   }},
+
   computed: {
     ...mapState([]),
     ...mapGetters(['byType']),
+
     svgId: function(){
       return 'pb-' + this.pathData[1]
     }
 
-
-  },
-  methods: {
-    ...mapMutations([]),
   },
   created() {
 

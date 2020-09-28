@@ -19,12 +19,11 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import PathView from './PathView';
 import anime from 'animejs';
 const { keys, Timeline } = require('../../assets/javascripts/circleAnime');
 const { randomInt } = require('../../assets/javascripts/uiAction');
-import PathView from './display/PathView';
-
-const { signFiles } = require('../../test/test')
+const { signFiles } = require('../../test/test');
 
 export default {
   name: "Display",

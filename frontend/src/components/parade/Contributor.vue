@@ -28,35 +28,38 @@
 
   <div class="info-box">
     <div class="info" :class="byType">
+
       <div class="para">
       Web Application for NAMEPARADE2020:______DESIGNER <br>
       Software development and graphic design by <br>
       Keem Gunn
       </div>
+
+      <div class="para">
+      version 1.1.2 <br>
+      build 04432326d1c44a58160fbba87afc297ccc9b3d83
+      </div>
+
       <div class="para">
         CONTACTS <br>
         gunnkeem@icloud.com <br>
         github.com/keemgunn <br>
-
+        instagram.com/keemgunn <br>
       </div>
+
       <div class="para">
         ⓒ 2020. Keem Gunn. all rights reserved.
       </div>
     
-
     </div>
   </div>
-
-
 </div>
 </template>
 
 
-
 <script>
-import{ mapState, mapGetters, mapMutations} from 'vuex';
-import List from './contributor/List';
-
+import{ mapGetters, mapMutations} from 'vuex';
+import List from './List';
 
 
 export default {
@@ -67,12 +70,8 @@ export default {
     headerTop: 0,
       header20: false,
     SCROLL: 0,
-
-
-
   }},
   computed: {
-    ...mapState([]),
     ...mapGetters(['VIEWTYPE', 'byType', 'SIGNS']),
 
     HEADER_SCROLL: function(){
@@ -93,8 +92,6 @@ export default {
         }
       }
     }
-
-
 
   },
   watch: {
@@ -131,31 +128,23 @@ export default {
       this.SCROLL = window.scrollY;
     },
 
-
-
-
-
   },
   created() {
+
     window.addEventListener('scroll', this.handleScroll)
+
   },
   mounted() {
+
     this.headerEl = document.querySelector('.header');
     this.headerTop = this.getCoords(this.headerEl);
     if(this.VIEWTYPE === 'wide'){
       this.header20 = true;
     }
-  },
-  beforeUpdate() {
-    
-  },
-  beforeCreate() {
-    
-  },
+
+  }
 }
 </script>
-
-
 
 
 <style lang="scss" scoped> 
