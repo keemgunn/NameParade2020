@@ -93,7 +93,6 @@
   opacity: 1;
 }
 .pathview-info-enter-active{
-  transition-delay: 2800ms;
   transition: all 500ms;
   transition-timing-function: cubic-bezier(.98,.02,.74,.97);
 }
@@ -108,6 +107,20 @@
   transition-timing-function: cubic-bezier(.65,.02,.86,.44);
 }
 
+
+
+// _____________________ TITLE TYPO
+.contributor-enter {
+  opacity: 0;
+} 
+.contributor-enter-to {
+  opacity: 1;
+}
+.contributor-enter-active{
+  transition: all 500ms;
+  transition-delay: 4000ms;
+  transition-timing-function: cubic-bezier(.98,.02,.74,.97);
+}
 
 
 

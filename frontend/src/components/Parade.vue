@@ -20,10 +20,12 @@
       <Display/>
     </div>
 
+    <transition name="contributor"> 
     <div v-if="displayOn" 
       class="contributor-wrapper" :style="contributorStyle">
       <Contributor/>
     </div>
+    </transition>
 
   </div>
 
@@ -141,7 +143,8 @@ export default {
     contributorStyle: function(){
       if((this.VIEWTYPE === 'small')||(this.VIEWTYPE === 'narrow')){
         return {
-
+          left: this.bs * (-0.46) +'px',
+          width: '98vw'
         }
       }else if(this.VIEWTYPE === 'tablet'){
         return {
@@ -149,10 +152,15 @@ export default {
         }
       }else{
         return {
-          position: 'absolute', left: this.bs * 5 +'px',
+          position: 'absolute', 
+          left: this.bs * 5 +'px',
           'margin-top': '0',
-          width: this.bs * 6 +'px', height: this.bs * 4 +'px',
-          'overflow-x': 'hidden', 'overflow-y': 'auto'
+          width: this.bs * 6 +'px', 
+          height: this.bs * 4 +'px',
+          'overflow-x': 'hidden',
+          'overflow-y': 'auto',
+          'margin-bottom': '0',
+          'padding-bottom': '0'
         }
       }
     },
@@ -251,6 +259,7 @@ export default {
   margin-top: 2%;
   width: 100%; height: fit-content;
   overflow: hidden;
+  padding-bottom: 60vw;
 }
 
 

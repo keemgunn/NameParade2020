@@ -70,7 +70,7 @@ export default {
 
     SEQ(nu, old) {
       console.log('-- sequence changed :', old,'->',nu);
-      if((nu > 3)&&(this.VIEWTYPE !== 'wide')){
+      if((nu > 4)&&(this.VIEWTYPE !== 'wide')){
         document.querySelector( 'body' ).style['overflow-y'] = 'auto';
         document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
         document.querySelector( '.app').style['height'] = 'fit-content';
@@ -124,7 +124,7 @@ export default {
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    if( (this.SEQ>3) && (this.VIEWTYPE !== 'wide') ){
+    if( (this.SEQ>4) && (this.VIEWTYPE !== 'wide') ){
       document.querySelector( 'body' ).style['overflow-y'] = 'auto';
       document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
       document.querySelector( '.app').style['height'] = 'fit-content';
