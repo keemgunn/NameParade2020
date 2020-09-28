@@ -38,6 +38,7 @@ export default {
     pathBox: null,
     childs: [],
     WritingAnimation: null,
+    RemoveAnimation: null,
 
 
 
@@ -52,19 +53,18 @@ export default {
   methods: {
     ...mapMutations([]),
     startAnimation(pathId){
-      this.WritingAnimation = Timeline(anime);
-      for(var i=0; i < pathId.length; i++){
-        this.addAnime(this.WritingAnimation, i);
-      }
-      this.WritingAnimation.add({ // __ CLOSING ANIMATION
+    //________________________REMOVE ANIMATION___________
+      this.RemoveAnimation = Timeline(anime)
+      .add({ 
         targets: '.path-box path',
         stroke: [
-          keys('rgba(255, 255, 255, 0)', 2000, 1000, 0, "easeOutCubic"),
+          keys('rgba(255, 255, 255, 0.733)', 0, 1, 0, "easeOutCubic"),
+          keys('rgba(255, 255, 255, 0)', 2000, 2000, 0, "easeOutCubic")
         ],
         strokeDashoffset: [
           {
             value: [0, anime.setDashoffset], 
-            delay:  3000,
+            delay:  4000,
             duration: 10,
             endDelay: 0,
             direction: 'alternate',
@@ -72,15 +72,23 @@ export default {
           }
         ],
       });
-      this.WritingAnimation.finished.then(() => {
-        this.progress();
-        this.WritingAnimation = null;
+      this.RemoveAnimation.finished.then(()=>{
         for(var i=0; i < this.childs.length; i++){
           this.pathBox.removeChild(this.childs[i]);
         }
+      });
+    //________________________WRITING ANIMATION___________
+      this.WritingAnimation = Timeline(anime);
+      for(var i=0; i < pathId.length; i++){
+        this.addAnime(this.WritingAnimation, i);
+      }
+      this.WritingAnimation.finished.then(() => {
+        this.progress(); // trigger border out
+        this.RemoveAnimation.play();
+        this.WritingAnimation = null;
       })
       this.WritingAnimation.play();
-      this.progress();
+      this.progress(); // trigger border in
     },
     addAnime(Ani, i){
       let id = '#' + rand + '-p-' + i;
@@ -152,6 +160,6 @@ export default {
 .path-box{
   position: absolute; top: 0; left: 0;
   width: 100%; height: 100%;
-  // stroke: rgba(255, 255, 255, 0);
+  // stroke: rgba(255, 255, 255, 0.733);
 }
 </style>
