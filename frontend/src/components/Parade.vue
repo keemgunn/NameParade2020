@@ -243,7 +243,7 @@ export default {
 .display-wrapper{
   position: relative;
   top: 0; left: 0;
-  background-color: rgba(0, 0, 139, 0.384);
+  // background-color: rgba(0, 0, 139, 0.384);
 }
 .contributor-wrapper{
   position: relative;

@@ -73,6 +73,7 @@ export default {
       if((nu > 3)&&(this.VIEWTYPE !== 'wide')){
         document.querySelector( 'body' ).style['overflow-y'] = 'auto';
         document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
+        document.querySelector( '.app').style['height'] = 'fit-content';
       }
     },
 
@@ -126,6 +127,7 @@ export default {
     if( (this.SEQ>3) && (this.VIEWTYPE !== 'wide') ){
       document.querySelector( 'body' ).style['overflow-y'] = 'auto';
       document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
+      document.querySelector( '.app').style['height'] = 'fit-content';
     }
 
     // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
@@ -140,9 +142,6 @@ export default {
 <style lang="scss">
   @import "assets/styles/animations.scss";
   @import "assets/fonts/CoreGothicD/coregothicd.css";
-
-  $appHeight: 300vh;
-
   body {
     overflow: hidden;
     background-color: black;
@@ -152,7 +151,8 @@ export default {
     z-index: 0;
     position: absolute; top: 0; left: 0;
     margin: 0; padding: 0;
-    width: 100vw; height: $appHeight;
+    width: 100vw; 
+    height: 300vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
