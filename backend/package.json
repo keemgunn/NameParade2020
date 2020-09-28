@@ -1,9 +1,10 @@
 {
-  "name": "backend",
-  "version": "0.0.0",
+  "name": "nameparade2020",
+  "version": "1.1.2",
   "private": true,
+  "main": "app.js",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node app.js"
   },
   "dependencies": {
     "axios": "^0.20.0",
