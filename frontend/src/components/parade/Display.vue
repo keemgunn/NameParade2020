@@ -8,25 +8,17 @@
       <rect id="border" stroke-width="3" x="0" y="0" width="500" height="400"></rect>
     </svg>
   </div>
-
   <div id="content">
     <PathView
     v-if="viewOn" 
     :pathData="pathData"
     />
   </div>
-
-
-
-
-
 </div>
 </template>
 
-
-
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import anime from 'animejs';
 const { keys, Timeline } = require('../../assets/javascripts/circleAnime');
 const { randomInt } = require('../../assets/javascripts/uiAction');
@@ -36,38 +28,26 @@ const { signFiles } = require('../../test/test')
 
 export default {
   name: "Display",
-  components: { PathView,  },
+  components: { PathView },
   data() { return {
     BorderIn: null, BorderOut: null,
     pathData: [],
     viewOn: false,
-
     signSeq: [],
     pending: []
-
-
-
-
-
-
-
-
   }},
+  
   computed: {
-    ...mapState([
-      'renderStatus',
-    ]),
-    ...mapGetters([
-      'SIGNS',
-      'SIGNS_COUNT'
-    ]),
+    ...mapState(['renderStatus']),
+    ...mapGetters(['SIGNS','SIGNS_COUNT']),
+
     SIGN_SEQ_ARR: function(){
       return this.signSeq.length
     }
 
-
   },
   watch: {
+
     renderStatus(nu, old){
       if(nu === 1){//___when render starts
         this.aIn();
@@ -81,6 +61,7 @@ export default {
       }
         return old
     },
+
     SIGN_SEQ_ARR(nu, old){
       if(nu === 1){
         this.refreshSignSeq(this.SIGNS_COUNT);
@@ -88,9 +69,10 @@ export default {
         return old
       }
     },
+
   },
   methods: {
-    ...mapMutations([]),
+
     aIn(){
       this.BorderIn = null;
       this.BorderOut = null;
@@ -104,6 +86,7 @@ export default {
       });
       this.BorderIn.play();
     },
+
     aOut(){
       this.BorderOut = Timeline(anime)
       .add({
@@ -165,13 +148,8 @@ export default {
       this.viewOn = true;
     }
 
-
-
-
-
   },
-  created() {
-    },
+
   mounted() {
     if(this.$store.state.test.server.signLoad){
       this.$store.state.signsArr = signFiles;
@@ -182,15 +160,8 @@ export default {
     setTimeout(this.MOUNT, 2000, this.pending);
     this.$store.state.backBlue = false;
   },
-  beforeUpdate() {
-    
-  },
-  beforeCreate() {
-    
-  },
 }
 </script>
-
 
 
 <style lang="scss" scoped> 
@@ -206,8 +177,4 @@ export default {
   width: 100%; height: 100%;
   // stroke: rgba(255, 255, 255, 0);
 }
-
-
-
-
 </style>

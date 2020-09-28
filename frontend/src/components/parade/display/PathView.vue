@@ -1,5 +1,6 @@
 <template>
 <div id="path-view">
+
   <svg 
   class="path-box"
   viewBox="0 0 710 710" version="1.1" 
@@ -31,7 +32,6 @@
 </template>
 
 
-
 <script>
 import{ mapGetters, mapMutations} from 'vuex';
 const { Timeline, keys } = require('../../../assets/javascripts/circleAnime');
@@ -41,10 +41,7 @@ const rand = randomstring.generate(6);
 
 export default {
   name: "PathView",
-  components: { },
-  props: [
-    'pathData'
-  ],
+  props: [ 'pathData' ],
   data() { return {
     userName: null,
     userTime: null,
@@ -58,11 +55,14 @@ export default {
     RemoveAnimation: null,
     infoDisplay: false,
   }},
+
   computed: {
     ...mapGetters(['byType']),
   },
+
   methods: {
     ...mapMutations(['bbcTrigger']),
+
     startAnimation(pathId){
     //________________________REMOVE ANIMATION___________
       this.RemoveAnimation = Timeline(anime)
@@ -106,6 +106,7 @@ export default {
       this.triggerInfo(true);
       this.progress(); // trigger border in
     },
+
     addAnime(Ani, i){
       let id = '#' + rand + '-p-' + i;
       Ani.add({ targets: id,
@@ -125,32 +126,41 @@ export default {
         ],
       })
     },
+
     removeAnime(pathId){
       for(var i=0; i<pathId.length; i++){
         anime.remove('#'+pathId[i])
       }
     },
+
     progress(){
       this.$store.state.renderStatus += 1;
     },
+
     triggerInfo(bool){
       this.infoDisplay = bool;
     }
+
   },
   created() {
+
     const pathDataIndex = 7;
     for(var i=pathDataIndex; i<this.pathData.length; i++){
       this.paths.push(this.pathData[i]);
       this.pathId.push(rand+'-p-'+(i-pathDataIndex));
     }
+
     this.bounds = "0 0 " + this.pathData[2] + ' ' + this.pathData[3];
     this.trans = "translate( -" + (this.pathData[4]) + ", -" + this.pathData[5] + ")";
     this.userName = this.pathData[0];
     this.userTime = new Date(this.pathData[1]);
+
   },
   mounted() {
+
     this.pathBox = document.querySelector('.path-box');
     this.pathBox.setAttribute("viewBox", this.bounds);
+
     for(var i=0; i<this.pathId.length; i++){
       let pathNode = document.createElementNS("http://www.w3.org/2000/svg", 'path');
       pathNode.setAttribute("id", this.pathId[i]);
@@ -160,14 +170,16 @@ export default {
       this.childs.push(pathNode);
       this.pathBox.appendChild( pathNode );
     }
+
     setTimeout(this.startAnimation, 200, this.pathId);
+
   },
   beforeDestroy() {
     this.WritingAnimation = null;
+
   },
 }
 </script>
-
 
 
 <style lang="scss" scoped> 
@@ -188,7 +200,6 @@ export default {
   overflow: hidden;
   // background-color: rgba(228, 162, 40, 0.384);
 }
-
 #by-wrapper{
   position: absolute; bottom: 0; left: 0;
   width: 100%; height: 100%;
@@ -216,7 +227,6 @@ export default {
     font-size: 2.3vw;
   }
 }
-
 #name-wrapper{
   position: absolute; bottom: 0; left: 0;
   width: 100%; height: 100%;
