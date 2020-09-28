@@ -14,17 +14,18 @@
   </div>
 
   <div class="content-wrapper" :style="contentStyle">
+
     <div v-if="displayOn"
-    class="display-wrapper" 
-    :style="displayStyle">
-      <Display />
+      class="display-wrapper" :style="displayStyle">
+      <Display/>
     </div>
+
+    <div v-if="displayOn" 
+      class="contributor-wrapper" :style="contributorStyle">
+      <Contributor/>
+    </div>
+
   </div>
-
-
-
-
-
 
 </div>
 </template>
@@ -35,11 +36,12 @@
 import { mapState, mapGetters, mapMutations } from 'vuex';
 import TitleCell from './parade/TitleCell';
 import Display from './parade/Display';
+import Contributor from './parade/Contributor';
 
 
 export default {
   name: "Parade",
-  components: { TitleCell, Display,  },
+  components: { TitleCell, Display, Contributor,  },
   props: [
 
   ],
@@ -60,17 +62,11 @@ export default {
     titleBlocks: [],
     displayOn: false,
   }},
-  computed: {
-    ...mapState([
-      'circleAnime',
-      'blocks',
 
-      
-    ]),
-    ...mapGetters([
-      'VIEWTYPE',
-      'bs'
-    ]),
+  computed: {
+    ...mapState([ 'circleAnime', 'blocks', ]),
+    ...mapGetters([ 'VIEWTYPE', 'bs', ]),
+
     gridType: function(){
       if((this.VIEWTYPE === 'small')||(this.VIEWTYPE === 'narrow')){
         return {
@@ -84,7 +80,7 @@ export default {
         }
       }else{
         return {
-          index: 17, xAdd: 0, yAdd: 0,
+          index: 32, xAdd: 0, yAdd: 0,
           wCount: 11, hCount: 3
         }
       }
@@ -129,11 +125,37 @@ export default {
       }
     },
     displayStyle: function(){
-      return {
-        width: this.displaySize[this.VIEWTYPE] * this.bs + 'px',
-        height: (this.displaySize[this.VIEWTYPE]-1) * this.bs + 'px',
+      if(this.VIEWTYPE === 'wide'){
+        return {
+          position: 'absolute',
+          width: this.displaySize[this.VIEWTYPE] * this.bs + 'px',
+          height: (this.displaySize[this.VIEWTYPE]-1) * this.bs + 'px',
+        }
+      }else{
+        return {
+          width: this.displaySize[this.VIEWTYPE] * this.bs + 'px',
+          height: (this.displaySize[this.VIEWTYPE]-1) * this.bs + 'px',
+        }
       }
-    }
+    },
+    contributorStyle: function(){
+      if((this.VIEWTYPE === 'small')||(this.VIEWTYPE === 'narrow')){
+        return {
+
+        }
+      }else if(this.VIEWTYPE === 'tablet'){
+        return {
+
+        }
+      }else{
+        return {
+          position: 'absolute', left: this.bs * 5 +'px',
+          'margin-top': '0',
+          width: this.bs * 6 +'px', height: this.bs * 4 +'px',
+          'overflow-x': 'hidden', 'overflow-y': 'auto'
+        }
+      }
+    },
   },
   watch: {
 
@@ -221,7 +243,14 @@ export default {
 .display-wrapper{
   position: relative;
   top: 0; left: 0;
-  // background-color: rgba(0, 0, 139, 0.384);
+  background-color: rgba(0, 0, 139, 0.384);
+}
+.contributor-wrapper{
+  position: relative;
+  top: 0; left: 0;
+  margin-top: 2%;
+  width: 100%; height: fit-content;
+  overflow: hidden;
 }
 
 

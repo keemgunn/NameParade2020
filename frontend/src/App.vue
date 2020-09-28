@@ -48,6 +48,7 @@ export default {
       ]),
     ...mapGetters([
         'TC', 'TS',
+        'VIEWTYPE',
         'byType', 
         'SEQ', 
         'FILES_IN_SERVER',
@@ -56,27 +57,25 @@ export default {
       ])
   },
   methods: {
-    ...mapMutations([
-        'moveTo', 
-        'setBBC', 
-      ]),
-    ...mapActions([
-        'INITIATE', 
-        'startSignLoad'
-      ]),
+    ...mapMutations([ 'moveTo', 'setBBC', ]),
+    ...mapActions([ 'INITIATE', 'startSignLoad']),
+
     onResize() {
       this.winSize.vw = window.innerWidth
       this.winSize.vh = window.innerHeight
     },
+
   },
   watch: {
+
     SEQ(nu, old) {
       console.log('-- sequence changed :', old,'->',nu);
-      if(nu > 3){
+      if((nu > 3)&&(this.VIEWTYPE !== 'wide')){
         document.querySelector( 'body' ).style['overflow-y'] = 'auto';
         document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
       }
     },
+
     FILES_IN_SERVER(nu, old){
       if(this.TC.signLoadDone){
         console.log('--- test: start loading signs ---');
@@ -97,6 +96,7 @@ export default {
         }
       }
     },
+
     SIGN_SENT(nu, old){
       if(nu === true){
         if(this.TC.testSequence){
@@ -108,18 +108,22 @@ export default {
         return old
       }
     }
+
   },
   created() {
+
     this.onResize();
     this.setBBC({comp:-1, hue:-1});
     this.INITIATE();
+
   },
   mounted() {
+
     this.onResize();
     this.$nextTick(() => {
       window.addEventListener('resize', this.onResize);
     })
-    if(this.SEQ > 3){
+    if( (this.SEQ>3) && (this.VIEWTYPE !== 'wide') ){
       document.querySelector( 'body' ).style['overflow-y'] = 'auto';
       document.querySelector( 'body' ).style['overflow-x'] = 'hidden';
     }

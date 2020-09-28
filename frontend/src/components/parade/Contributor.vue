@@ -1,5 +1,5 @@
 <template>
-<div id="">
+<div id="contributor-wrapper">
 
 
 
@@ -13,7 +13,7 @@
 
 
 export default {
-  name: "",
+  name: "Contributor",
   components: { },
   props: [
 
@@ -45,6 +45,11 @@ export default {
 
 
 <style lang="scss" scoped> 
+#contributor-wrapper{
+  position: relative;
+  width: 100%; height: 700px;
+  background-color: rgba(0, 191, 255, 0.445);
+}
 
 
 

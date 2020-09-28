@@ -167,8 +167,8 @@ export default {
 <style lang="scss" scoped> 
 #display{
   position: absolute;
-  top: 1%; left: 1%;
-  width: 98%; height: 98%;
+  top: 1%; left: 0%;
+  width: 100%; height: 98%;
 }
 #border-box{
   position: absolute;

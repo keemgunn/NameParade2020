@@ -166,7 +166,7 @@ addNum(mountPosition[2]['narrow'], 5, 9);
 addNum(mountPosition[2]['narrow'], 11, 14);
 addNum(mountPosition[2]['narrow'], 17, 19);
 addNum(mountPosition[2]['narrow'], 20, 24);
-addNum(mountPosition[2]['tablet'], 1, 4);
+addNum(mountPosition[2]['tablet'], 0, 3);
 addNum(mountPosition[2]['tablet'], 6, 11);
 addNum(mountPosition[2]['tablet'], 14, 17);
 addNum(mountPosition[2]['tablet'], 21, 23);

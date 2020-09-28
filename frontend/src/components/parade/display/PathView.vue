@@ -210,11 +210,11 @@ export default {
     letter-spacing: 1.1px;
     // background-color: darkseagreen;
   }._small{    
-    top: 1.7vw; left: 5.6vw;
+    top: 2.4vw; left: 5vw;
     width: 8.5vw; height: 30%;
     font-size: 4.4vw;
   }._narrow{
-    top: 1.7vw; left: 5.6vw;
+    top: 2.4vw; left: 5vw;
     width: 8.5vw; height: 30%;
     font-size: 4.4vw;
   }._tablet{
@@ -238,11 +238,11 @@ export default {
     overflow: hidden;
     // background-color: rgb(178, 230, 38);
   }._small{    
-    top: 1.7vw; left: 15vw;
+    top: 2.4vw; left: 14.4vw;
     width: 60vw; height: 30%;
     font-size: 4.2vw;
   }._narrow{
-    top: 1.7vw; left: 15vw;
+    top: 2.4vw; left: 14.4vw;
     width: 60vw; height: 30%;
     font-size: 4.2vw;
   }._tablet{
@@ -267,12 +267,12 @@ export default {
     overflow: hidden;
     // background-color: rgb(218, 167, 30);
   }._small{    
-    top: 8.5vw; left: 4.5vw;
+    top: 9.2vw; left: 4vw;
     width: 57vw; height: 8.6vw;
     padding-left: 2%;
     font-size: 3vw;
   }._narrow{
-    top: 8.5vw; left: 4.5vw;
+    top: 9.2vw; left: 4vw;
     width: 57vw; height: 8.6vw;
     padding-left: 2%;
     font-size: 3vw;
