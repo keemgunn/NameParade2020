@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
-const animation = require('./src/assets/javascripts/animation');
-const ui = require('./src/assets/javascripts/uiAction');
-const test = require('./src/test/test');
+const animation = require('./assets/javascripts/animation');
+const ui = require('./assets/javascripts/uiAction');
+const test = require('./test/test');
 
 //_____ userID generate
 import randomstring from 'randomstring';
