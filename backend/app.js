@@ -19,7 +19,15 @@ app.use(express.text({
 
 // ---------------- SERVE
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/api', user);
+const appEndpoint = path.join(__dirname, './public/index.html');
+app.get('/nameparade', (req,res)=>{
+  res.sendFile(appEndpoint);
+})
+app.get('/',(req, res)=>{
+  res.redirect('/nameparade')
+})
+
+app.use('/api', user)
 
 
 // ---------- PORT SETTING
