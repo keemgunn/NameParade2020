@@ -1,15 +1,22 @@
 <template>
   <div class="app">
-    <Background/>
+    <!-- <Background/> -->
+    <Background v-if="0"/>
+
+    <TextMapping/>
+
     <div id="content">
-      <Title/>
+      <!-- <Title/> -->
+      <Title v-if="0"/>
       <div v-if="blockRendered">
 
         <transition name="writer-appear">
-          <Writer v-if="(SEQ === 2) || (SEQ === 3)"/>
+          <!-- <Writer v-if="(SEQ === 2) || (SEQ === 3)"/> -->
+          <Writer v-if="0"/>
         </transition>
         
-        <Parade v-if="SEQ > 3" />
+        <!-- <Parade v-if="SEQ > 3" /> -->
+        <Parade v-if="0" />
 
         <test v-if="test.modal"/>
       </div>
@@ -25,6 +32,8 @@ import Background from './components/Background';
 import Title from './components/Title';
 import Writer from './components/Writer';
 import Parade from './components/Parade';
+import TextMapping from './test/TextMapping';
+
 // console.log(Reflect.ownKeys(this.$store.getters));
 
 export default {
@@ -34,7 +43,9 @@ export default {
     Background,
     Title,
     Writer,
-    Parade
+    Parade,
+
+    TextMapping,
   },
   computed: {
     ...mapState([
