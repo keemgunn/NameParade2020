@@ -8,12 +8,29 @@ const user = require('./routes/user');
 const master = require('./routes/master');
 
 
-
-function testReq(){
-  const {data} = axios.get('http://192.168.0.4/test');
+const dataUrl = 'something';
+const dataHealth = false;
+async function testReq(){
+  const {data} = axios.get('http://192.168.0.4/test')
+  .catch(function (error) {
+    console.log('-----ERROR-----app/testReq');
+    if (error.response) {
+      console.log('-> RESPONSE ERROR');
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+    } else if (error.request) {
+      console.log('-> REQUEST ERROR');
+      console.log(error.request);
+    } else {
+      console.log('-> UNKNOWN ERROR');
+      console.log('Error', error.message);
+    }
+    console.log(' -- error.config --');
+    console.log(error.config);
+  });
   console.log(data);
-}
-testReq();
+}testReq();
 
 
 
