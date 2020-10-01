@@ -317,6 +317,7 @@ export default new Vuex.Store({
         });
       }else{
         const {data} = await axios.post('/api/init', {userId});
+        console.log(data);
         commit('PUT_INITDATA', data);
       }
     },
@@ -330,6 +331,7 @@ export default new Vuex.Store({
       }else{
         let res = await axios.get('/api/sign-indexes');
         const signIndexArr = res.data.signIndexArr;
+        console.log(state.dataUrl);
         res = await axios.post(state.dataUrl + '/get-signs', {signIndexArr});
         const signData = res.data;
         console.log('initial data recieved:', signData.arg.length);
