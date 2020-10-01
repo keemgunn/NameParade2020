@@ -296,6 +296,17 @@ export default new Vuex.Store({
           bbc: state.writer.bbc,
           pathArr,
         };
+        const thisSign = pathArr;
+        thisSign.unshift(
+          state.writer.info.name, 
+          state.writer.info.writeTime, 
+          state.writer.bounds.width, 
+          state.writer.bounds.height, 
+          state.writer.bounds.x, 
+          state.writer.bounds.y,
+          state.writer.bbc,
+        );
+        state.signsArr.push(thisSign);
         const {data} = await axios.post('/api/push', newSign);
         if(data.status === 200){
           state.signSent = true;
