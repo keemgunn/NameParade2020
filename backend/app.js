@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const axios = require('axios');
-const dm = require('./api/dataManager');
+const dm = require('./dataManager');
 
 
 // ---------------- ROUTES
@@ -9,10 +9,10 @@ const user = require('./routes/user');
 const master = require('./routes/master');
 const dataUrl = dm.config.dataURL;
 
-
-const dataHealth = false;
+console.log('dataURL:', dataUrl);
+let dataHealth = false;
 async function testReq(){
-  const {data} = axios.get(dataUrl)
+  const {data} = await axios.get(dataUrl+'/test')
   .catch(function (error) {
     console.log('-----ERROR-----app/testReq');
     if (error.response) {
@@ -31,6 +31,7 @@ async function testReq(){
     console.log(error.config);
   });
   console.log(data);
+  dataHealth = true;
 }testReq();
 
 
@@ -55,7 +56,7 @@ app.get('/',(req, res)=>{
   res.redirect('/nameparade')
 })
 app.use('/api', user);
-app.get('/master/config', master);
+app.get('/master', master);
 
 
 // ---------- PORT SETTING

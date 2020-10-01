@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const requestIp = require('request-ip');
-const dm = require('../api/dataManager');
+const axios = require('axios');
+const dm = require('../dataManager');
+const dataUrl = dm.config.dataURL;
 
 
 // _________________________ INITIATING 
@@ -31,28 +33,20 @@ router.post('/init', (req, res) => {
   }
 })
 
-router.get('/signs', (req, res) => {
+router.get('/sign-indexes', (req, res) => {
   console.log('$request ... /load/initial');
-  dm.getAllSigns(res);
+  res.json({signIndexArr: dm.config.signs});
+  console.log('responsed, signs:', dm.config.signs.length);
 })
 
 
 // _________________________ PUSH DATA 
 
-router.post('/push', (req, res) => {
+router.post('/push', async (req, res) => {
   const newSign = req.body;
-  const signData = newSign.pathArr;
-  signData.unshift(
-    newSign.info.name, 
-    newSign.info.writeTime, 
-    newSign.bounds.width, 
-    newSign.bounds.height, 
-    newSign.bounds.x, 
-    newSign.bounds.y,
-    newSign.bbc,
-  );
-  dm.newSign(signData);
-  dm.wholeSign(newSign);
+  const {data} = await axios.post(dataUrl + '/push', newSign);
+  dm.signs.push(data.newSeat);
+  dm.syncConfig();
   res.json({status: 200});
 })
 
