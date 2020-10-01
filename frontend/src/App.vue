@@ -1,6 +1,8 @@
 <template>
   <div class="app">
     <Background/>
+
+
     <div id="content">
       <Title/>
       <div v-if="blockRendered">
@@ -25,6 +27,7 @@ import Background from './components/Background';
 import Title from './components/Title';
 import Writer from './components/Writer';
 import Parade from './components/Parade';
+
 // console.log(Reflect.ownKeys(this.$store.getters));
 
 export default {
@@ -34,7 +37,7 @@ export default {
     Background,
     Title,
     Writer,
-    Parade
+    Parade,
   },
   computed: {
     ...mapState([
