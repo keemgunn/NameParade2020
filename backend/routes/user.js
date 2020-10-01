@@ -45,7 +45,7 @@ router.get('/sign-indexes', (req, res) => {
 router.post('/push', async (req, res) => {
   const newSign = req.body;
   const {data} = await axios.post(dataUrl + '/push', newSign);
-  dm.signs.push(data.newSeat);
+  dm.config.signs.push(data.newSeat);
   dm.syncConfig();
   res.json({status: 200});
 })

@@ -1,5 +1,5 @@
 {
-  "connectionRequests": 326,
+  "connectionRequests": 330,
   "version": "1.2.4",
   "build": "61660a2b0556777cbd8d546c68d1527a9ff88fab",
   "dataURL": "http://nameparadedata-env.eba-wuyqf8u8.ap-northeast-2.elasticbeanstalk.com",
@@ -27,6 +27,7 @@
     20,
     21,
     22,
-    23
+    23,
+    25
   ]
 }
