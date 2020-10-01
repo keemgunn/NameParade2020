@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 const axios = require('axios');
 const dm = require('./dataManager');
@@ -48,6 +49,7 @@ app.use(express.text({
 
 // ---------------- SERVE
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 const appEndpoint = path.join(__dirname, './public/index.html');
 app.get('/nameparade', (req,res)=>{
   res.sendFile(appEndpoint);

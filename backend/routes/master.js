@@ -23,7 +23,6 @@ router.post('/config/sign-index-adjustment', async (req, res) => {
   if(authorized) {
     dm.config.signs = newArr;
     dm.syncConfig();
-
     res.json({status: 200});
   }else{
     res.json({status: 404});
