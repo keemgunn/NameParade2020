@@ -1,9 +1,21 @@
 const express = require('express');
 const path = require('path');
+const axios = require('axios');
 
 
 // ---------------- ROUTES
 const user = require('./routes/user');
+const master = require('./routes/master');
+
+
+
+function testReq(){
+  const {data} = axios.get('http://192.168.0.4/test');
+  console.log(data);
+}
+testReq();
+
+
 
 
 // ---------------- APP SETTING
@@ -26,8 +38,8 @@ app.get('/nameparade', (req,res)=>{
 app.get('/',(req, res)=>{
   res.redirect('/nameparade')
 })
-
-app.use('/api', user)
+app.use('/api', user);
+app.get('/master/config', master);
 
 
 // ---------- PORT SETTING
