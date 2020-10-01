@@ -22,6 +22,8 @@ router.post('/init', (req, res) => {
       ip,
       uag,
       connections: dm.config.connectionRequests,
+      version: dm.config.version,
+      build: dm.config.build,
       signs: dm.config.signs
     });
     dm.syncConfig();

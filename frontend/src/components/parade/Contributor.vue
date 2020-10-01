@@ -36,8 +36,8 @@
       </div>
 
       <div class="para">
-      version 1.1.2 <br>
-      build 04432326d1c44a58160fbba87afc297ccc9b3d83
+      version {{VERSION}} <br>
+      build {{BUILD}}
       </div>
 
       <div class="para">
@@ -72,7 +72,7 @@ export default {
     SCROLL: 0,
   }},
   computed: {
-    ...mapGetters(['VIEWTYPE', 'byType', 'SIGNS']),
+    ...mapGetters(['VERSION', 'BUILD', 'VIEWTYPE', 'byType', 'SIGNS']),
 
     HEADER_SCROLL: function(){
       return this.SCROLL / this.headerTop

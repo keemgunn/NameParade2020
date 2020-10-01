@@ -22,6 +22,8 @@ export default new Vuex.Store({
     sequence: 0,
     seqName: null,
     connections: 0,
+    version: '',
+    build: '',
     filesInServer: null,
     
     //__________________UI
@@ -93,6 +95,14 @@ export default new Vuex.Store({
     },
     TS(state){ // Test Server
       return state.stest.server
+    },
+
+    VERSION(state){
+      return state.version
+    },
+
+    BUILD(state){
+      return state.build
     },
 
     VIEWTYPE(state){
@@ -248,6 +258,8 @@ export default new Vuex.Store({
       state.writer.info.ip = recieved.ip;
       state.writer.info.uag = recieved.uag;
       state.connections = recieved.connections;
+      state.version = recieved.version;
+      state.build = recieved.build;
       state.filesInServer = recieved.signs;
     },
 
