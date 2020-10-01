@@ -22,6 +22,7 @@ router.post('/init', (req, res) => {
       ip,
       uag,
       connections: dm.config.connectionRequests,
+      dataUrl: dm.config.dataUrl,
       version: dm.config.version,
       build: dm.config.build,
       signs: dm.config.signs

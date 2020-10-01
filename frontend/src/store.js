@@ -22,6 +22,7 @@ export default new Vuex.Store({
     sequence: 0,
     seqName: null,
     connections: 0,
+    dataUrl: '',
     version: '',
     build: '',
     filesInServer: null,
@@ -258,6 +259,7 @@ export default new Vuex.Store({
       state.writer.info.ip = recieved.ip;
       state.writer.info.uag = recieved.uag;
       state.connections = recieved.connections;
+      state.dataUrl = recieved.dataUrl;
       state.version = recieved.version;
       state.build = recieved.build;
       state.filesInServer = recieved.signs;

@@ -1,17 +1,18 @@
 const express = require('express');
 const path = require('path');
 const axios = require('axios');
+const dm = require('./api/dataManager');
 
 
 // ---------------- ROUTES
 const user = require('./routes/user');
 const master = require('./routes/master');
+const dataUrl = dm.config.dataURL;
 
 
-const dataUrl = 'something';
 const dataHealth = false;
 async function testReq(){
-  const {data} = axios.get('http://192.168.0.4/test')
+  const {data} = axios.get(dataUrl)
   .catch(function (error) {
     console.log('-----ERROR-----app/testReq');
     if (error.response) {
@@ -31,8 +32,6 @@ async function testReq(){
   });
   console.log(data);
 }testReq();
-
-
 
 
 // ---------------- APP SETTING
