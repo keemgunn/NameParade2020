@@ -22,6 +22,9 @@ export default new Vuex.Store({
     sequence: 0,
     seqName: null,
     connections: 0,
+    dataUrl: '',
+    version: '',
+    build: '',
     filesInServer: null,
     
     //__________________UI
@@ -93,6 +96,14 @@ export default new Vuex.Store({
     },
     TS(state){ // Test Server
       return state.stest.server
+    },
+
+    VERSION(state){
+      return state.version
+    },
+
+    BUILD(state){
+      return state.build
     },
 
     VIEWTYPE(state){
@@ -248,6 +259,9 @@ export default new Vuex.Store({
       state.writer.info.ip = recieved.ip;
       state.writer.info.uag = recieved.uag;
       state.connections = recieved.connections;
+      state.dataUrl = recieved.dataUrl;
+      state.version = recieved.version;
+      state.build = recieved.build;
       state.filesInServer = recieved.signs;
     },
 
@@ -282,7 +296,7 @@ export default new Vuex.Store({
           bbc: state.writer.bbc,
           pathArr,
         };
-        const {data} = await axios.post('api/push', newSign);
+        const {data} = await axios.post('/api/push', newSign);
         if(data.status === 200){
           state.signSent = true;
         }
@@ -314,9 +328,12 @@ export default new Vuex.Store({
           return Math.random() - Math.random();
         });
       }else{
-        const {data} = await axios.get('/api/signs');
-        console.log('initial data recieved:', data.arg.length);
-        state.signsArr = data.arg.sort(() => {
+        let res = await axios.get('/api/sign-indexes');
+        const signIndexArr = res.data.signIndexArr;
+        res = await axios.post(state.dataUrl + '/get-signs', {signIndexArr});
+        const signData = res.data;
+        console.log('initial data recieved:', signData.arg.length);
+        state.signsArr = signData.arg.sort(() => {
           return Math.random() - Math.random();
         });
       }
