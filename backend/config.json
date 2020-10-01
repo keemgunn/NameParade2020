@@ -1,9 +1,11 @@
 {
   "connectionRequests": 330,
-  "version": "1.2.4",
+  "version": "1.2.7",
   "build": "61660a2b0556777cbd8d546c68d1527a9ff88fab",
   "dataURL": "http://nameparadedata-env.eba-wuyqf8u8.ap-northeast-2.elasticbeanstalk.com",
   "signs": [
-    0
+    0,
+    1,
+    2
   ]
 }
