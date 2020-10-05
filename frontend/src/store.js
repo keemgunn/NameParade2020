@@ -283,6 +283,7 @@ export default new Vuex.Store({
       if(state.test.server.sendPaths){
         state.signSent = true;
       }else{
+        // ___________________ MAKE DATA
         state.writer.info.writeTime = Date.now();
         let pathArr = [];
         let paths = state.writer.svg.split('<path d="');
@@ -290,14 +291,7 @@ export default new Vuex.Store({
           const eachPath = paths[i].split('"');
           pathArr.push(eachPath[0]);
         }
-        const newSign = {
-          info: state.writer.info,
-          bounds: state.writer.bounds,
-          bbc: state.writer.bbc,
-          pathArr,
-        };
-        const thisSign = pathArr;
-        thisSign.unshift(
+        pathArr.unshift(
           state.writer.info.name, 
           state.writer.info.writeTime, 
           state.writer.bounds.width, 
@@ -306,8 +300,15 @@ export default new Vuex.Store({
           state.writer.bounds.y,
           state.writer.bbc,
         );
-        state.signsArr.push(thisSign);
-        const {data} = await axios.post('/api/push', newSign);
+        // ____________ ADD DATA TO LOCAL
+        state.signsArr.push(pathArr);
+        // ___________________ SEND DATA
+        const newSign = {
+          info: state.writer.info,
+          pathArr
+        };
+        const {data} = await axios.post('/nameparade/api/push', newSign);
+          // _______________ END PROCESS
         if(data.status === 200){
           state.signSent = true;
         }
@@ -327,7 +328,7 @@ export default new Vuex.Store({
           signs: test.signsArr
         });
       }else{
-        const {data} = await axios.post('/api/init', {userId});
+        const {data} = await axios.post('/nameparade/api/init', {userId});
         console.log(data);
         commit('PUT_INITDATA', data);
       }
@@ -340,9 +341,8 @@ export default new Vuex.Store({
           return Math.random() - Math.random();
         });
       }else{
-        let res = await axios.get('/api/sign-indexes');
+        let res = await axios.get('/nameparade/api/sign-indexes');
         const signIndexArr = res.data.signIndexArr;
-        console.log(state.dataUrl);
         res = await axios.post(state.dataUrl + '/get-signs', {signIndexArr});
         const signData = res.data;
         console.log('initial data recieved:', signData.arg.length);
