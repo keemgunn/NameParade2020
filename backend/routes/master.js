@@ -16,6 +16,16 @@ router.post('/config/sign-displays', async (req, res) => {
   }
 })
 
+router.post('/get-config-info', async (req, res) => {
+  const { password } = req.body;
+  const { authorized } = await axios.post(dataUrl + '/master/authenticate', { password });
+  if(authorized) {
+    res.json({config: dm.config, status: 200});
+  }else{
+    res.json({config: {}, status: 404});
+  }
+})
+
 router.post('/config/sign-index-adjustment', async (req, res) => {
   const { password } = req.body;
   const { newArr } = req.body;
