@@ -296,6 +296,7 @@ export default new Vuex.Store({
           bbc: state.writer.bbc,
           pathArr,
         };
+        const {data} = await axios.post('/nameparade/api/push', newSign);
         const thisSign = pathArr;
         thisSign.unshift(
           state.writer.info.name, 
@@ -307,7 +308,6 @@ export default new Vuex.Store({
           state.writer.bbc,
         );
         state.signsArr.push(thisSign);
-        const {data} = await axios.post('/api/push', newSign);
         if(data.status === 200){
           state.signSent = true;
         }
@@ -327,7 +327,7 @@ export default new Vuex.Store({
           signs: test.signsArr
         });
       }else{
-        const {data} = await axios.post('/api/init', {userId});
+        const {data} = await axios.post('/nameparade/api/init', {userId});
         console.log(data);
         commit('PUT_INITDATA', data);
       }
@@ -340,7 +340,7 @@ export default new Vuex.Store({
           return Math.random() - Math.random();
         });
       }else{
-        let res = await axios.get('/api/sign-indexes');
+        let res = await axios.get('/nameparade/api/sign-indexes');
         const signIndexArr = res.data.signIndexArr;
         console.log(state.dataUrl);
         res = await axios.post(state.dataUrl + '/get-signs', {signIndexArr});
