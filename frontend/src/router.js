@@ -9,8 +9,8 @@ export default new Router({
  base: process.env.BASE_URL,
  routes: [
   // {
-  //   path: '/nameparade',
-  //   name: 'app',
+  //   path: '/redirect',
+  //   name: 'redirect',
   //   component: App
   // }
  ]

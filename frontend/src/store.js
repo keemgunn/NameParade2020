@@ -12,6 +12,29 @@ let userId = randomstring.generate({
   charset: 'alphanumeric'
 });
 
+if(test.configs.client.signHistory){
+  localStorage.history = '~~~~~SignHistoryTest~~~~~'
+}
+
+const initWriter = {
+  paths:[],
+  pathGroup: null,
+  svg: '',
+  bounds: {
+    width: 0, height: 0,
+    x: 0, y: 0
+  },
+  bbc:[0, 0, 0, 0, 0, 0],
+  info: {
+    userId: userId,
+    name: userId,
+    ip: null,
+    uag: null,
+    inTime: null,
+    writeTime: null
+  }
+};
+
 Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
@@ -25,13 +48,12 @@ export default new Vuex.Store({
     dataUrl: '',
     version: '',
     build: '',
-    filesInServer: null,
+    filesInServer: [],
     
     //__________________UI
     bbcAppear: false,
     backBlue: true,
     desColor: [],
-    aniTiming: animation.timing,
     circleAnime: {
       blockSize: null,
       colCount: null, rowCount: null, 
@@ -39,8 +61,9 @@ export default new Vuex.Store({
       wOff: null, hOff: null,
     },
     blocks: [], blockRendered: false,
-
+    
     //___________________ ANIME TIMING
+    aniTiming: animation.timing,
     bbcTiming: {
       loadingTransition: 300 +'ms',
       loadedTransition: 400 + 'ms',
@@ -55,38 +78,18 @@ export default new Vuex.Store({
       paradeTitleCellCount: 0,
       paradeTitleMounted: 0,
     },
-    // displayTiming: {
-    //   titleGraphicStart: false,
-    // }, // ... DEPRECATED 
 
     //__________________PATHMAKER
-    writer:{
-      paths:[],
-      pathGroup: null,
-      svg: '',
-      bounds: {
-        width: 0, height: 0,
-        x: 0, y: 0
-      },
-      bbc:[0, 0, 0, 0, 0, 0],
-      info: {
-        userId: userId,
-        name: userId,
-        ip: null,
-        uag: null,
-        inTime: null,
-        writeTime: null
-      }
-    },
+    writer: initWriter,
     writerUndo: null,
     writerDone: false,
     signSent: false,
 
-
     //__________________RENDERER
     renderStatus: 0, 
       // 1:mounted 2:rendered 3:pending
-    signsArr: null,
+    signsArr: [],
+    signDataLoaded: false
   },
 
   getters: { 
@@ -104,6 +107,14 @@ export default new Vuex.Store({
 
     BUILD(state){
       return state.build
+    },
+
+    SIGN_HISTORY(){
+      if(localStorage.history){
+        return localStorage.history
+      }else{
+        return false
+      }
     },
 
     VIEWTYPE(state){
@@ -255,7 +266,6 @@ export default new Vuex.Store({
     },
 
     async PUT_INITDATA(state, recieved){
-      console.log('$$$ request ...$m/PUT_INITDATA');
       state.writer.info.ip = recieved.ip;
       state.writer.info.uag = recieved.uag;
       state.connections = recieved.connections;
@@ -278,30 +288,53 @@ export default new Vuex.Store({
         state.writerUndo = state.writer.paths.length - 1;
       }
     },
+
+    pathAgain(state){
+      delete localStorage.history;
+      state.writer = initWriter;
+      state.writer.userId = randomstring.generate({
+        length: 12,
+        charset: 'alphanumeric'
+      });
+      state.writerUndo = null;
+      state.writerDone = false;
+      state.signSent = false;
+      state.cellTiming = {
+        mounted: 0,
+        typoRendered: 0,
+        paradeTitleCellCount: 0,
+        paradeTitleMounted: 0,
+      };
+      state.bbcAppear = false;
+      state.backBlue = true;
+      // window.location.reload();
+      state.sequence = 0;
+      state.renderStatus = 0;
+    },
   
     async SEND_PATHS(state){
+      // ___________________ MAKE DATA
+      state.writer.info.writeTime = Date.now();
+      let pathArr = [];
+      let paths = state.writer.svg.split('<path d="');
+      for(var i=1; i < paths.length; i++){
+        const eachPath = paths[i].split('"');
+        pathArr.push(eachPath[0]);
+      }
+      pathArr.unshift(
+        state.writer.info.name, 
+        state.writer.info.writeTime, 
+        state.writer.bounds.width, 
+        state.writer.bounds.height, 
+        state.writer.bounds.x, 
+        state.writer.bounds.y,
+        state.writer.bbc,
+      );
+      // ____________ ADD DATA TO LOCAL
+      state.signsArr.push(pathArr);
       if(state.test.server.sendPaths){
         state.signSent = true;
       }else{
-        // ___________________ MAKE DATA
-        state.writer.info.writeTime = Date.now();
-        let pathArr = [];
-        let paths = state.writer.svg.split('<path d="');
-        for(var i=1; i < paths.length; i++){
-          const eachPath = paths[i].split('"');
-          pathArr.push(eachPath[0]);
-        }
-        pathArr.unshift(
-          state.writer.info.name, 
-          state.writer.info.writeTime, 
-          state.writer.bounds.width, 
-          state.writer.bounds.height, 
-          state.writer.bounds.x, 
-          state.writer.bounds.y,
-          state.writer.bbc,
-        );
-        // ____________ ADD DATA TO LOCAL
-        state.signsArr.push(pathArr);
         // ___________________ SEND DATA
         const newSign = {
           info: state.writer.info,
@@ -313,6 +346,7 @@ export default new Vuex.Store({
           state.signSent = true;
         }
       }
+      localStorage.history = userId;
     },
 
   },
@@ -329,26 +363,25 @@ export default new Vuex.Store({
         });
       }else{
         const {data} = await axios.post('/nameparade/api/init', {userId});
-        console.log(data);
         commit('PUT_INITDATA', data);
       }
     },
 
     async startSignLoad({state}){
-      console.log('initiating_SIGNLOAD ...$a/startSignLoad');
       if(state.test.server.signLoad){
         state.signsArr = test.signFiles.sort(() => {
           return Math.random() - Math.random();
         });
+        state.signDataLoaded = true;
       }else{
         let res = await axios.get('/nameparade/api/sign-indexes');
         const signIndexArr = res.data.signIndexArr;
         res = await axios.post(state.dataUrl + '/get-signs', {signIndexArr});
         const signData = res.data;
-        console.log('initial data recieved:', signData.arg.length);
         state.signsArr = signData.arg.sort(() => {
           return Math.random() - Math.random();
         });
+        state.signDataLoaded = true;
       }
     }
   }

@@ -57,6 +57,9 @@ app.get('/nameparade', (req,res)=>{
 app.get('/',(req, res)=>{
   res.redirect('/nameparade')
 })
+app.get('/redirect',(req, res)=>{
+  res.redirect('/nameparade')
+})
 app.use('/nameparade/api', user);
 app.use('/nameparade/master', master);
 

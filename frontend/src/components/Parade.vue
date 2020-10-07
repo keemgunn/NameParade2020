@@ -15,13 +15,13 @@
 
   <div class="content-wrapper" :style="contentStyle">
 
-    <div v-if="displayOn"
+    <div v-if="displayOn && signDataLoaded"
       class="display-wrapper" :style="displayStyle">
       <Display/>
     </div>
 
     <transition name="contributor"> 
-    <div v-if="displayOn" 
+    <div v-if="displayOn && signDataLoaded" 
       class="contributor-wrapper" :style="contributorStyle">
       <Contributor/>
     </div>
@@ -40,13 +40,9 @@ import TitleCell from './parade/TitleCell';
 import Display from './parade/Display';
 import Contributor from './parade/Contributor';
 
-
 export default {
   name: "Parade",
   components: { TitleCell, Display, Contributor,  },
-  props: [
-
-  ],
   data() { return {
     topSpace: {
       height: "0px",
@@ -66,7 +62,7 @@ export default {
   }},
 
   computed: {
-    ...mapState([ 'circleAnime', 'blocks', ]),
+    ...mapState([ 'signDataLoaded', 'circleAnime', 'blocks' ]),
     ...mapGetters([ 'VIEWTYPE', 'bs', ]),
 
     gridType: function(){
@@ -164,9 +160,6 @@ export default {
         }
       }
     },
-  },
-  watch: {
-
   },
   methods: {
     ...mapMutations([

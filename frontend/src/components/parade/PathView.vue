@@ -129,7 +129,7 @@ export default {
 
     removeAnime(pathId){
       for(var i=0; i<pathId.length; i++){
-        anime.remove('#'+pathId[i])
+        anime.remove('#'+pathId[i]);
       }
     },
 
@@ -176,7 +176,6 @@ export default {
   },
   beforeDestroy() {
     this.WritingAnimation = null;
-
   },
 }
 </script>

@@ -26,6 +26,10 @@
     </div>
   </div>
 
+  <div class="again-box">
+    <button @click="pathAgain()">write again!</button>
+  </div>
+
   <div class="info-box">
     <div class="info" :class="byType">
 
@@ -58,7 +62,7 @@
 
 
 <script>
-import{ mapGetters, mapMutations} from 'vuex';
+import{ mapGetters, mapMutations } from 'vuex';
 import List from './List';
 
 
@@ -72,7 +76,13 @@ export default {
     SCROLL: 0,
   }},
   computed: {
-    ...mapGetters(['VERSION', 'BUILD', 'VIEWTYPE', 'byType', 'SIGNS']),
+    ...mapGetters([
+      'VERSION', 
+      'BUILD', 
+      'VIEWTYPE', 
+      'byType', 
+      'SIGNS'
+    ]),
 
     HEADER_SCROLL: function(){
       return this.SCROLL / this.headerTop
@@ -108,11 +118,11 @@ export default {
       }else{
         return old
       }
-    }
+    },
 
   },
   methods: {
-    ...mapMutations([]),
+    ...mapMutations(['pathAgain']),
 
     getCoords(elem) {
       var box = elem.getBoundingClientRect();

@@ -8,8 +8,10 @@ const seqStates = {
 };
 
 const configs = {
-  client: { sequenceNow: ( 4 ),
+  client: { 
+    sequenceNow: ( 2 ),
     // testSequence: true, 
+    // signHistory: true,
     // writerDone: true,
   },
   server: {

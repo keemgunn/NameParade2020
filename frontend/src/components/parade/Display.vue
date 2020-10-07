@@ -118,6 +118,7 @@ export default {
       });
       this.BorderOut.finished.then(() => {
         this.$store.state.renderStatus += 1;
+        anime.remove('#border');
       });
       this.BorderOut.play();
     },
@@ -160,6 +161,12 @@ export default {
         // ________ SET DELAY BEFOR RENDER SIGNS ________
     setTimeout(this.MOUNT, 2000, this.pending);
     this.$store.state.backBlue = false;
+  },
+
+  beforeDestroy() {
+    anime.remove('#border');
+    this.BorderIn = null;
+    this.BorderOut = null;
   },
 }
 </script>

@@ -77,10 +77,9 @@ export default {
   watch: {
     SEQ(nu, old){
       if(nu === 1){
-        console.log('-- render go --');
         this.TitleSignAnimation.play();
       }
-      return old
+return old
     }
   },
   mounted() {

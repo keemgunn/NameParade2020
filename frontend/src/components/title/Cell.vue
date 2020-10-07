@@ -76,9 +76,7 @@ const {
   mountPosition,
   typoArr,
   pathReaction,
-  
 } = require('../../assets/javascripts/circleAnime');
-
 
 export default {
   name: "Cell",
@@ -118,21 +116,27 @@ export default {
     reacter: function(){
       return 'react_'+this.index
     }
+
   },
   watch: {
+
     CELL_MOUNTED(nu, old){
       this.CircleAnimation.play();
       return old
     },
+
     SEQ(nu, old){
       if(nu === 2){
+        //____________________________________CircleAnimation
         this.CircleAnimation = null;
         this.CircleAnimation = Timeline(anime)
         .add({ targets: '#'+this.circleId,
           stroke: [
             keys('rgba(255, 255, 255, 0)', 0, 300, 0, "easeOutExpo")
           ]
-        }); this.CircleAnimation.play();
+        });
+        this.CircleAnimation.play();
+        //_____________________________________TypoRerender
         this.TypoRerender = null;
         this.TypoRerender = Timeline(anime)
         .add({ targets: '#'+this.typoId,
@@ -152,9 +156,15 @@ export default {
           this.typoRelocate();
         });
         this.TypoRerender.play();
+      }else if(nu === 4){
+        this.CircleAnimation = null;
+        this.TypoAnimation = null;
+        anime.remove("#" + this.circleId);
+        this.CircleLoop = null;
       }
       return old
     },
+
     NEW_PATHS(nu, old){
       if(this.pathFadeTrigger !== -1){
         if(nu === 1){
@@ -164,6 +174,7 @@ export default {
         }
       }return old
     }
+
   },
   methods: {
     ...mapMutations([]),
@@ -226,13 +237,7 @@ export default {
       if(this.SEQ ===2){ 
         this.CircleLoop.play();
       }
-      
     },
-    //__________________OTHER ANIME METHODS________
-
-
-
-
   },
   created() {
     this.coord = [this.block[1],this.block[2]]
@@ -323,7 +328,6 @@ export default {
       ],
     });
 
-
     const conditions = {
       TypoAnimation: (this.typoIndex !== -1),
     }
@@ -337,7 +341,6 @@ export default {
         TypoAnimation.play();
       }
     }
-
     this.CircleAnimation = CircleAnimation;
     this.$emit('mounted', this.index);
   }
@@ -349,7 +352,6 @@ export default {
   top: 6%; left: 6%;
   width: 88%; height: 88%;
 }
-
 .back-circle{
   position: absolute;
   width: 100%; height: 100%;
@@ -357,7 +359,6 @@ export default {
 .circle{
   stroke: #00000000;
 }
-
 .circle-typo{
   position: absolute;
   width: 100%; height: 100%;
@@ -366,17 +367,6 @@ export default {
   stroke :rgba(255, 255, 255, 0.315);
   stroke :rgba(255, 255, 255, 0);
 }
-
-
-
-
-
-
-
-
-
-
-
 
 .index-marker{
   position: absolute;
