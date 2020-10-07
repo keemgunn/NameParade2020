@@ -34,6 +34,8 @@
     </div>
   </div>
 
+  <mappedText />
+
   <div class="info-box">
     <div class="info" :class="byType">
 
@@ -68,11 +70,12 @@
 <script>
 import{ mapGetters, mapMutations } from 'vuex';
 import List from './List';
+import mappedText from './mappedText';
 
 
 export default {
   name:"Contributor",
-  components: { List },
+  components: { List, mappedText },
   data() { return {
     headerEl: null,
     headerTop: 0,
@@ -236,7 +239,7 @@ export default {
   ._info{
     position: relative; top: 0; left: 0;
   }._small{
-    padding-top: 60vh;
+    padding-top: 10vh;
     padding-bottom: 8vh;
     font-size: 2.8vw;
     line-height: 3.9vw;
@@ -244,7 +247,7 @@ export default {
       margin-bottom: 1.3vh;
     }
   }._narrow{
-    padding-top: 60vh;
+    padding-top: 10vh;
     padding-bottom: 8vh;
     font-size: 2.8vw;
     line-height: 3.9vw;
@@ -252,7 +255,7 @@ export default {
       margin-bottom: 1.3vh;
     }
   }._tablet{
-    padding-top: 60vh;
+    padding-top: 10vh;
     padding-bottom: 8vh;
     font-size: 2.4vw;
     line-height: 3.5vw;
@@ -260,7 +263,7 @@ export default {
       margin-bottom: 1.3vh;
     }
   }._wide{
-    padding-top: 60vh;
+    padding-top: 10vh;
     padding-bottom: 8.8vh;
     font-size: 1.8vh;
     line-height: 2.4vh;
@@ -272,7 +275,7 @@ export default {
 
 .again-box{
   position: relative;
-  margin-top: 3.5vw;
+  margin-top: 4.3vw;
   width: 100%;
   .bw{
     display: flex;
@@ -293,7 +296,7 @@ export default {
     height: calc(88vw * (.16));
     font-size: 5vw;
     line-height: 11.5vw;
-    margin-top: 2vw;
+    // margin-top: 2vw;
     .btn:hover {
       cursor: pointer;
       background-color: transparent;
@@ -308,7 +311,7 @@ export default {
     height: calc(88vw * (.16));
     font-size: 5vw;
     line-height: 11.5vw;
-    margin-top: 2vw;
+    // margin-top: 2vw;
     .btn:hover {
       cursor: pointer;
       background-color: transparent;
@@ -323,7 +326,7 @@ export default {
     height: calc(64vw * (.16));
     font-size: 4vw;
     line-height: 8vw;
-    margin-top: 2vw;
+    // margin-top: 2vw;
     .btn:hover {
       cursor: pointer;
       background-color: transparent;
