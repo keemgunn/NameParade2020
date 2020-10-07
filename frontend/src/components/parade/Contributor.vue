@@ -27,7 +27,11 @@
   </div>
 
   <div class="again-box">
-    <button @click="pathAgain()">write again!</button>
+    <div class="bw" :class="byType">
+      <div class="btn" 
+      @click="pathAgain()"
+      >write again!</div>
+    </div>
   </div>
 
   <div class="info-box">
@@ -264,6 +268,86 @@ export default {
       margin-bottom: 1.3vh;
     }
   }
+}
+
+.again-box{
+  position: relative;
+  margin-top: 3.5vw;
+  width: 100%;
+  .bw{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    .btn {
+      position: absolute; 
+      width: 48%; height: 82%;
+      border: 2px solid white;
+      user-select: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      letter-spacing: -0.6%;
+      transition: 600ms;
+    }
+  }
+  ._small { 
+    height: calc(88vw * (.16));
+    font-size: 5vw;
+    line-height: 11.5vw;
+    margin-top: 2vw;
+    .btn:hover {
+      cursor: pointer;
+      background-color: transparent;
+      transition: 600ms;
+    }
+    .btn:active {
+      transition: 140ms;
+      background-color:rgba(240, 248, 255, 0.55);
+    }
+  }
+  ._narrow { 
+    height: calc(88vw * (.16));
+    font-size: 5vw;
+    line-height: 11.5vw;
+    margin-top: 2vw;
+    .btn:hover {
+      cursor: pointer;
+      background-color: transparent;
+      transition: 600ms;
+    }
+    .btn:active {
+      transition: 140ms;
+      background-color:rgba(240, 248, 255, 0.55);
+    }
+  }
+  ._tablet { 
+    height: calc(64vw * (.16));
+    font-size: 4vw;
+    line-height: 8vw;
+    margin-top: 2vw;
+    .btn:hover {
+      cursor: pointer;
+      background-color: transparent;
+      transition: 600ms;
+    }
+    .btn:active {
+      transition: 140ms;
+      background-color:rgba(240, 248, 255, 0.55);
+    }
+  }
+  ._wide {
+    height: calc(36vw * (.16));
+    font-size: 2.8vw;
+    line-height: 4.6vw;
+    .btn:hover {
+      cursor: pointer;
+      background-color: rgba(240, 248, 255, 0.3);
+      transition: 140ms;
+    }
+    .btn:active {
+      background-color:rgba(240, 248, 255, 0.55);
+    }
+  }
+
 }
 
 

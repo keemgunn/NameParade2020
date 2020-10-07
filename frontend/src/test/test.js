@@ -9,16 +9,16 @@ const seqStates = {
 
 const configs = {
   client: { 
-    sequenceNow: ( 2 ),
-    // testSequence: true, 
-    // signHistory: true,
-    // writerDone: true,
+    sequenceNow: ( 4 ),
+    testSequence: true, 
+    signHistory: true,
+    writerDone: true,
   },
   server: {
-    // init: true,
-    // filesInServer: true,
-    // signLoad: true,
-    // sendPaths: true,
+    init: true,
+    filesInServer: true,
+    signLoad: true,
+    sendPaths: true,
     foo: 'bar',
   },
   // modal: true,
