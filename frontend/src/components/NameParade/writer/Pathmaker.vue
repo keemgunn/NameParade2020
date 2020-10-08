@@ -6,7 +6,7 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
 const paper = require('paper');
-const pm = require('../../assets/javascripts/pathmaker');
+const pm = require('../../../assets/NameParade/javascripts/pathmaker');
 
 const name = 'Pathmaker';
 export default {

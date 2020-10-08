@@ -1,6 +1,9 @@
 <template>
 <div class="title-space" :style="space">
-<div class="block-wrapper" :style="FIELD">
+
+<transition name="titlesign-vanish">
+<div v-if="SEQ < 4"
+class="block-wrapper" :style="FIELD">
   <div v-for="block in blocks" :key="block">
     <div class="cell" :style="cellStyle">
       <Cell 
@@ -11,11 +14,10 @@
     </div>
   </div>
   <transition name="titlesign-vanish">
-  <TitleSign v-if="blockRendered && (SEQ < 2)"/>
+    <TitleSign v-if="blockRendered && (SEQ < 2)"/>
   </transition>
+</div></transition>
 
-
-</div>
 </div>
 </template>
 
@@ -23,16 +25,13 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
-import Cell from './title/Cell';
-import TitleSign from './title/TitleSign';
+import Cell from './Cell';
+import TitleSign from './TitleSign';
 
 const name = "Title";
 export default {
   name,
   components: { Cell, TitleSign },
-  data() { return {
-
-  }},
   computed: {
     ...mapState([ 
         'winSize',

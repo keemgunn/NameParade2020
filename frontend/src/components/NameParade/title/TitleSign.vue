@@ -28,7 +28,7 @@ import { mapState, mapGetters, mapMutations } from 'vuex';
 import anime from 'animejs';
 const {
   Timeline,
-} = require('../../assets/javascripts/circleAnime');
+} = require('../../../assets/NameParade/javascripts/circleAnime');
 const name = "TitleSign";
 export default {
   name,
@@ -77,10 +77,9 @@ export default {
   watch: {
     SEQ(nu, old){
       if(nu === 1){
-        console.log('-- render go --');
         this.TitleSignAnimation.play();
       }
-      return old
+return old
     }
   },
   mounted() {

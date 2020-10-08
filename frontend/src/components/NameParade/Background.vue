@@ -10,8 +10,8 @@
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
 const paper = require('paper');
-import { random } from '../assets/javascripts/uiAction';
-import { bbc } from '../assets/javascripts/uiAction';
+import { random } from '../../assets/NameParade/javascripts/uiAction';
+import { bbc } from '../../assets/NameParade/javascripts/uiAction';
 const name = 'Background';
 export default {
   name,

@@ -23,11 +23,15 @@
 </template>
 <script>
 import{ mapGetters } from 'vuex';
-const { mountPosition, typoArr, Timeline, keys } = require('../../assets/javascripts/circleAnime');
+const { 
+  mountPosition, 
+  typoArr, 
+  Timeline, 
+  keys 
+} = require('../../../assets/NameParade/javascripts/circleAnime');
 import anime from 'animejs';
 export default {
   name: "TitleCell",
-  components: { },
   props: [
     'index'
   ],

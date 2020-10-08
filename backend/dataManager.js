@@ -7,7 +7,7 @@ let config = readSync(configPath);
 
 function syncConfig() {
   update(configPath, config);
-  console.log(config);
+  // console.log(config);
   console.log(' -- config synced');
 }
 

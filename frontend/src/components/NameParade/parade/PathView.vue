@@ -34,11 +34,10 @@
 
 <script>
 import{ mapGetters, mapMutations} from 'vuex';
-const { Timeline, keys } = require('../../assets/javascripts/circleAnime');
+const { Timeline, keys } = require('../../../assets/NameParade/javascripts/circleAnime');
 import anime from 'animejs';
 import randomstring from 'randomstring';
 const rand = randomstring.generate(6);
-
 export default {
   name: "PathView",
   props: [ 'pathData' ],
@@ -129,7 +128,7 @@ export default {
 
     removeAnime(pathId){
       for(var i=0; i<pathId.length; i++){
-        anime.remove('#'+pathId[i])
+        anime.remove('#'+pathId[i]);
       }
     },
 
@@ -176,7 +175,6 @@ export default {
   },
   beforeDestroy() {
     this.WritingAnimation = null;
-
   },
 }
 </script>

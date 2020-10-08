@@ -2,38 +2,34 @@
   <div class="app">
     <Background/>
 
-
     <div id="content">
+
       <Title/>
+
       <div v-if="blockRendered">
-
         <transition name="writer-appear">
-          <Writer v-if="(SEQ === 2) || (SEQ === 3)"/>
+          <Writer v-if="(SEQ > 1) && (SEQ < 4)"/>
         </transition>
-        
         <Parade v-if="SEQ > 3" />
-
-        <test v-if="test.modal"/>
       </div>
+
     </div>
   </div>
 </template>
 
 <script> 
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
-// let State, Getters, Mutations, Actions;
-import test from './test/test.vue'
-import Background from './components/Background';
-import Title from './components/Title';
-import Writer from './components/Writer';
-import Parade from './components/Parade';
+import Background from './Background';
+import Title from './title/Title';
+import Writer from './writer/Writer';
+import Parade from './parade/Parade';
 
+// let State, Getters, Mutations, Actions;
 // console.log(Reflect.ownKeys(this.$store.getters));
 
 export default {
-  name: 'App',
+  name: 'NameParade',
   components: {
-    test,
     Background,
     Title,
     Writer,
@@ -47,6 +43,7 @@ export default {
       ]),
     ...mapGetters([
         'TC', 'TS',
+        'SIGN_HISTORY',
         'VIEWTYPE',
         'byType', 
         'SEQ', 
@@ -55,8 +52,8 @@ export default {
       ])
   },
   methods: {
-    ...mapMutations([ 'moveTo', 'setBBC', ]),
-    ...mapActions([ 'INITIATE', 'startSignLoad']),
+    ...mapMutations([ 'moveTo', 'setBBC' ]),
+    ...mapActions([ 'INITIATE', 'startSignLoad' ]),
 
     onResize() {
       this.winSize.vw = window.innerWidth
@@ -80,17 +77,14 @@ export default {
         console.log('--- test: start loading signs ---');
         this.startSignLoad();
       }else{
-        if(this.SEQ === 0){
-          if(nu.length){
-            console.log('--- start loading signs ---');
-            console.log('filesInServer:', nu.length);
-            this.startSignLoad();
-          }else{
-            console.log('--- no sign data ---');
-            console.log('filesInServer:', nu.length);
-          }
-        }else{ // > 0
-          console.log('file index update to:', nu.length);
+        if(nu.length){
+          console.log('--- start loading signs ---');
+          console.log('display item count:', nu.length);
+          this.startSignLoad();
+        }else{
+          console.log('--- no sign data ---');
+          console.log('display item count:', nu.length);
+          this.$store.state.signDataLoaded = true;
           return old
         }
       }
@@ -114,6 +108,10 @@ export default {
     this.onResize();
     this.setBBC({comp:-1, hue:-1});
     this.INITIATE();
+    console.log('---history:', this.SIGN_HISTORY);
+    if(this.SIGN_HISTORY){
+      this.$store.state.sequence = 4
+    }
 
   },
   mounted() {
@@ -128,7 +126,6 @@ export default {
       document.querySelector( '.app').style['height'] = 'fit-content';
     }
 
-    // document.documentElement.addEventListener('touchstart', this.preventPinch, false);
   },
   beforeDestroy() { 
     window.removeEventListener('resize', this.onResize); 
@@ -138,8 +135,8 @@ export default {
 
 
 <style lang="scss">
-  @import "assets/styles/animations.scss";
-  @import "assets/fonts/CoreGothicD/coregothicd.css";
+  @import "../../assets/styles/animations.scss";
+  @import "../../assets/fonts/CoreGothicD/coregothicd.css";
   body {
     overflow: hidden;
     background-color: black;

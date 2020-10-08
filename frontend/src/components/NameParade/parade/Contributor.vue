@@ -26,6 +26,16 @@
     </div>
   </div>
 
+  <div class="again-box">
+    <div class="bw" :class="byType">
+      <div class="btn" 
+      @click="pathAgain()"
+      >write again!</div>
+    </div>
+  </div>
+
+  <mappedText />
+
   <div class="info-box">
     <div class="info" :class="byType">
 
@@ -58,13 +68,14 @@
 
 
 <script>
-import{ mapGetters, mapMutations} from 'vuex';
+import{ mapGetters, mapMutations } from 'vuex';
 import List from './List';
+import mappedText from './mappedText';
 
 
 export default {
   name:"Contributor",
-  components: { List },
+  components: { List, mappedText },
   data() { return {
     headerEl: null,
     headerTop: 0,
@@ -72,7 +83,13 @@ export default {
     SCROLL: 0,
   }},
   computed: {
-    ...mapGetters(['VERSION', 'BUILD', 'VIEWTYPE', 'byType', 'SIGNS']),
+    ...mapGetters([
+      'VERSION', 
+      'BUILD', 
+      'VIEWTYPE', 
+      'byType', 
+      'SIGNS'
+    ]),
 
     HEADER_SCROLL: function(){
       return this.SCROLL / this.headerTop
@@ -108,11 +125,11 @@ export default {
       }else{
         return old
       }
-    }
+    },
 
   },
   methods: {
-    ...mapMutations([]),
+    ...mapMutations(['pathAgain']),
 
     getCoords(elem) {
       var box = elem.getBoundingClientRect();
@@ -222,7 +239,7 @@ export default {
   ._info{
     position: relative; top: 0; left: 0;
   }._small{
-    padding-top: 60vh;
+    padding-top: 10vh;
     padding-bottom: 8vh;
     font-size: 2.8vw;
     line-height: 3.9vw;
@@ -230,7 +247,7 @@ export default {
       margin-bottom: 1.3vh;
     }
   }._narrow{
-    padding-top: 60vh;
+    padding-top: 10vh;
     padding-bottom: 8vh;
     font-size: 2.8vw;
     line-height: 3.9vw;
@@ -238,7 +255,7 @@ export default {
       margin-bottom: 1.3vh;
     }
   }._tablet{
-    padding-top: 60vh;
+    padding-top: 10vh;
     padding-bottom: 8vh;
     font-size: 2.4vw;
     line-height: 3.5vw;
@@ -246,7 +263,7 @@ export default {
       margin-bottom: 1.3vh;
     }
   }._wide{
-    padding-top: 60vh;
+    padding-top: 10vh;
     padding-bottom: 8.8vh;
     font-size: 1.8vh;
     line-height: 2.4vh;
@@ -254,6 +271,86 @@ export default {
       margin-bottom: 1.3vh;
     }
   }
+}
+
+.again-box{
+  position: relative;
+  margin-top: 4.3vw;
+  width: 100%;
+  .bw{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    .btn {
+      position: absolute; 
+      width: 48%; height: 82%;
+      border: 2px solid white;
+      user-select: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      letter-spacing: -0.6%;
+      transition: 600ms;
+    }
+  }
+  ._small { 
+    height: calc(88vw * (.16));
+    font-size: 5vw;
+    line-height: 11.5vw;
+    // margin-top: 2vw;
+    .btn:hover {
+      cursor: pointer;
+      background-color: transparent;
+      transition: 600ms;
+    }
+    .btn:active {
+      transition: 140ms;
+      background-color:rgba(240, 248, 255, 0.55);
+    }
+  }
+  ._narrow { 
+    height: calc(88vw * (.16));
+    font-size: 5vw;
+    line-height: 11.5vw;
+    // margin-top: 2vw;
+    .btn:hover {
+      cursor: pointer;
+      background-color: transparent;
+      transition: 600ms;
+    }
+    .btn:active {
+      transition: 140ms;
+      background-color:rgba(240, 248, 255, 0.55);
+    }
+  }
+  ._tablet { 
+    height: calc(64vw * (.16));
+    font-size: 4vw;
+    line-height: 8vw;
+    // margin-top: 2vw;
+    .btn:hover {
+      cursor: pointer;
+      background-color: transparent;
+      transition: 600ms;
+    }
+    .btn:active {
+      transition: 140ms;
+      background-color:rgba(240, 248, 255, 0.55);
+    }
+  }
+  ._wide {
+    height: calc(36vw * (.16));
+    font-size: 2.8vw;
+    line-height: 4.6vw;
+    .btn:hover {
+      cursor: pointer;
+      background-color: rgba(240, 248, 255, 0.3);
+      transition: 140ms;
+    }
+    .btn:active {
+      background-color:rgba(240, 248, 255, 0.55);
+    }
+  }
+
 }
 
 

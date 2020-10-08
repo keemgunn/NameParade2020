@@ -21,9 +21,9 @@
 import { mapState, mapGetters } from 'vuex';
 import PathView from './PathView';
 import anime from 'animejs';
-const { keys, Timeline } = require('../../assets/javascripts/circleAnime');
-const { randomInt } = require('../../assets/javascripts/uiAction');
-const { signFiles } = require('../../test/test');
+const { keys, Timeline } = require('../../../assets/NameParade/javascripts/circleAnime');
+const { randomInt } = require('../../../assets/NameParade/javascripts/uiAction');
+const { signFiles } = require('../../../test/test');
 
 export default {
   name: "Display",
@@ -118,6 +118,7 @@ export default {
       });
       this.BorderOut.finished.then(() => {
         this.$store.state.renderStatus += 1;
+        anime.remove('#border');
       });
       this.BorderOut.play();
     },
@@ -160,6 +161,12 @@ export default {
         // ________ SET DELAY BEFOR RENDER SIGNS ________
     setTimeout(this.MOUNT, 2000, this.pending);
     this.$store.state.backBlue = false;
+  },
+
+  beforeDestroy() {
+    anime.remove('#border');
+    this.BorderIn = null;
+    this.BorderOut = null;
   },
 }
 </script>
