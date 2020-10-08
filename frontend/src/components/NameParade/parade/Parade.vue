@@ -36,10 +36,9 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
-import TitleCell from './parade/TitleCell';
-import Display from './parade/Display';
-import Contributor from './parade/Contributor';
-
+import TitleCell from './TitleCell';
+import Display from './Display';
+import Contributor from './Contributor';
 export default {
   name: "Parade",
   components: { TitleCell, Display, Contributor,  },

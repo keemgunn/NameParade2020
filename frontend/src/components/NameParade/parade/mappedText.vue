@@ -907,7 +907,6 @@
 
 <script>
 import{ mapState, mapGetters, mapMutations} from 'vuex';
-
 export default {
   name: "mappedText",
   components: { },

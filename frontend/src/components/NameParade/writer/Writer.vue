@@ -88,8 +88,8 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
-import Pathmaker from './writer/Pathmaker';
-import InfoGetter from './writer/InfoGetter';
+import Pathmaker from './Pathmaker';
+import InfoGetter from './InfoGetter';
 
 const name = 'Writer';
 export default {

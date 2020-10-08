@@ -25,8 +25,8 @@ class="block-wrapper" :style="FIELD">
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex';
-import Cell from './title/Cell';
-import TitleSign from './title/TitleSign';
+import Cell from './Cell';
+import TitleSign from './TitleSign';
 
 const name = "Title";
 export default {

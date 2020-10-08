@@ -28,7 +28,7 @@ import { mapState, mapGetters, mapMutations } from 'vuex';
 import anime from 'animejs';
 const {
   Timeline,
-} = require('../../assets/javascripts/circleAnime');
+} = require('../../../assets/NameParade/javascripts/circleAnime');
 const name = "TitleSign";
 export default {
   name,

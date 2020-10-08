@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
-const animation = require('./assets/javascripts/animation');
-const ui = require('./assets/javascripts/uiAction');
+const animation = require('./assets/NameParade/javascripts/animation');
+const ui = require('./assets/NameParade/javascripts/uiAction');
 const test = require('./test/test');
 
 //_____ userID generate

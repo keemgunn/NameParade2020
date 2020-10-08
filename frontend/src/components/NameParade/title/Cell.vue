@@ -76,7 +76,7 @@ const {
   mountPosition,
   typoArr,
   pathReaction,
-} = require('../../assets/javascripts/circleAnime');
+} = require('../../../assets/NameParade/javascripts/circleAnime');
 
 export default {
   name: "Cell",

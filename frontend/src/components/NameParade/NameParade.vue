@@ -19,16 +19,16 @@
 
 <script> 
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
-// let State, Getters, Mutations, Actions;
-import Background from './components/Background';
-import Title from './components/Title';
-import Writer from './components/Writer';
-import Parade from './components/Parade';
+import Background from './Background';
+import Title from './title/Title';
+import Writer from './writer/Writer';
+import Parade from './parade/Parade';
 
+// let State, Getters, Mutations, Actions;
 // console.log(Reflect.ownKeys(this.$store.getters));
 
 export default {
-  name: 'App',
+  name: 'NameParade',
   components: {
     Background,
     Title,
@@ -135,8 +135,8 @@ export default {
 
 
 <style lang="scss">
-  @import "assets/styles/animations.scss";
-  @import "assets/fonts/CoreGothicD/coregothicd.css";
+  @import "../../assets/styles/animations.scss";
+  @import "../../assets/fonts/CoreGothicD/coregothicd.css";
   body {
     overflow: hidden;
     background-color: black;
